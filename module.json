@@ -10,7 +10,7 @@
     "socket": true,
     "compatibleCoreVersion": "0.6.5",
     "minimumCoreVersion": "0.6.0",
-    "manifest": "https://raw.githubusercontent.com/Djphoenix719/PDFoundry/feature/foundry-installer/module.json",
-    "download": "https://github.com/Djphoenix719/PDFoundry/releases/download/v0.6.0-beta1/pdfoundry-v0.6.0b8.zip",
-    "url": "https://github.com/Djphoenix719/PDFoundry"
+    "manifest": "https://github.com/Djphoenix719/FVTT-PF2EToolbox/blob/master/module.json",
+    "download": "",
+    "url": "https://github.com/Djphoenix719/FVTT-PF2EToolbox"
 }
