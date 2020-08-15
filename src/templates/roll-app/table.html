@@ -1,0 +1,22 @@
+<table class="roll-app-table">
+    <thead>
+        <tr>
+            <td>Level</td>
+            <td>Low</td>
+            <td>Moderate</td>
+            <td>High</td>
+            <td>Extreme</td>
+        </tr>
+    </thead>
+    <tbody>
+        {{#eachOwn data.strikeAttack}}
+        <tr>
+            <td>{{level}}</td>
+            <td>{{low}}</td>
+            <td>{{moderate}}</td>
+            <td>{{high}}</td>
+            <td>{{extreme}}</td>
+        </tr>
+        {{/eachOwn}}
+    </tbody>
+</table>

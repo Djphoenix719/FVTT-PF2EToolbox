@@ -17,9 +17,8 @@
 const fs = require('fs');
 const path = require('path');
 const del = require('del');
-const assign = require('lodash.assign');
 const chalk = require('chalk');
-const spawn = require('child_process').spawn;
+const assign = require('lodash.assign');
 
 // Browserify
 const browserify = require('browserify');
@@ -42,7 +41,7 @@ const typedoc = require('gulp-typedoc');
 const foundryConfig = JSON.parse(fs.readFileSync('./foundryconfig.json'));
 
 // Config
-const distName = 'pdfoundry';
+const distName = 'pf2e-toolbox';
 const destFolder = path.resolve(foundryConfig['dataPath'], distName);
 const docsFolder = path.resolve(process.cwd(), 'docs');
 const jsBundle = 'bundle.js';
@@ -50,10 +49,10 @@ const jsBundle = 'bundle.js';
 logger.info(`Writing to ${destFolder}`);
 
 const baseArgs = {
-    entries: ['./src/pdfoundry/Main.ts'],
+    entries: ['./src/module/Main.ts'],
     sourceType: 'module',
     debug: true,
-    standalone: 'PDFoundry',
+    standalone: 'PF2E-Toolbox',
 };
 
 /**
@@ -92,13 +91,6 @@ async function cleanDist() {
     }
 }
 
-async function cleanDocs() {
-    const files = fs.readdirSync(docsFolder);
-    for (const file of files) {
-        await del(path.resolve(destFolder, file), { force: true });
-    }
-}
-
 /**
  * BUILD
  */
@@ -132,11 +124,7 @@ async function buildJS() {
  */
 async function copyAssets() {
     gulp.src('module.json').pipe(gulp.dest(destFolder));
-    gulp.src('assets/**/*').pipe(gulp.dest(path.resolve(destFolder, 'assets')));
-    gulp.src('manual/**/*.pdf').pipe(gulp.dest(path.resolve(destFolder, 'assets', 'manual')));
     gulp.src('src/templates/**/*').pipe(gulp.dest(path.resolve(destFolder, 'templates')));
-    gulp.src('locale/**/*').pipe(gulp.dest(path.resolve(destFolder, 'locale')));
-    gulp.src('pdfjs/**/*').pipe(gulp.dest(path.resolve(destFolder, 'pdfjs')));
     gulp.src('LICENSE').pipe(gulp.dest(destFolder));
 }
 
@@ -150,12 +138,7 @@ async function watch() {
     }
 
     watch('module.json', '');
-    watch('assets/**/*', 'assets');
-    watch('manual/**/*.pdf', ['assets', 'manual']);
     watch('src/templates/**/*', 'templates');
-    watch('locale/**/*', 'locale');
-    watch('pdfjs/**/*', 'pdfjs');
-    watch('src/scripts/**/*', 'scripts');
     watch('LICENSE', '');
 
     gulp.watch('src/css/**/*.scss').on('change', async () => await buildSass());
@@ -236,7 +219,6 @@ async function docs() {
 exports.clean = cleanDist;
 exports.assets = copyAssets;
 exports.sass = buildSass;
-exports.docs = gulp.series(cleanDocs, docs);
 exports.build = gulp.series(copyAssets, buildSass, buildJS);
 exports.rebuild = gulp.series(cleanDist, exports.build);
 
