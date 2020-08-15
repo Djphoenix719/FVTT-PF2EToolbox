@@ -1,0 +1,31 @@
+{
+    "devDependencies": {
+        "@babel/core": "^7.0.0",
+        "@babel/plugin-proposal-class-properties": "^7.0.0",
+        "@babel/plugin-transform-runtime": "^7.10.1",
+        "@babel/preset-env": "^7.0.0",
+        "@babel/preset-typescript": "^7.10.1",
+        "babel-core": "7.0.0-bridge.0",
+        "babelify": "^10.0.0",
+        "browserify": "^16.5.1",
+        "es-module-shims": "^0.4.6",
+        "foundry-pc-types": "gitlab:foundry-projects/foundry-pc/foundry-pc-types",
+        "gulp": "^4.0.2",
+        "gulp-copy": "^4.0.1",
+        "gulp-sass": "^4.1.0",
+        "gulp-sourcemaps": "^2.6.5",
+        "gulp-typedoc": "^2.2.5",
+        "gulplog": "^1.0.0",
+        "node-sass": "^4.14.1",
+        "tsify": "^4.0.2",
+        "typedoc": "^0.17.8",
+        "typescript": "^3.9.6",
+        "vinyl-buffer": "^1.0.1",
+        "vinyl-source-stream": "^2.0.0",
+        "watchify": "^3.11.1"
+    },
+    "repository": "https://github.com/Djphoenix719/PDFoundry",
+    "license": "https://github.com/Djphoenix719/PDFoundry/blob/master/LICENSE",
+    "dependencies": {},
+    "version": "v0.3.0"
+}
