@@ -49,32 +49,162 @@ interface LMHET<T extends string | number> {
 
 export const ROLL_APP_DATA = {
     hitPoints: [
-        { level: -1, high: '9-10', moderate: '8-7', low: '6-5' },
-        { level: 0, high: '20-17', moderate: '16-14', low: '13-11' },
-        { level: 1, high: '26-24', moderate: '21-19', low: '16-14' },
-        { level: 2, high: '40-36', moderate: '32-28', low: '25-21' },
-        { level: 3, high: '59-53', moderate: '48-42', low: '37-31' },
-        { level: 4, high: '78-72', moderate: '63-57', low: '48-42' },
-        { level: 5, high: '97-91', moderate: '78-72', low: '59-53' },
-        { level: 6, high: '123-115', moderate: '99-91', low: '75-67' },
-        { level: 7, high: '148-140', moderate: '119-111', low: '90-82' },
-        { level: 8, high: '173-165', moderate: '139-131', low: '105-97' },
-        { level: 9, high: '198-190', moderate: '159-151', low: '120-112' },
-        { level: 10, high: '223-215', moderate: '179-171', low: '135-127' },
-        { level: 11, high: '248-240', moderate: '199-191', low: '150-142' },
-        { level: 12, high: '273-265', moderate: '219-211', low: '165-157' },
-        { level: 13, high: '298-290', moderate: '239-231', low: '180-172' },
-        { level: 14, high: '323-315', moderate: '259-251', low: '195-187' },
-        { level: 15, high: '348-340', moderate: '279-271', low: '210-202' },
-        { level: 16, high: '373-365', moderate: '299-291', low: '225-217' },
-        { level: 17, high: '398-390', moderate: '319-311', low: '240-232' },
-        { level: 18, high: '423-415', moderate: '339-331', low: '255-247' },
-        { level: 19, high: '448-440', moderate: '359-351', low: '270-262' },
-        { level: 20, high: '473-465', moderate: '379-371', low: '285-277' },
-        { level: 21, high: '505-495', moderate: '405-395', low: '305-295' },
-        { level: 22, high: '544-532', moderate: '436-424', low: '329-317' },
-        { level: 23, high: '581-569', moderate: '466-454', low: '351-339' },
-        { level: 24, high: '633-617', moderate: '508-492', low: '383-367' },
+        {
+            level: -1,
+            high: { minimum: 9, maximum: 10, die: 2 },
+            moderate: { minimum: 7, maximum: 8, die: 2 },
+            low: { minimum: 5, maximum: 6, die: 2 },
+        },
+        {
+            level: 0,
+            high: { minimum: 17, maximum: 20, die: 4 },
+            moderate: { minimum: 14, maximum: 16, die: 3 },
+            low: { minimum: 11, maximum: 13, die: 3 },
+        },
+        {
+            level: 1,
+            high: { minimum: 24, maximum: 26, die: 3 },
+            moderate: { minimum: 19, maximum: 21, die: 3 },
+            low: { minimum: 14, maximum: 16, die: 3 },
+        },
+        {
+            level: 2,
+            high: { minimum: 36, maximum: 40, die: 5 },
+            moderate: { minimum: 28, maximum: 32, die: 5 },
+            low: { minimum: 21, maximum: 25, die: 5 },
+        },
+        {
+            level: 3,
+            high: { minimum: 53, maximum: 59, die: 7 },
+            moderate: { minimum: 42, maximum: 48, die: 7 },
+            low: { minimum: 31, maximum: 37, die: 7 },
+        },
+        {
+            level: 4,
+            high: { minimum: 72, maximum: 78, die: 7 },
+            moderate: { minimum: 57, maximum: 63, die: 7 },
+            low: { minimum: 42, maximum: 48, die: 7 },
+        },
+        {
+            level: 5,
+            high: { minimum: 91, maximum: 97, die: 7 },
+            moderate: { minimum: 72, maximum: 78, die: 7 },
+            low: { minimum: 53, maximum: 59, die: 7 },
+        },
+        {
+            level: 6,
+            high: { minimum: 115, maximum: 123, die: 9 },
+            moderate: { minimum: 91, maximum: 99, die: 9 },
+            low: { minimum: 67, maximum: 75, die: 9 },
+        },
+        {
+            level: 7,
+            high: { minimum: 140, maximum: 148, die: 9 },
+            moderate: { minimum: 111, maximum: 119, die: 9 },
+            low: { minimum: 82, maximum: 90, die: 9 },
+        },
+        {
+            level: 8,
+            high: { minimum: 165, maximum: 173, die: 9 },
+            moderate: { minimum: 131, maximum: 139, die: 9 },
+            low: { minimum: 97, maximum: 105, die: 9 },
+        },
+        {
+            level: 9,
+            high: { minimum: 190, maximum: 198, die: 9 },
+            moderate: { minimum: 151, maximum: 159, die: 9 },
+            low: { minimum: 112, maximum: 120, die: 9 },
+        },
+        {
+            level: 10,
+            high: { minimum: 215, maximum: 223, die: 9 },
+            moderate: { minimum: 171, maximum: 179, die: 9 },
+            low: { minimum: 127, maximum: 135, die: 9 },
+        },
+        {
+            level: 11,
+            high: { minimum: 240, maximum: 248, die: 9 },
+            moderate: { minimum: 191, maximum: 199, die: 9 },
+            low: { minimum: 142, maximum: 150, die: 9 },
+        },
+        {
+            level: 12,
+            high: { minimum: 265, maximum: 273, die: 9 },
+            moderate: { minimum: 211, maximum: 219, die: 9 },
+            low: { minimum: 157, maximum: 165, die: 9 },
+        },
+        {
+            level: 13,
+            high: { minimum: 290, maximum: 298, die: 9 },
+            moderate: { minimum: 231, maximum: 239, die: 9 },
+            low: { minimum: 172, maximum: 180, die: 9 },
+        },
+        {
+            level: 14,
+            high: { minimum: 315, maximum: 323, die: 9 },
+            moderate: { minimum: 251, maximum: 259, die: 9 },
+            low: { minimum: 187, maximum: 195, die: 9 },
+        },
+        {
+            level: 15,
+            high: { minimum: 340, maximum: 348, die: 9 },
+            moderate: { minimum: 271, maximum: 279, die: 9 },
+            low: { minimum: 202, maximum: 210, die: 9 },
+        },
+        {
+            level: 16,
+            high: { minimum: 365, maximum: 373, die: 9 },
+            moderate: { minimum: 291, maximum: 299, die: 9 },
+            low: { minimum: 217, maximum: 225, die: 9 },
+        },
+        {
+            level: 17,
+            high: { minimum: 390, maximum: 398, die: 9 },
+            moderate: { minimum: 311, maximum: 319, die: 9 },
+            low: { minimum: 232, maximum: 240, die: 9 },
+        },
+        {
+            level: 18,
+            high: { minimum: 415, maximum: 423, die: 9 },
+            moderate: { minimum: 331, maximum: 339, die: 9 },
+            low: { minimum: 247, maximum: 255, die: 9 },
+        },
+        {
+            level: 19,
+            high: { minimum: 440, maximum: 448, die: 9 },
+            moderate: { minimum: 351, maximum: 359, die: 9 },
+            low: { minimum: 262, maximum: 270, die: 9 },
+        },
+        {
+            level: 20,
+            high: { minimum: 465, maximum: 473, die: 9 },
+            moderate: { minimum: 371, maximum: 379, die: 9 },
+            low: { minimum: 277, maximum: 285, die: 9 },
+        },
+        {
+            level: 21,
+            high: { minimum: 495, maximum: 505, die: 11 },
+            moderate: { minimum: 395, maximum: 405, die: 11 },
+            low: { minimum: 295, maximum: 305, die: 11 },
+        },
+        {
+            level: 22,
+            high: { minimum: 532, maximum: 544, die: 13 },
+            moderate: { minimum: 424, maximum: 436, die: 13 },
+            low: { minimum: 317, maximum: 329, die: 13 },
+        },
+        {
+            level: 23,
+            high: { minimum: 569, maximum: 581, die: 13 },
+            moderate: { minimum: 454, maximum: 466, die: 13 },
+            low: { minimum: 339, maximum: 351, die: 13 },
+        },
+        {
+            level: 24,
+            high: { minimum: 617, maximum: 633, die: 17 },
+            moderate: { minimum: 492, maximum: 508, die: 17 },
+            low: { minimum: 367, maximum: 383, die: 17 },
+        },
     ],
     abilityScore: [
         { level: -1, extreme: 3, high: 3, moderate: 2, low: 0, terrible: -4, abysmal: -5 },
@@ -470,5 +600,27 @@ export const ROLL_APP_DATA = {
     ],
     level: [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
 };
+
+// for (const e of ROLL_APP_DATA.hitPoints) {
+//     for (const k in e) {
+//         if (k === 'level') continue;
+//
+//         const vals = e[k].split('-');
+//         let [a, b] = [parseInt(vals[0]), parseInt(vals[1])];
+//         if (a > b) {
+//             e[k] = {
+//                 minimum: b,
+//                 maximum: a,
+//                 die: a - b + 1,
+//             };
+//         } else {
+//             e[k] = {
+//                 minimum: a,
+//                 maximum: b,
+//                 die: b - a + 1,
+//             };
+//         }
+//     }
+// }
 
 window['ROLL_APP_DATA'] = ROLL_APP_DATA;

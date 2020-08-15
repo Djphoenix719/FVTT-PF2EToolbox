@@ -1,10 +1,38 @@
 <div class="roll-app">
     <nav class="roll-app-nav">
         <a class="item" data-tab="roll-app-strike">Strikes</a>
+        <a class="item" data-tab="roll-app-damage">Damage</a>
+        <a class="item" data-tab="roll-app-ac">Armor Class</a>
+        <a class="item" data-tab="roll-app-save">Saves</a>
+        <a class="item" data-tab="roll-app-hp">Hit Points</a>
+        <a class="item" data-tab="roll-app-areaDamage">Area Damage</a>
+        <a class="item" data-tab="roll-app-perception">Perception</a>
+        <a class="item" data-tab="roll-app-abilityScore">Ability Scores</a>
     </nav>
     <div class="roll-app-body">
         <div class="tab" data-group="primary" data-tab="roll-app-strike">
-            {{>rollAppTable data=data.levels key="attack"}}
+            {{> rollAppTable data=data.levels key="strikeAttack" formulaBase="1d20+" rollName="Strike Attack"}}
+        </div>
+        <div class="tab" data-group="primary" data-tab="roll-app-damage">
+            {{> rollAppTable data=data.levels key="strikeDamage" formulaBase="" rollName="Strike Damage"}}
+        </div>
+        <div class="tab" data-group="primary" data-tab="roll-app-ac">
+            {{> rollAppTable data=data.levels key="armorClass" formulaBase="" rollName="Armor Class"}}
+        </div>
+        <div class="tab" data-group="primary" data-tab="roll-app-save">
+            {{> rollAppTable data=data.levels key="savingThrow" formulaBase="1d20+" rollName="Saving Throw"}}
+        </div>
+        <div class="tab" data-group="primary" data-tab="roll-app-hp">
+            {{> rollAppTable data=data.levels key="hitPoints" formulaBase="" rollName="Hit Points"}}
+        </div>
+        <div class="tab" data-group="primary" data-tab="roll-app-areaDamage">
+            {{> rollAppTable data=data.levels key="areaDamage" formulaBase="" rollName="Area Damage"}}
+        </div>
+        <div class="tab" data-group="primary" data-tab="roll-app-perception">
+            {{> rollAppTable data=data.levels key="perception" formulaBase="1d20+" rollName="Perception"}}
+        </div>
+        <div class="tab" data-group="primary" data-tab="roll-app-abilityScore">
+            {{> rollAppTable data=data.levels key="abilityScore" formulaBase="1d20+" rollName="Ability Roll"}}
         </div>
     </div>
 </div>

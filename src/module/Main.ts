@@ -16,39 +16,86 @@
 import RollApp from './roll-app/RollApp';
 import { MODULE_NAME } from './Constants';
 
-Hooks.on('setup', () => {
+Hooks.on('setup', async () => {
     // prettier-ignore
     const templatePaths = [
         `modules/${MODULE_NAME}/templates/roll-app/index.html`,
+        `modules/${MODULE_NAME}/templates/roll-app/cell.html`,
         `modules/${MODULE_NAME}/templates/roll-app/table.html`,
     ];
+    await loadTemplates(templatePaths);
 
     Handlebars.registerPartial('rollAppTable', `{{> "modules/${MODULE_NAME}/templates/roll-app/table.html"}}`);
-
-    return loadTemplates(templatePaths);
+    Handlebars.registerPartial('rollAppCell', `{{> "modules/${MODULE_NAME}/templates/roll-app/cell.html"}}`);
 });
 
 Hooks.on('setup', () => {
-    Handlebars.registerHelper('lookupLevel', (data: any[], value: number, options: any) => {
-        return options.fn(this);
+    Handlebars.registerHelper('includes', function (array: any[], value: any, options: any) {
+        if (array.includes(value)) {
+            return options.fn(this);
+        } else {
+            return options.inverse(this);
+        }
     });
 
-    Handlebars.registerHelper('eachOwn', function (obj, options) {
-        let data = mergeObject(options, options.hash);
-        let result = '';
+    Handlebars.registerHelper('object', function ({ hash }) {
+        return hash;
+    });
+    Handlebars.registerHelper('array', function () {
+        return Array.from(arguments).slice(0, arguments.length - 1);
+    });
 
-        for (const key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                data.key = key;
-                result += options.fn(obj[key], { data: data });
+    Handlebars.registerHelper('ife', function (v1, v2, options) {
+        if (v1 === v2) return options.fn(this);
+        else return options.inverse(this);
+    });
+    Handlebars.registerHelper('ifne', function (v1, v2, options) {
+        if (v1 !== v2) return options.fn(this);
+        else return options.inverse(this);
+    });
+    Handlebars.registerHelper('ifgt', function (v1, v2, options) {
+        if (v1 > v2) return options.fn(this);
+        else return options.inverse(this);
+    });
+    Handlebars.registerHelper('ifge', function (v1, v2, options) {
+        if (v1 >= v2) return options.fn(this);
+        else return options.inverse(this);
+    });
+    Handlebars.registerHelper('iflt', function (v1, v2, options) {
+        if (v1 < v2) return options.fn(this);
+        else return options.inverse(this);
+    });
+    Handlebars.registerHelper('ifle', function (v1, v2, options) {
+        if (v1 <= v2) return options.fn(this);
+        else return options.inverse(this);
+    });
+
+    Handlebars.registerHelper('isNaN', function (context, options) {
+        if (isNaN(context) && !(typeof context === 'string')) {
+            return options.fn(this);
+        } else {
+            return options.inverse(this);
+        }
+    });
+
+    Handlebars.registerHelper('undefined', function () {
+        return undefined;
+    });
+
+    Handlebars.registerHelper('hasKey', function (context, key) {
+        for (const prop of context) {
+            if (prop.hasOwnProperty(key)) {
+                return true;
             }
         }
-        return result;
+        return false;
     });
 });
 
 Hooks.on('ready', () => {
-    new RollApp().render(true);
+    setTimeout(() => {
+        new RollApp().render(true);
+    }, 1000);
 });
 
 Hooks.on('renderJournalDirectory', (app: Application, html: JQuery) => {

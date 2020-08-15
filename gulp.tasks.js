@@ -169,10 +169,6 @@ async function watch() {
     }
 
     watcher.on('update', bundle);
-    if (process.argv.includes('--docs')) {
-        watcher.on('update', docs);
-        await docs();
-    }
 
     bundle();
 }

@@ -2,7 +2,38 @@ div.roll-app {
 }
 
 div.roll-app nav.roll-app-nav {
+    background: black;
+    color: white;
 }
 
 div.roll-app nav.roll-app-body {
+}
+
+table.roll-app-table {
+    tbody tr,
+    thead tr {
+        text-align: center;
+
+        td:not(:last-child) {
+            border-right: 1px solid black;
+        }
+    }
+
+    tbody tr {
+        &:nth-child(2n) {
+            background: rgba(0, 0, 0, 0.2);
+
+            &:hover {
+                background: rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    tbody a {
+        display: block;
+    }
 }
