@@ -4,8 +4,7 @@
       "strictNullChecks": true,
       "alwaysStrict": true,
       "types": [
-        "foundry-pc-types",
-        "@types/node"
+        "foundry-pc-types"
       ],
       "baseUrl": "src/pdfoundry",
       "paths": { }

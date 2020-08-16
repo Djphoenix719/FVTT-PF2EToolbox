@@ -15,6 +15,43 @@
 
 import RollApp from './roll-app/RollApp';
 import { MODULE_NAME } from './Constants';
+import Settings from './Settings';
+import { GetPlayerActors } from './Utilities';
+
+Hooks.on('init', () => {
+    Settings.reg(Settings.KEY_MAX_HERO_POINTS, {
+        name: 'Maximum Hero Points',
+        scope: 'world',
+        type: Number,
+        default: 3,
+        config: true,
+        restricted: true,
+    });
+    Settings.reg(Settings.KEY_SHIFT_QUANTITY, {
+        name: 'Shift Quantity Multiplier',
+        scope: 'world',
+        type: Number,
+        default: 5,
+        config: true,
+        restricted: true,
+    });
+    Settings.reg(Settings.KEY_CONTROL_QUANTITY, {
+        name: 'Control Quantity Multiplier',
+        scope: 'world',
+        type: Number,
+        default: 10,
+        config: true,
+        restricted: true,
+    });
+    Settings.reg(Settings.KEY_PARTY_FOLDER, {
+        name: 'Party Folder Name',
+        scope: 'world',
+        type: String,
+        default: 'The Players',
+        config: true,
+        restricted: true,
+    });
+});
 
 Hooks.on('setup', async () => {
     // prettier-ignore
@@ -92,11 +129,11 @@ Hooks.on('setup', () => {
     });
 });
 
-Hooks.on('ready', () => {
-    setTimeout(() => {
-        new RollApp().render(true);
-    }, 1000);
-});
+// Hooks.on('ready', () => {
+//     setTimeout(() => {
+//         new RollApp().render(true);
+//     }, 1000);
+// });
 
 Hooks.on('renderJournalDirectory', (app: Application, html: JQuery) => {
     const button = $(`<button class="pf2e-gm-screen">GM Screen</button>`);
@@ -110,4 +147,109 @@ Hooks.on('renderJournalDirectory', (app: Application, html: JQuery) => {
         html.append(footer);
     }
     footer.append(button);
+});
+
+Hooks.on('renderCRBStyleCharacterActorSheetPF2E', (app: Application, html: JQuery, renderData: any) => {
+    renderData.data.attributes.heroPoints.max = Settings.get<number>(Settings.KEY_MAX_HERO_POINTS);
+
+    const { rank, max }: { rank: number; max: number } = renderData.data.attributes.heroPoints;
+
+    const iconFilled = '<i class="fas fa-hospital-symbol">';
+    const iconEmpty = '<i class="far fa-circle"></i>';
+
+    let icon = '';
+    for (let i = 0; i < rank; i++) {
+        icon += iconFilled;
+    }
+    for (let i = rank; i < max; i++) {
+        icon += iconEmpty;
+    }
+
+    renderData.data.attributes.heroPoints.icon = icon;
+
+    const hpInput = html.find('input[name="data.attributes.heroPoints.rank"]');
+    const hpContent = hpInput.next('span');
+
+    hpContent.html(icon);
+    hpInput.data('max', max);
+});
+
+// Hooks.on('renderActorSheetPF2eLoot', (app: Application, html: JQuery, renderData: any) => {
+//     console.warn(renderData);
+//
+//     const encumbranceWrapper = $(`<div class="encumbrance"></div>`);
+//     const encumbranceImage = $(`<img src="systems/pf2e/icons/equipment/adventuring-gear/backpack.jpg" alt="Encumbrance">`);
+//     const encumbranceBar = $(`<span class="encumbrance-bar" style="width:1%"></span>`);
+//     const encumbranceLabelWrapper = $(`<div class="encumbrance-label"></div>`);
+//     const encumbranceLabelCarried = $(`<span>Carried Bulk 0 / Encumbered: 5</span>`);
+//     const encumbranceLabelMax = $(`<span>Max Bulk: 10</span>`);
+//     const encumbranceLabelBg = $(`<span class="bar-bg"></span>`);
+//
+//     const appendAfter = html.find('div.sheet-content-loot');
+//
+//     const players = GetPlayerActors();
+//
+//     for (const actor of players) {
+//         console.warn(actor);
+//     }
+//
+//     // <div class="encumbrance">
+//     //     <img src="systems/pf2e/icons/equipment/adventuring-gear/backpack.jpg" alt="Encumbrance">
+//     //     <span class="encumbrance-bar" style="width:1%"></span>
+//     //     <div class="encumbrance-label">
+//     //         <span>Carried Bulk 0 / Encumbered: 5</span>
+//     //         <span>Max Bulk: 10</span>
+//     //     </div>
+//     //     <span class="bar-bg"></span>
+//     // </div>
+// });
+
+Hooks.on('renderActorSheet', (app: ActorSheet, html: JQuery, renderData: any) => {
+    const increaseQuantity = html.find('.item-increase-quantity');
+    const decreaseQuantity = html.find('.item-decrease-quantity');
+
+    increaseQuantity.off('click');
+    decreaseQuantity.off('click');
+
+    const actor = app.actor as Actor;
+
+    const getAmount = (event: JQuery.ClickEvent): number => {
+        let amount = 1;
+        if (event.shiftKey) amount *= Settings.get(Settings.KEY_SHIFT_QUANTITY);
+        if (event.ctrlKey) amount *= Settings.get(Settings.KEY_CONTROL_QUANTITY);
+        return amount;
+    };
+
+    increaseQuantity.on('click', (event) => {
+        const itemId = $(event.currentTarget).parents('.item').attr('data-item-id');
+
+        if (!itemId) return;
+        const item = actor.getOwnedItem(itemId);
+        if (!item) return;
+
+        const itemData = item.data.data;
+        if (!hasProperty(itemData, 'quantity')) {
+            throw new Error('Tried to update quantity on item that does not have quantity');
+        }
+
+        actor.updateEmbeddedEntity('OwnedItem', { '_id': itemId, 'data.quantity.value': Number(itemData.quantity.value) + getAmount(event) });
+    });
+
+    decreaseQuantity.on('click', (event) => {
+        const li = $(event.currentTarget).parents('.item');
+        const itemId = li.attr('data-item-id');
+
+        if (!itemId) return;
+        const item = actor.getOwnedItem(itemId);
+        if (!item) return;
+
+        const itemData = item.data.data;
+        if (!hasProperty(itemData, 'quantity')) {
+            throw new Error('Tried to update quantity on item that does not have quantity');
+        }
+
+        if (Number(itemData['quantity'].value) > 0) {
+            actor.updateEmbeddedEntity('OwnedItem', { '_id': itemId, 'data.quantity.value': Number(itemData.quantity.value) - getAmount(event) });
+        }
+    });
 });

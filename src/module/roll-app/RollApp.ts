@@ -22,9 +22,6 @@ export default class RollApp extends Application {
         return options;
     }
 
-    private modifier = 0;
-    private keyboardManager = new KeyboardManager();
-
     public constructor(options?: ApplicationOptions) {
         super(options);
 
@@ -37,21 +34,6 @@ export default class RollApp extends Application {
             return;
         }
         this.render();
-    }
-
-    private getTotalModifier(): number {
-        let modifier = 0;
-
-        // shift
-        if (this.keyboardManager.isDown(16)) {
-            modifier += 5;
-        }
-        // ctrl
-        if (this.keyboardManager.isDown(17)) {
-            modifier += 5;
-        }
-
-        return modifier;
     }
 
     getData(options?: any): any {
@@ -84,17 +66,9 @@ export default class RollApp extends Application {
             const target = $(event.target);
             const rollName = target.data('rollname') as string;
             const token = canvas.tokens.controlled[0];
-
             let formula = target.data('formula') as string | number | undefined;
 
             if (formula) {
-                formula = formula.toString();
-                const modifier = this.getTotalModifier();
-                console.warn(modifier);
-                if (modifier > 0) {
-                    formula = formula + modifier;
-                }
-
                 new Roll(formula.toString()).roll().toMessage(
                     {
                         speaker: ChatMessage.getSpeaker({ token }),
