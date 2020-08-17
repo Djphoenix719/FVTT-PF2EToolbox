@@ -174,6 +174,26 @@ Hooks.on('renderCRBStyleCharacterActorSheetPF2E', (app: Application, html: JQuer
     hpInput.data('max', max);
 });
 
+Hooks.on('getSceneDirectoryEntryContext', (html: JQuery, buttons: any[]) => {
+    buttons.unshift({
+        name: 'View Scene',
+        icon: '<i class="fas fa-door-open"></i>',
+        condition: (li: JQuery<HTMLLIElement>) => {
+            const id = li.data('entity-id') as string;
+            const scene = game.scenes.get(id);
+
+            return game.user.viewedScene != scene.id;
+        },
+        callback: (li: JQuery<HTMLLIElement>) => {
+            const id = li.data('entity-id') as string;
+            const scene = game.scenes.get(id);
+
+            // @ts-ignore
+            scene.view();
+        },
+    });
+});
+
 // Hooks.on('renderActorSheetPF2eLoot', (app: Application, html: JQuery, renderData: any) => {
 //     console.warn(renderData);
 //
