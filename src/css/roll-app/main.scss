@@ -2,11 +2,17 @@ div.roll-app {
 }
 
 div.roll-app nav.roll-app-nav {
+    display: flex;
+
     background: black;
     color: white;
+
+    a {
+        padding: 4px 8px;
+    }
 }
 
-div.roll-app nav.roll-app-body {
+div.roll-app div.roll-app-body {
 }
 
 table.roll-app-table {
@@ -20,6 +26,11 @@ table.roll-app-table {
     }
 
     tbody tr {
+        &.selected {
+            background: black;
+            color: white;
+        }
+
         &:nth-child(2n) {
             background: rgba(0, 0, 0, 0.2);
 

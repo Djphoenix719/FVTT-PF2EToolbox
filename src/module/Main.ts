@@ -194,36 +194,6 @@ Hooks.on('getSceneDirectoryEntryContext', (html: JQuery, buttons: any[]) => {
     });
 });
 
-// Hooks.on('renderActorSheetPF2eLoot', (app: Application, html: JQuery, renderData: any) => {
-//     console.warn(renderData);
-//
-//     const encumbranceWrapper = $(`<div class="encumbrance"></div>`);
-//     const encumbranceImage = $(`<img src="systems/pf2e/icons/equipment/adventuring-gear/backpack.jpg" alt="Encumbrance">`);
-//     const encumbranceBar = $(`<span class="encumbrance-bar" style="width:1%"></span>`);
-//     const encumbranceLabelWrapper = $(`<div class="encumbrance-label"></div>`);
-//     const encumbranceLabelCarried = $(`<span>Carried Bulk 0 / Encumbered: 5</span>`);
-//     const encumbranceLabelMax = $(`<span>Max Bulk: 10</span>`);
-//     const encumbranceLabelBg = $(`<span class="bar-bg"></span>`);
-//
-//     const appendAfter = html.find('div.sheet-content-loot');
-//
-//     const players = GetPlayerActors();
-//
-//     for (const actor of players) {
-//         console.warn(actor);
-//     }
-//
-//     // <div class="encumbrance">
-//     //     <img src="systems/pf2e/icons/equipment/adventuring-gear/backpack.jpg" alt="Encumbrance">
-//     //     <span class="encumbrance-bar" style="width:1%"></span>
-//     //     <div class="encumbrance-label">
-//     //         <span>Carried Bulk 0 / Encumbered: 5</span>
-//     //         <span>Max Bulk: 10</span>
-//     //     </div>
-//     //     <span class="bar-bg"></span>
-//     // </div>
-// });
-
 Hooks.on('renderActorSheet', (app: ActorSheet, html: JQuery, renderData: any) => {
     const increaseQuantity = html.find('.item-increase-quantity');
     const decreaseQuantity = html.find('.item-decrease-quantity');

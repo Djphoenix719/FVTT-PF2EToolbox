@@ -43,14 +43,8 @@ export default class RollApp extends Application {
             levels: duplicate(ROLL_APP_DATA),
         };
 
-        for (const selected of canvas.tokens.controlled) {
-            const placeable = selected as PlaceableObject;
-            // @ts-ignore
-            const actor = placeable.actor;
-
-            const level = actor.data.data.details.level.value as number;
-            data.data.levels[level].selected = true;
-        }
+        // @ts-ignore
+        data.data['selected'] = canvas.tokens.controlled.map((t: PlaceableObject) => parseInt(t.actor.data.data.details.level.value));
 
         return data;
     }

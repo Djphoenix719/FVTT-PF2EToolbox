@@ -16,20 +16,20 @@
     </thead>
     <tbody>
         {{#each (lookup data key)}}
-        <tr>
+        <tr {{#includes ../selected level}}class="selected"{{/includes}}>
             <td>{{level}}</td>
 
-            {{#ifne abysmal undefined}} {{> rollAppCell value=abysmal formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
-
-            {{#ifne terrible undefined}} {{> rollAppCell value=terrible formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
-
-            {{#ifne low undefined}} {{> rollAppCell value=low formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
-
-            {{#ifne moderate undefined}} {{> rollAppCell value=moderate formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
+            {{#ifne extreme undefined}} {{> rollAppCell value=extreme formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
 
             {{#ifne high undefined}} {{> rollAppCell value=high formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
 
-            {{#ifne extreme undefined}} {{> rollAppCell value=extreme formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
+            {{#ifne moderate undefined}} {{> rollAppCell value=moderate formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
+
+            {{#ifne low undefined}} {{> rollAppCell value=low formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
+
+            {{#ifne terrible undefined}} {{> rollAppCell value=terrible formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
+
+            {{#ifne abysmal undefined}} {{> rollAppCell value=abysmal formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
 
             {{#ifne limited undefined}} {{> rollAppCell value=limited formulaBase=../formulaBase rollName=../rollName}} {{/ifne}}
 
