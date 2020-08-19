@@ -56,14 +56,20 @@ export default class RollApp extends Application {
     protected activateListeners(html: JQuery) {
         super.activateListeners(html);
 
-        html.find('a.rollable').on('click', (event) => {
+        const handler = (event) => {
             const target = $(event.target);
             const rollName = target.data('rollname') as string;
             const token = canvas.tokens.controlled[0];
             let formula = target.data('formula') as string | number | undefined;
 
             if (formula) {
-                new Roll(formula.toString()).roll().toMessage(
+                formula = formula.toString();
+
+                if (event.button === 2) {
+                    formula = `{${formula}}*2`;
+                }
+
+                new Roll(formula).roll().toMessage(
                     {
                         speaker: ChatMessage.getSpeaker({ token }),
                         flavor: rollName,
@@ -73,7 +79,10 @@ export default class RollApp extends Application {
                     },
                 );
             }
-        });
+        };
+
+        html.find('a.rollable').on('click', handler);
+        html.find('a.rollable').on('contextmenu', handler);
     }
 
     close(): Promise<any> {
