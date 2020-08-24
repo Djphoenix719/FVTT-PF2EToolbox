@@ -6,6 +6,7 @@
         <a class="item" data-tab="roll-app-save">Saves</a>
         <a class="item" data-tab="roll-app-hp">Hit Points</a>
         <a class="item" data-tab="roll-app-spell">Spell</a>
+        <a class="item" data-tab="roll-app-dc">DCs</a>
         <a class="item" data-tab="roll-app-areaDamage">Area Damage</a>
         <a class="item" data-tab="roll-app-perception">Perception</a>
         <a class="item" data-tab="roll-app-abilityScore">Ability Scores</a>
@@ -29,6 +30,9 @@
         </div>
         <div class="tab" data-group="primary" data-tab="roll-app-spell">
             {{> rollAppTable data=data.levels selected=data.selected key="spell" formulaBase="1d20+" rollName="Spell Attack"}}
+        </div>
+        <div class="tab" data-group="primary" data-tab="roll-app-dc">
+            {{> rollAppTable data=data.levels selected=data.selected key="difficultyClass" formulaBase="" rollName="DC"}}
         </div>
         <div class="tab" data-group="primary" data-tab="roll-app-areaDamage">
             {{> rollAppTable data=data.levels selected=data.selected key="areaDamage" formulaBase="" rollName="Area Damage"}}

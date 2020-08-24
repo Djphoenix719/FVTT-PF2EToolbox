@@ -17,6 +17,8 @@ import RollApp from './roll-app/RollApp';
 import { MODULE_NAME } from './Constants';
 import Settings from './Settings';
 import { GetPlayerActors } from './Utilities';
+import scale from './cr-scaler/CRScaler';
+import CRScaler from './cr-scaler/CRScaler';
 
 Hooks.on('init', () => {
     Settings.reg(Settings.KEY_MAX_HERO_POINTS, {
@@ -51,6 +53,16 @@ Hooks.on('init', () => {
         config: true,
         restricted: true,
     });
+    Settings.reg(Settings.KEY_SCALED_OUTPUT_FOLDER, {
+        name: 'Scaled NPC Output Folder',
+        scope: 'world',
+        type: String,
+        default: '',
+        config: true,
+        restricted: true,
+    });
+
+    window['SCALE_BY_CR'] = scale;
 });
 
 Hooks.on('setup', async () => {
@@ -129,11 +141,49 @@ Hooks.on('setup', () => {
     });
 });
 
-// Hooks.on('ready', () => {
-//     setTimeout(() => {
-//         new RollApp().render(true);
-//     }, 1000);
-// });
+Hooks.on('getActorDirectoryEntryContext', (html: JQuery, buttons: any[]) => {
+    buttons.unshift({
+        name: 'Scale to Level',
+        icon: '<i class="fas fa-level-up-alt"></i>',
+        condition: (li: JQuery<HTMLLIElement>) => {
+            const id = li.data('entity-id') as string;
+            const actor = game.actors.get(id);
+
+            return actor.data.type === 'npc';
+        },
+        callback: async (li: JQuery<HTMLLIElement>) => {
+            const id = li.data('entity-id') as string;
+            const actor = game.actors.get(id);
+
+            const oldLevel = actor.data.data.details.level.value;
+
+            let d = new Dialog({
+                title: 'Scale NPC',
+                content:
+                    `<div class="form-group"><label>Start Level</label><input id="startLevel" type="number" value="${oldLevel}" min="-1" max="24"></div>` +
+                    `<div class="form-group"><label>End Level</label><input id="endLevel" type="number" value="${oldLevel}" min="-1" max="24"></div>`,
+                buttons: {
+                    scale: {
+                        icon: '<i class="fas fa-level-up-alt"></i>',
+                        label: 'Scale',
+                        callback: async (html: JQuery) => {
+                            ui.notifications.info(`Scaling NPC... please wait.`);
+                            const startLevel = parseInt(<string>html.find('#startLevel').val());
+                            const endLevel = parseInt(<string>html.find('#endLevel').val());
+
+                            for (let i = startLevel; i <= endLevel; i++) {
+                                await CRScaler(actor, i);
+                            }
+                            ui.notifications.info(`Scaled ${actor.name} to levels ${startLevel} - ${endLevel}.`);
+                        },
+                    },
+                },
+                default: 'scale',
+            });
+            d.render(true);
+        },
+    });
+});
 
 Hooks.on('renderJournalDirectory', (app: Application, html: JQuery) => {
     const button = $(`<button class="pf2e-gm-screen">GM Screen</button>`);
