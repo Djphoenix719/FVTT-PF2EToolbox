@@ -19,6 +19,14 @@ import Settings from './Settings';
 import { scaleNPCToLevel } from './cr-scaler/NPCScaler';
 
 Hooks.on('init', () => {
+    Settings.reg(Settings.ENABLED_FEATURES.HERO_POINTS, {
+        name: 'Enable Hero Points',
+        scope: 'world',
+        type: Boolean,
+        default: true,
+        config: true,
+        restricted: true,
+    });
     Settings.reg(Settings.KEY_MAX_HERO_POINTS, {
         name: 'Maximum Hero Points',
         scope: 'world',
@@ -27,6 +35,25 @@ Hooks.on('init', () => {
         config: true,
         restricted: true,
     });
+
+    Settings.reg(Settings.ENABLED_FEATURES.QUICK_VIEW_SCENE, {
+        name: 'Enable Quick View Scene',
+        scope: 'world',
+        type: Boolean,
+        default: true,
+        config: true,
+        restricted: true,
+    });
+
+    Settings.reg(Settings.ENABLED_FEATURES.QUANTITIES, {
+        name: 'Enable Quick Quantities',
+        scope: 'world',
+        type: Boolean,
+        default: true,
+        config: true,
+        restricted: true,
+    });
+
     Settings.reg(Settings.KEY_SHIFT_QUANTITY, {
         name: 'Shift Quantity Multiplier',
         scope: 'world',
@@ -43,16 +70,44 @@ Hooks.on('init', () => {
         config: true,
         restricted: true,
     });
+
+    Settings.reg(Settings.ENABLED_FEATURES.NPC_SCALER, {
+        name: 'Enable NPC Scaler',
+        scope: 'world',
+        type: Boolean,
+        default: true,
+        config: true,
+        restricted: true,
+    });
+
+    Settings.reg(Settings.KEY_SCALED_FOLDER, {
+        name: 'Scaled NPC Folder',
+        scope: 'world',
+        type: String,
+        default: '',
+        config: true,
+        restricted: true,
+    });
+
+    Settings.reg(Settings.ENABLED_FEATURES.TOKEN_SETUP, {
+        name: 'Enable Token Setup',
+        scope: 'world',
+        type: Boolean,
+        default: true,
+        config: true,
+        restricted: true,
+    });
+
     Settings.reg(Settings.KEY_PARTY_FOLDER, {
         name: 'Party Folder Name',
         scope: 'world',
         type: String,
-        default: 'The Players',
+        default: '',
         config: true,
         restricted: true,
     });
-    Settings.reg(Settings.KEY_SCALED_OUTPUT_FOLDER, {
-        name: 'Scaled NPC Output Folder',
+    Settings.reg(Settings.KEY_ENEMY_FOLDER, {
+        name: 'Enemy Folder Name',
         scope: 'world',
         type: String,
         default: '',
@@ -109,7 +164,25 @@ Hooks.on('setup', () => {
     });
 });
 
-Hooks.on('getActorDirectoryEntryContext', (html: JQuery, buttons: any[]) => {
+Hooks.on('setup', () => {
+    if (Settings.get(Settings.ENABLED_FEATURES.NPC_SCALER)) {
+        Hooks.on('getActorDirectoryEntryContext', onScaleNPCContextHook);
+    }
+    if (Settings.get(Settings.ENABLED_FEATURES.QUICK_VIEW_SCENE)) {
+        Hooks.on('getSceneDirectoryEntryContext', onQuickViewSceneHook);
+    }
+    if (Settings.get(Settings.ENABLED_FEATURES.QUANTITIES)) {
+        Hooks.on('renderActorSheet', onQuantitiesHook);
+    }
+    if (Settings.get(Settings.ENABLED_FEATURES.ROLL_APP)) {
+        Hooks.on('renderJournalDirectory', enableRollAppButton);
+    }
+    if (Settings.get(Settings.ENABLED_FEATURES.HERO_POINTS)) {
+        Hooks.on('renderCRBStyleCharacterActorSheetPF2E', enableHeroPoints);
+    }
+});
+
+function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
     buttons.unshift({
         name: 'Scale to Level',
         icon: '<i class="fas fa-level-up-alt"></i>',
@@ -152,48 +225,9 @@ Hooks.on('getActorDirectoryEntryContext', (html: JQuery, buttons: any[]) => {
             d.render(true);
         },
     });
-});
+}
 
-Hooks.on('renderJournalDirectory', (app: Application, html: JQuery) => {
-    const button = $(`<button class="pf2e-gm-screen">GM Screen</button>`);
-    button.on('click', () => {
-        new RollApp().render(true);
-    });
-
-    let footer = html.find('.directory-footer');
-    if (footer.length === 0) {
-        footer = $(`<footer class="directory-footer"></footer>`);
-        html.append(footer);
-    }
-    footer.append(button);
-});
-
-Hooks.on('renderCRBStyleCharacterActorSheetPF2E', (app: Application, html: JQuery, renderData: any) => {
-    renderData.data.attributes.heroPoints.max = Settings.get<number>(Settings.KEY_MAX_HERO_POINTS);
-
-    const { rank, max }: { rank: number; max: number } = renderData.data.attributes.heroPoints;
-
-    const iconFilled = '<i class="fas fa-hospital-symbol">';
-    const iconEmpty = '<i class="far fa-circle"></i>';
-
-    let icon = '';
-    for (let i = 0; i < rank; i++) {
-        icon += iconFilled;
-    }
-    for (let i = rank; i < max; i++) {
-        icon += iconEmpty;
-    }
-
-    renderData.data.attributes.heroPoints.icon = icon;
-
-    const hpInput = html.find('input[name="data.attributes.heroPoints.rank"]');
-    const hpContent = hpInput.next('span');
-
-    hpContent.html(icon);
-    hpInput.data('max', max);
-});
-
-Hooks.on('getSceneDirectoryEntryContext', (html: JQuery, buttons: any[]) => {
+function onQuickViewSceneHook(html: JQuery, buttons: any[]) {
     buttons.unshift({
         name: 'View Scene',
         icon: '<i class="fas fa-door-open"></i>',
@@ -211,9 +245,9 @@ Hooks.on('getSceneDirectoryEntryContext', (html: JQuery, buttons: any[]) => {
             scene.view();
         },
     });
-});
+}
 
-Hooks.on('renderActorSheet', (app: ActorSheet, html: JQuery, renderData: any) => {
+function onQuantitiesHook(app: ActorSheet, html: JQuery) {
     const increaseQuantity = html.find('.item-increase-quantity');
     const decreaseQuantity = html.find('.item-decrease-quantity');
 
@@ -261,4 +295,43 @@ Hooks.on('renderActorSheet', (app: ActorSheet, html: JQuery, renderData: any) =>
             actor.updateEmbeddedEntity('OwnedItem', { '_id': itemId, 'data.quantity.value': Number(itemData.quantity.value) - getAmount(event) });
         }
     });
-});
+}
+
+function enableRollAppButton(app: Application, html: JQuery) {
+    const button = $(`<button class="pf2e-gm-screen">GM Screen</button>`);
+    button.on('click', () => {
+        new RollApp().render(true);
+    });
+
+    let footer = html.find('.directory-footer');
+    if (footer.length === 0) {
+        footer = $(`<footer class="directory-footer"></footer>`);
+        html.append(footer);
+    }
+    footer.append(button);
+}
+
+function enableHeroPoints(app: Application, html: JQuery, renderData: any) {
+    renderData.data.attributes.heroPoints.max = Settings.get<number>(Settings.KEY_MAX_HERO_POINTS);
+
+    const { rank, max }: { rank: number; max: number } = renderData.data.attributes.heroPoints;
+
+    const iconFilled = '<i class="fas fa-hospital-symbol">';
+    const iconEmpty = '<i class="far fa-circle"></i>';
+
+    let icon = '';
+    for (let i = 0; i < rank; i++) {
+        icon += iconFilled;
+    }
+    for (let i = rank; i < max; i++) {
+        icon += iconEmpty;
+    }
+
+    renderData.data.attributes.heroPoints.icon = icon;
+
+    const hpInput = html.find('input[name="data.attributes.heroPoints.rank"]');
+    const hpContent = hpInput.next('span');
+
+    hpContent.html(icon);
+    hpInput.data('max', max);
+}

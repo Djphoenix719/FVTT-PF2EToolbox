@@ -1,11 +1,12 @@
 import Settings from '../Settings';
-import { getActor, getDamageData, getFolder, getFolderInFolder, getHPData, getLeveledData, getMinMaxData } from './NPCScalerUtil';
 import { IDataUpdates, IHandledItemType } from './NPCScalerTypes';
+import { getActor, getFolder, getFolderInFolder } from '../Utilities';
+import { getDamageData, getHPData, getLeveledData, getMinMaxData } from './NPCScalerUtil';
 
 const EMBEDDED_ENTITY_TYPE = 'OwnedItem';
 
 export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
-    const root = getFolder(Settings.get(Settings.KEY_SCALED_OUTPUT_FOLDER));
+    const root = getFolder(Settings.get(Settings.KEY_ENEMY_FOLDER));
 
     const folderName = `Level ${newLevel}`;
     const folder =
