@@ -64,14 +64,7 @@ export async function setupActorToken(actor: Actor): Promise<void> {
     const actorLink: boolean = actor.data.token['actorLink'];
 
     const actorUpdate: object = {
-        ['token.displayBars']: 40,
-        ['token.displayName']: 50,
-        ['token.disposition']: -1,
         ['token.randomImg']: !actorLink,
-
-        ['token.vision']: false,
-        ['token.dimSight']: 120,
-        ['token.brightSight']: 60,
     };
 
     let path: string | null = getValidName(actor.name, basePath, files);

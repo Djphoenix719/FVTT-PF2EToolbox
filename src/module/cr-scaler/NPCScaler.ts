@@ -6,15 +6,15 @@ import { getDamageData, getHPData, getLeveledData, getMinMaxData } from './NPCSc
 const EMBEDDED_ENTITY_TYPE = 'OwnedItem';
 
 export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
-    const root = getFolder(Settings.get(Settings.KEY_ENEMY_FOLDER));
+    const rootFolder = getFolder(Settings.get(Settings.KEY_SCALED_FOLDER));
 
     const folderName = `Level ${newLevel}`;
     const folder =
-        getFolderInFolder(folderName, root?.name) ??
+        getFolderInFolder(folderName, rootFolder?.name) ??
         (await Folder.create({
             name: folderName,
             type: 'Actor',
-            parent: root ? root.id : '',
+            parent: rootFolder ? rootFolder.id : '',
         }));
 
     let oldLevel = parseInt(actor.data.data.details.level.value);

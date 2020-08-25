@@ -15,6 +15,21 @@
 
 import { MODULE_NAME } from './Constants';
 
+export enum DisplaySetting {
+    'Always' = 50,
+    'Owner' = 40,
+    'Hover' = 30,
+    'Owner Hover' = 20,
+    'Control' = 10,
+    'None' = 0,
+}
+
+export enum DispositionSetting {
+    'Hostile' = -1,
+    'Neutral' = 0,
+    'Friendly' = 1,
+}
+
 export default class Settings {
     public static readonly KEY_MAX_HERO_POINTS = 'MAX_HERO_POINTS';
 
@@ -36,7 +51,6 @@ export default class Settings {
 
     public static readonly KEY_TOKEN_PATH = 'TOKEN_FOLDER_PATH';
     public static readonly KEY_TOKEN_TARGET = 'TOKEN_FOLDER_TARGET';
-
     public static get<T = any>(key: string): T {
         return game.settings.get(MODULE_NAME, key) as T;
     }
