@@ -16,9 +16,7 @@
 import RollApp from './roll-app/RollApp';
 import { MODULE_NAME } from './Constants';
 import Settings from './Settings';
-import { GetPlayerActors } from './Utilities';
-import scale from './cr-scaler/CRScaler';
-import CRScaler from './cr-scaler/CRScaler';
+import { scaleNPCToLevel } from './cr-scaler/NPCScaler';
 
 Hooks.on('init', () => {
     Settings.reg(Settings.KEY_MAX_HERO_POINTS, {
@@ -61,8 +59,6 @@ Hooks.on('init', () => {
         config: true,
         restricted: true,
     });
-
-    window['SCALE_BY_CR'] = scale;
 });
 
 Hooks.on('setup', async () => {
@@ -172,7 +168,7 @@ Hooks.on('getActorDirectoryEntryContext', (html: JQuery, buttons: any[]) => {
                             const endLevel = parseInt(<string>html.find('#endLevel').val());
 
                             for (let i = startLevel; i <= endLevel; i++) {
-                                await CRScaler(actor, i);
+                                await scaleNPCToLevel(actor, i);
                             }
                             ui.notifications.info(`Scaled ${actor.name} to levels ${startLevel} - ${endLevel}.`);
                         },
