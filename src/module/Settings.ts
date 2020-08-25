@@ -45,4 +45,118 @@ export default class Settings {
     public static reg(key: string, value: any) {
         game.settings.register(MODULE_NAME, key, value);
     }
+
+    public static registerAllSettings() {
+        Settings.reg(Settings.ENABLED_FEATURES.HERO_POINTS, {
+            name: 'Enable Hero Points',
+            hint: 'Setting only applied on page reload.',
+            scope: 'world',
+            type: Boolean,
+            default: true,
+            config: true,
+            restricted: true,
+        });
+
+        Settings.reg(Settings.ENABLED_FEATURES.QUANTITIES, {
+            name: 'Enable Quick Quantities',
+            hint: 'Setting only applied on page reload.',
+            scope: 'world',
+            type: Boolean,
+            default: true,
+            config: true,
+            restricted: true,
+        });
+
+        Settings.reg(Settings.ENABLED_FEATURES.QUICK_VIEW_SCENE, {
+            name: 'Enable Quick View Scene',
+            hint: 'Setting only applied on page reload.',
+            scope: 'world',
+            type: Boolean,
+            default: true,
+            config: true,
+            restricted: true,
+        });
+
+        Settings.reg(Settings.ENABLED_FEATURES.ROLL_APP, {
+            name: 'Enable Roll App',
+            hint: 'Setting only applied on page reload.',
+            scope: 'world',
+            type: Boolean,
+            default: true,
+            config: true,
+            restricted: true,
+        });
+
+        Settings.reg(Settings.ENABLED_FEATURES.NPC_SCALER, {
+            name: 'Enable NPC Scaler',
+            hint: 'Setting only applied on page reload.',
+            scope: 'world',
+            type: Boolean,
+            default: true,
+            config: true,
+            restricted: true,
+        });
+
+        Settings.reg(Settings.ENABLED_FEATURES.TOKEN_SETUP, {
+            name: 'Enable Token Setup',
+            hint: 'Setting only applied on page reload.',
+            scope: 'world',
+            type: Boolean,
+            default: true,
+            config: true,
+            restricted: true,
+        });
+
+        Settings.reg(Settings.KEY_MAX_HERO_POINTS, {
+            name: 'Maximum Hero Points',
+            scope: 'world',
+            type: Number,
+            default: 3,
+            config: true,
+            restricted: true,
+        });
+
+        Settings.reg(Settings.KEY_SHIFT_QUANTITY, {
+            name: 'Shift Quantity Multiplier',
+            scope: 'world',
+            type: Number,
+            default: 5,
+            config: true,
+            restricted: true,
+        });
+        Settings.reg(Settings.KEY_CONTROL_QUANTITY, {
+            name: 'Control Quantity Multiplier',
+            scope: 'world',
+            type: Number,
+            default: 10,
+            config: true,
+            restricted: true,
+        });
+
+        Settings.reg(Settings.KEY_SCALED_FOLDER, {
+            name: 'Scaled NPC Folder',
+            scope: 'world',
+            type: String,
+            default: '',
+            config: true,
+            restricted: true,
+        });
+
+        Settings.reg(Settings.KEY_PARTY_FOLDER, {
+            name: 'Party Folder Name',
+            scope: 'world',
+            type: String,
+            default: '',
+            config: true,
+            restricted: true,
+        });
+        Settings.reg(Settings.KEY_ENEMY_FOLDER, {
+            name: 'Enemy Folder Name',
+            scope: 'world',
+            type: String,
+            default: '',
+            config: true,
+            restricted: true,
+        });
+    }
 }
