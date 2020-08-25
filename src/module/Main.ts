@@ -82,36 +82,8 @@ Hooks.on('setup', () => {
             return options.inverse(this);
         }
     });
-
-    Handlebars.registerHelper('object', function ({ hash }) {
-        return hash;
-    });
-    Handlebars.registerHelper('array', function () {
-        return Array.from(arguments).slice(0, arguments.length - 1);
-    });
-
-    Handlebars.registerHelper('ife', function (v1, v2, options) {
-        if (v1 === v2) return options.fn(this);
-        else return options.inverse(this);
-    });
     Handlebars.registerHelper('ifne', function (v1, v2, options) {
         if (v1 !== v2) return options.fn(this);
-        else return options.inverse(this);
-    });
-    Handlebars.registerHelper('ifgt', function (v1, v2, options) {
-        if (v1 > v2) return options.fn(this);
-        else return options.inverse(this);
-    });
-    Handlebars.registerHelper('ifge', function (v1, v2, options) {
-        if (v1 >= v2) return options.fn(this);
-        else return options.inverse(this);
-    });
-    Handlebars.registerHelper('iflt', function (v1, v2, options) {
-        if (v1 < v2) return options.fn(this);
-        else return options.inverse(this);
-    });
-    Handlebars.registerHelper('ifle', function (v1, v2, options) {
-        if (v1 <= v2) return options.fn(this);
         else return options.inverse(this);
     });
 
