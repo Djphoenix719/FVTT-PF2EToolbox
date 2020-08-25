@@ -17,6 +17,7 @@ import RollApp from './roll-app/RollApp';
 import { MODULE_NAME } from './Constants';
 import Settings from './Settings';
 import { scaleNPCToLevel } from './cr-scaler/NPCScaler';
+import { onSetupTokensContextHook } from './Tokens';
 
 Hooks.on('init', Settings.registerAllSettings);
 
@@ -71,6 +72,9 @@ Hooks.on('setup', () => {
 Hooks.on('setup', () => {
     if (Settings.get(Settings.ENABLED_FEATURES.NPC_SCALER)) {
         Hooks.on('getActorDirectoryEntryContext', onScaleNPCContextHook);
+    }
+    if (Settings.get(Settings.ENABLED_FEATURES.TOKEN_SETUP)) {
+        Hooks.on('getActorDirectoryEntryContext', onSetupTokensContextHook);
     }
     if (Settings.get(Settings.ENABLED_FEATURES.QUICK_VIEW_SCENE)) {
         Hooks.on('getSceneDirectoryEntryContext', onQuickViewSceneHook);

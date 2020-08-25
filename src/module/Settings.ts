@@ -34,6 +34,9 @@ export default class Settings {
     public static readonly KEY_ENEMY_FOLDER = 'ENEMY_FOLDER_NAME';
     public static readonly KEY_SCALED_FOLDER = 'SCALED_FOLDER_NAME';
 
+    public static readonly KEY_TOKEN_PATH = 'TOKEN_FOLDER_PATH';
+    public static readonly KEY_TOKEN_TARGET = 'TOKEN_FOLDER_TARGET';
+
     public static get<T = any>(key: string): T {
         return game.settings.get(MODULE_NAME, key) as T;
     }
@@ -142,16 +145,34 @@ export default class Settings {
             restricted: true,
         });
 
-        Settings.reg(Settings.KEY_PARTY_FOLDER, {
-            name: 'Party Folder Name',
+        // Settings.reg(Settings.KEY_PARTY_FOLDER, {
+        //     name: 'Party Folder Name',
+        //     scope: 'world',
+        //     type: String,
+        //     default: '',
+        //     config: true,
+        //     restricted: true,
+        // });
+        Settings.reg(Settings.KEY_ENEMY_FOLDER, {
+            name: 'Enemy Folder Name',
             scope: 'world',
             type: String,
             default: '',
             config: true,
             restricted: true,
         });
-        Settings.reg(Settings.KEY_ENEMY_FOLDER, {
-            name: 'Enemy Folder Name',
+
+        Settings.reg(Settings.KEY_TOKEN_TARGET, {
+            name: 'Token Folder Target',
+            hint: 'Either "data" or "s3".',
+            scope: 'world',
+            type: String,
+            default: 'data',
+            config: true,
+            restricted: true,
+        });
+        Settings.reg(Settings.KEY_TOKEN_PATH, {
+            name: 'Token Folder Path',
             scope: 'world',
             type: String,
             default: '',
