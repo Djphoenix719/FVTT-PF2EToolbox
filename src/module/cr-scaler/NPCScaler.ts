@@ -1,5 +1,8 @@
 import Settings from '../Settings';
-import { getActor, getDamageData, getFolder, getFolderInFolder, getHPData, getLeveledData } from './NPCScalerUtil';
+import { getActor, getDamageData, getFolder, getFolderInFolder, getHPData, getLeveledData, getMinMaxData } from './NPCScalerUtil';
+import { IDataUpdates, IHandledItemType } from './NPCScalerTypes';
+
+const EMBEDDED_ENTITY_TYPE = 'OwnedItem';
 
 export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
     const root = getFolder(Settings.get(Settings.KEY_SCALED_OUTPUT_FOLDER));
@@ -28,10 +31,39 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
         data[`data.abilities.${key}`] = { value, min, mod };
     }
 
+    // parse resistances
+    const drData: any[] = [];
+    for (let i = 0; i < actor.data.data.traits.dr.length; i++) {
+        const dr = actor.data.data.traits.dr[i];
+
+        drData.push({
+            label: dr.label,
+            type: dr.type,
+            exceptions: dr.exceptions ?? '',
+            value: getMinMaxData('resistance', parseInt(dr.value), oldLevel, newLevel).toString(),
+        });
+    }
+    data['data.traits.dr'] = drData;
+
+    // parse vulnerabilities
+    const dvData: any[] = [];
+    for (let i = 0; i < actor.data.data.traits.dv.length; i++) {
+        const dv = actor.data.data.traits.dv[i];
+
+        dvData.push({
+            label: dv.label,
+            type: dv.type,
+            exceptions: dv.exceptions ?? '',
+            value: getMinMaxData('weakness', parseInt(dv.value), oldLevel, newLevel).toString(),
+        });
+    }
+    data['data.traits.dv'] = dvData;
+
+    console.warn(data);
+
     // parse simple modifiers
     data['data.attributes.ac.base'] = getLeveledData('armorClass', parseInt(actor.data.data.attributes.ac.base), oldLevel, newLevel).total;
     data['data.attributes.perception.base'] = getLeveledData('perception', parseInt(actor.data.data.attributes.perception.base), oldLevel, newLevel).total;
-    // parse simple saves
     data['data.saves.fortitude.base'] = getLeveledData('savingThrow', parseInt(actor.data.data.saves.fortitude.base), oldLevel, newLevel).total;
     data['data.saves.reflex.base'] = getLeveledData('savingThrow', parseInt(actor.data.data.saves.reflex.base), oldLevel, newLevel).total;
     data['data.saves.will.base'] = getLeveledData('savingThrow', parseInt(actor.data.data.saves.will.base), oldLevel, newLevel).total;
@@ -40,46 +72,46 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
     data['data.attributes.hp.max'] = hp;
     data['data.attributes.hp.value'] = hp;
 
-    let itemUpdates: { _id: string; [key: string]: any }[] = [];
-    for (const item of actor.items.filter((i) => i.type === 'lore')) {
-        const oldValue = parseInt(item.data.data.mod.value);
-        const updatedSkill = getLeveledData('skill', oldValue, oldLevel, newLevel);
-        itemUpdates.push({
-            _id: item.id,
-            ['data.mod.value']: updatedSkill.total,
-        });
-    }
+    let itemUpdates: IDataUpdates[] = [];
+    for (let i = 0; i < actor.data['items'].length; i++) {
+        const item = actor.data['items'][i];
 
-    for (const item of actor.items.filter((i) => i.type === 'spellcastingEntry')) {
-        const oldAttack = parseInt(item.data.data.spelldc.value);
-        const newAttack = getLeveledData('spell', oldAttack, oldLevel, newLevel);
+        if ((item.type as IHandledItemType) === 'lore') {
+            const oldValue = parseInt(item.data.mod.value);
+            const newValue = getLeveledData('skill', oldValue, oldLevel, newLevel).total;
+            itemUpdates.push({
+                _id: item._id,
+                ['data.mod.value']: newValue,
+            });
+        } else if ((item.type as IHandledItemType) === 'spellcastingEntry') {
+            const oldAttack = parseInt(item.data.spelldc.value);
+            const newAttack = getLeveledData('spell', oldAttack, oldLevel, newLevel).total;
 
-        const oldDC = parseInt(item.data.data.spelldc.dc);
-        const newDC = getLeveledData('difficultyClass', oldDC, oldLevel, newLevel);
+            const oldDC = parseInt(item.data.spelldc.dc);
+            const newDC = getLeveledData('difficultyClass', oldDC, oldLevel, newLevel).total;
 
-        itemUpdates.push({
-            _id: item.id,
-            ['data.spelldc.value']: newAttack.total,
-            ['data.spelldc.dc']: newDC.total,
-        });
-    }
+            itemUpdates.push({
+                _id: item._id,
+                ['data.spelldc.value']: newAttack,
+                ['data.spelldc.dc']: newDC,
+            });
+        } else if ((item.type as IHandledItemType) === 'melee') {
+            const oldAttack = parseInt(item.data.bonus.value);
+            const newAttack = getLeveledData('spell', oldAttack, oldLevel, newLevel).total;
 
-    for (const item of actor.items.filter((i) => i.type === 'melee')) {
-        const oldAttack = parseInt(item.data.data.bonus.value);
-        const newAttack = getLeveledData('spell', oldAttack, oldLevel, newLevel);
+            const attackUpdate: IDataUpdates = {
+                _id: item._id,
+                ['data.bonus.value']: newAttack,
+                ['data.bonus.total']: newAttack,
+            };
 
-        const attackUpdate: { _id: string; [key: string]: any } = {
-            _id: item.id,
-            ['data.bonus.value']: newAttack.total,
-            ['data.bonus.total']: newAttack.total,
-        };
-
-        const damage = item.data.data.damageRolls as any[];
-        for (let i = 0; i < damage.length; i++) {
-            attackUpdate[`data.damageRolls.${i}.damage`] = getDamageData(damage[i].damage, oldLevel, newLevel);
-            attackUpdate[`data.damageRolls.${i}.damageType`] = damage[i].damageType;
+            const damage = item.data.damageRolls as any[];
+            for (let i = 0; i < damage.length; i++) {
+                attackUpdate[`data.damageRolls.${i}.damage`] = getDamageData(damage[i].damage, oldLevel, newLevel);
+                attackUpdate[`data.damageRolls.${i}.damageType`] = damage[i].damageType;
+            }
+            itemUpdates.push(attackUpdate);
         }
-        itemUpdates.push(attackUpdate);
     }
 
     let newActor: Actor | null = getActor(actor.name, folder.name);
@@ -89,9 +121,7 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
         newActor = await actor.clone(data);
     }
 
-    for (const itemUpdate of itemUpdates) {
-        await newActor.updateOwnedItem(itemUpdate);
-    }
+    await newActor.updateEmbeddedEntity(EMBEDDED_ENTITY_TYPE, itemUpdates);
 
     itemUpdates = [];
     for (const item of actor.items.filter((i) => i.data.data.description.value.includes('DC'))) {
@@ -115,9 +145,7 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
         });
     }
 
-    for (const itemUpdate of itemUpdates) {
-        await newActor.updateOwnedItem(itemUpdate);
-    }
+    await newActor.updateEmbeddedEntity(EMBEDDED_ENTITY_TYPE, itemUpdates);
 
     itemUpdates = [];
     for (const item of newActor.items.values()) {
@@ -141,9 +169,7 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
         });
     }
 
-    for (const itemUpdate of itemUpdates) {
-        await newActor.updateOwnedItem(itemUpdate);
-    }
+    await newActor.updateEmbeddedEntity(EMBEDDED_ENTITY_TYPE, itemUpdates);
 
     await newActor.update({
         ['token.displayBars']: 40,

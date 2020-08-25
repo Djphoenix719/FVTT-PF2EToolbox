@@ -151,7 +151,8 @@ Hooks.on('getActorDirectoryEntryContext', (html: JQuery, buttons: any[]) => {
             const id = li.data('entity-id') as string;
             const actor = game.actors.get(id);
 
-            const oldLevel = actor.data.data.details.level.value;
+            // const oldLevel = actor.data.data.details.level.value;
+            const oldLevel = 24;
 
             let d = new Dialog({
                 title: 'Scale NPC',

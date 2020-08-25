@@ -111,6 +111,18 @@ export function getHPData(oldValue: number, oldLevel: number, newLevel: number) 
     return Math.round(newValue.minimum + (newValue.maximum - newValue.minimum) * bestMatch.percentile);
 }
 
+export function getMinMaxData(key: 'resistance' | 'weakness', oldValue: number, oldLevel: number, newLevel: number) {
+    const data = SCALE_APP_DATA[key];
+    const oldLevelData = data[oldLevel + 1];
+    const newLevelData = data[newLevel + 1];
+
+    const oldRange = Math.abs(oldLevelData.maximum - oldLevelData.minimum);
+    const oldPercentile = (oldValue - oldLevelData.minimum) / oldRange;
+
+    const newRange = Math.abs(newLevelData.maximum - newLevelData.minimum);
+    return Math.round(newLevelData.minimum + newRange * oldPercentile);
+}
+
 export function constructRelativeDamage(oldDmg: IStrikeDamage, stdDmg: IStrikeDamage, newDmg: IStrikeDamage): IStrikeDamage {
     const count = newDmg.diceCount;
     const size = newDmg.diceSize;
