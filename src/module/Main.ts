@@ -206,7 +206,7 @@ function onQuantitiesHook(app: ActorSheet, html: JQuery) {
 }
 
 function enableRollAppButton(app: Application, html: JQuery) {
-    const button = $(`<button class="pf2e-gm-screen">GM Screen</button>`);
+    const button = $(`<button class="pf2e-gm-screen"><i class="fas fa-dice"></i> Quick Roller</button>`);
     button.on('click', () => {
         new RollApp().render(true);
     });

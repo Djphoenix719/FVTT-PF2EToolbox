@@ -35,6 +35,13 @@ It does the following
 
 All scaled NPCs are placed in a folder according to their level, which is nested in a folder of your choice.
 
+### Quick Roller
+A very basic quick roller. Has all the NPC data available in tables with clickable entries. Highlights the row corresponding to the level of the selected token(s).
+
+Right clicking will roll 2x the value, even for the d20 rolls. If you have a token selected the chat card will display its name.
+
+Found in the journals tab. 
+
 ### Token Setup
 If you name all your token images in the below manner, it can smartly map token names for a specified folder automatically.
 
