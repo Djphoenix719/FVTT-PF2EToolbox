@@ -38,12 +38,18 @@ const logger = require('gulplog');
 const sourcemaps = require('gulp-sourcemaps');
 const typedoc = require('gulp-typedoc');
 
-const foundryConfig = JSON.parse(fs.readFileSync('./foundryconfig.json'));
+let foundryConfig;
+if (fs.existsSync('./foundryconfig.json')) {
+    foundryConfig = JSON.parse(fs.readFileSync('./foundryconfig.json'));
+} else {
+    foundryConfig = {
+        dataPath: '',
+    };
+}
 
 // Config
 const distName = 'pf2e-toolbox';
 const destFolder = path.resolve(foundryConfig['dataPath'], distName);
-const docsFolder = path.resolve(process.cwd(), 'docs');
 const jsBundle = 'bundle.js';
 
 logger.info(`Writing to ${destFolder}`);
