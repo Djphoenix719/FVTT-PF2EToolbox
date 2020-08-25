@@ -21,6 +21,7 @@ import { scaleNPCToLevel } from './cr-scaler/NPCScaler';
 Hooks.on('init', () => {
     Settings.reg(Settings.ENABLED_FEATURES.HERO_POINTS, {
         name: 'Enable Hero Points',
+        hint: 'Setting only applied on page reload.',
         scope: 'world',
         type: Boolean,
         default: true,
@@ -38,6 +39,7 @@ Hooks.on('init', () => {
 
     Settings.reg(Settings.ENABLED_FEATURES.QUICK_VIEW_SCENE, {
         name: 'Enable Quick View Scene',
+        hint: 'Setting only applied on page reload.',
         scope: 'world',
         type: Boolean,
         default: true,
@@ -47,6 +49,7 @@ Hooks.on('init', () => {
 
     Settings.reg(Settings.ENABLED_FEATURES.QUANTITIES, {
         name: 'Enable Quick Quantities',
+        hint: 'Setting only applied on page reload.',
         scope: 'world',
         type: Boolean,
         default: true,
@@ -71,8 +74,19 @@ Hooks.on('init', () => {
         restricted: true,
     });
 
+    Settings.reg(Settings.ENABLED_FEATURES.ROLL_APP, {
+        name: 'Enable Roll App',
+        hint: 'Setting only applied on page reload.',
+        scope: 'world',
+        type: Boolean,
+        default: true,
+        config: true,
+        restricted: true,
+    });
+
     Settings.reg(Settings.ENABLED_FEATURES.NPC_SCALER, {
         name: 'Enable NPC Scaler',
+        hint: 'Setting only applied on page reload.',
         scope: 'world',
         type: Boolean,
         default: true,
@@ -91,6 +105,7 @@ Hooks.on('init', () => {
 
     Settings.reg(Settings.ENABLED_FEATURES.TOKEN_SETUP, {
         name: 'Enable Token Setup',
+        hint: 'Setting only applied on page reload.',
         scope: 'world',
         type: Boolean,
         default: true,
