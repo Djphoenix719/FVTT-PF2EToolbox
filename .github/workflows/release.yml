@@ -28,7 +28,7 @@ jobs:
       - name: Update module.json
         run: |
           sed -i '/"version":/c\    "version": "${{ steps.get_version.outputs.VERSION2 }}",' module.json
-          sed -i '/"download":/c\    "download": "https://github.com/Djphoenix719/FVTT-PF2EToolbox/releases/download/${{ steps.get_version.outputs.VERSION }}/pdfoundry-${{ steps.get_version.outputs.VERSION }}.zip",' module.json
+          sed -i '/"download":/c\    "download": "https://github.com/Djphoenix719/FVTT-PF2EToolbox/releases/download/${{ steps.get_version.outputs.VERSION }}/pf2e-toolbox-${{ steps.get_version.outputs.VERSION }}.zip",' module.json
           cat module.json
 
       - name: Install dependencies
