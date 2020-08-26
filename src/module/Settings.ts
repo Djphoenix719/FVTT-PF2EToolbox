@@ -37,6 +37,7 @@ export default class Settings {
     public static readonly ENABLED_FEATURES = {
         QUANTITIES: 'ENABLE_QUANTITIES',
         QUICK_VIEW_SCENE: 'ENABLE_QUICK_VIEW_SCENE',
+        QUICK_MYSTIFY: 'ENABLE_QUICK_MYSTIFY',
         NPC_SCALER: 'ENABLE_NPC_SCALER',
         TOKEN_SETUP: 'ENABLE_TOKEN_SETUP',
         ROLL_APP: 'ENABLE_ROLL_APP',
@@ -70,25 +71,6 @@ export default class Settings {
 
     public static registerAllSettings() {
         const types = window['Azzu'].SettingsTypes;
-        // game.settings.registerMenu(MODULE_NAME, Settings.KEY_SETTINGS, {
-        //     name: 'PF2E Toolbox Settings',
-        //     label: 'Configure PF2E Toolbox',
-        //     icon: 'fas fa-bars',
-        //     type: SettingsApp,
-        //     restricted: true,
-        // });
-
-        // const settings = [
-        //     {
-        //         name: 'Enable Hero Points',
-        //         hint: 'Setting only applied on page reload.',
-        //         scope: 'world',
-        //         type: Boolean,
-        //         default: true,
-        //         config: true,
-        //         restricted: true,
-        //     },
-        // ];
 
         Settings.reg(Settings.ENABLED_FEATURES.HERO_POINTS, {
             name: 'Enable Hero Points',
@@ -112,6 +94,16 @@ export default class Settings {
 
         Settings.reg(Settings.ENABLED_FEATURES.QUICK_VIEW_SCENE, {
             name: 'Enable Quick View Scene',
+            hint: 'Setting only applied on page reload.',
+            scope: 'world',
+            type: Boolean,
+            default: true,
+            config: true,
+            restricted: true,
+        });
+
+        Settings.reg(Settings.ENABLED_FEATURES.QUICK_MYSTIFY, {
+            name: 'Enable Quick Mystify',
             hint: 'Setting only applied on page reload.',
             scope: 'world',
             type: Boolean,

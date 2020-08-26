@@ -88,6 +88,18 @@ Hooks.on('setup', () => {
     if (Settings.get(Settings.ENABLED_FEATURES.HERO_POINTS)) {
         Hooks.on('renderCRBStyleCharacterActorSheetPF2E', enableHeroPoints);
     }
+
+    Hooks.on('ready', () => {
+        if (Settings.get(Settings.ENABLED_FEATURES.QUICK_MYSTIFY)) {
+            if (!window['ForienIdentification']) {
+                ui.notifications.error("PF2E Toolbox quick mystify enabled but Forien's Unidentified Items was not detected.", { permanent: true });
+                Settings.set(Settings.ENABLED_FEATURES.QUICK_MYSTIFY, false);
+                return;
+            }
+
+            enableQuickMystify();
+        }
+    });
 });
 
 function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
@@ -242,4 +254,27 @@ function enableHeroPoints(app: Application, html: JQuery, renderData: any) {
 
     hpContent.html(icon);
     hpInput.data('max', max);
+}
+
+function enableQuickMystify() {
+    const lootSheet = CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'];
+    const characterSheet = CONFIG.Actor.sheetClasses['character']['pf2e.CRBStyleCharacterActorSheetPF2E'];
+
+    for (const sheet of [lootSheet, characterSheet]) {
+        sheet.cls = class MystifiedSheet extends sheet.cls {
+            async _onDrop(event: DragEvent) {
+                // @ts-ignore
+                const actor: Actor = this.actor;
+                const existing = actor.items.map((i: Item) => i.id) as string[];
+                await super._onDrop(event);
+
+                if (event.altKey && game.user.isGM) {
+                    const newItems = actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
+                    for (const item of newItems) {
+                        window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
+                    }
+                }
+            }
+        };
+    }
 }
