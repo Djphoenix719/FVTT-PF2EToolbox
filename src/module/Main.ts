@@ -258,23 +258,36 @@ function enableHeroPoints(app: Application, html: JQuery, renderData: any) {
 
 function enableQuickMystify() {
     const lootSheet = CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'];
-    const characterSheet = CONFIG.Actor.sheetClasses['character']['pf2e.CRBStyleCharacterActorSheetPF2E'];
+    lootSheet.cls = class ActorSheetPF2ELoot extends lootSheet.cls {
+        async _onDrop(event: DragEvent) {
+            // @ts-ignore
+            const actor: Actor = this.actor;
+            const existing = actor.items.map((i: Item) => i.id) as string[];
+            await super._onDrop(event);
 
-    for (const sheet of [lootSheet, characterSheet]) {
-        sheet.cls = class MystifiedSheet extends sheet.cls {
-            async _onDrop(event: DragEvent) {
-                // @ts-ignore
-                const actor: Actor = this.actor;
-                const existing = actor.items.map((i: Item) => i.id) as string[];
-                await super._onDrop(event);
-
-                if (event.altKey && game.user.isGM) {
-                    const newItems = actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
-                    for (const item of newItems) {
-                        window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
-                    }
+            if (event.altKey && game.user.isGM) {
+                const newItems = actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
+                for (const item of newItems) {
+                    window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
                 }
             }
-        };
-    }
+        }
+    };
+
+    const characterSheet = CONFIG.Actor.sheetClasses['character']['pf2e.CRBStyleCharacterActorSheetPF2E'];
+    characterSheet.cls = class CRBStyleCharacterActorSheetPF2E extends characterSheet.cls {
+        async _onDrop(event: DragEvent) {
+            // @ts-ignore
+            const actor: Actor = this.actor;
+            const existing = actor.items.map((i: Item) => i.id) as string[];
+            await super._onDrop(event);
+
+            if (event.altKey && game.user.isGM) {
+                const newItems = actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
+                for (const item of newItems) {
+                    window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
+                }
+            }
+        }
+    };
 }
