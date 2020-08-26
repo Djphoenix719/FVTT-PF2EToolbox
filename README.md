@@ -24,7 +24,7 @@ All features can be enabled or disabled on a feature-by-feature basis in the set
 ### NPC Scaler
 Right clicking an NPC in the sidebar shows a new "Scale to Level" option. You can quickly scale any NPC to any level, up or down.
 
-It's pretty darn accurate, as PF2E has pretty tight math. However, you should validate the NPC yourself. Sometimes however creatures deviate from the guidelines presented in the GMG. In these cases it attempts to make a best-guess while keeping the spirit of the monster in tact. For example, a creature that is below the specified HP guidelines will still be below the specified HP guidelines at the new level by the same percentage amount.
+It's pretty darn accurate, as PF2E has pretty tight math - however, you should validate the NPC yourself. Sometimes creatures deviate from the guidelines presented in the GMG, in these cases it attempts to make a best-guess while keeping the spirit of the monster intact. For example, a creature that is below the specified HP guidelines will still be below the specified HP guidelines at the new level by the same percentage amount.
 
 It does the following
 - AC, Saving Throws, HP
