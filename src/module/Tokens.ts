@@ -57,9 +57,19 @@ function getValidName(name: string, basePath: string, files: string[], reverse: 
 }
 
 export async function setupActorToken(actor: Actor): Promise<void> {
-    const basePath = Settings.get(Settings.KEY_TOKEN_PATH);
+    let basePath = Settings.get(Settings.KEY_TOKEN_PATH);
     const folderTarget = Settings.get(Settings.KEY_TOKEN_TARGET);
-    let files: string[] = (await FilePicker.browse(folderTarget, basePath)).files;
+
+    let options: undefined | object;
+    let browseUrl: string = basePath;
+    if (folderTarget === 's3') {
+        browseUrl = basePath.split('/')[basePath.split('/').length - 1];
+        options = {
+            bucket: Settings.get(Settings.KEY_TOKEN_TARGET_BUCKET),
+        };
+    }
+
+    let files: string[] = (await FilePicker.browse(folderTarget, browseUrl, options)).files;
 
     const actorLink: boolean = actor.data.token['actorLink'];
 
@@ -75,6 +85,11 @@ export async function setupActorToken(actor: Actor): Promise<void> {
     if (path === null) {
         ui.notifications.warn(`Could not find a token image for ${actor.name}.`);
     } else {
+        if (folderTarget === 's3') {
+            path = path.replace(`??.png`, '01.png');
+            actorUpdate['token.randomImg'] = false;
+        }
+
         actorUpdate['token.img'] = path;
     }
 

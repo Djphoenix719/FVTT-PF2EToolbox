@@ -171,15 +171,4 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
     }
 
     await newActor.updateEmbeddedEntity(EMBEDDED_ENTITY_TYPE, itemUpdates);
-
-    await newActor.update({
-        ['token.displayBars']: 40,
-        ['token.displayName']: 50,
-        ['token.disposition']: -1,
-
-        ['token.randomImg']: true,
-        ['token.vision']: false,
-        ['token.dimSight']: 120,
-        ['token.brightSight']: 60,
-    });
 }

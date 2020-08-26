@@ -14,6 +14,7 @@
  */
 
 import { MODULE_NAME } from './Constants';
+import '../external/settings-extender.js';
 
 export enum DisplaySetting {
     'Always' = 50,
@@ -51,6 +52,10 @@ export default class Settings {
 
     public static readonly KEY_TOKEN_PATH = 'TOKEN_FOLDER_PATH';
     public static readonly KEY_TOKEN_TARGET = 'TOKEN_FOLDER_TARGET';
+    public static readonly KEY_TOKEN_TARGET_BUCKET = 'TOKEN_FOLDER_TARGET_BUCKET';
+
+    // public static readonly KEY_SETTINGS = 'MODULE_SETTINGS';
+
     public static get<T = any>(key: string): T {
         return game.settings.get(MODULE_NAME, key) as T;
     }
@@ -64,6 +69,27 @@ export default class Settings {
     }
 
     public static registerAllSettings() {
+        const types = window['Azzu'].SettingsTypes;
+        // game.settings.registerMenu(MODULE_NAME, Settings.KEY_SETTINGS, {
+        //     name: 'PF2E Toolbox Settings',
+        //     label: 'Configure PF2E Toolbox',
+        //     icon: 'fas fa-bars',
+        //     type: SettingsApp,
+        //     restricted: true,
+        // });
+
+        // const settings = [
+        //     {
+        //         name: 'Enable Hero Points',
+        //         hint: 'Setting only applied on page reload.',
+        //         scope: 'world',
+        //         type: Boolean,
+        //         default: true,
+        //         config: true,
+        //         restricted: true,
+        //     },
+        // ];
+
         Settings.reg(Settings.ENABLED_FEATURES.HERO_POINTS, {
             name: 'Enable Hero Points',
             hint: 'Setting only applied on page reload.',
@@ -182,16 +208,55 @@ export default class Settings {
             scope: 'world',
             type: String,
             default: 'data',
-            config: true,
+            config: false,
             restricted: true,
         });
+        Settings.reg(Settings.KEY_TOKEN_TARGET_BUCKET, {
+            name: 'S3 Bucket',
+            hint: 'Only needed when Token Folder Target is "s3".',
+            scope: 'world',
+            type: String,
+            default: 'data',
+            config: false,
+            restricted: true,
+        });
+
         Settings.reg(Settings.KEY_TOKEN_PATH, {
-            name: 'Token Folder Path',
+            name: 'True Token Folder Path',
             scope: 'world',
             type: String,
             default: '',
+            config: false,
+            restricted: true,
+        });
+
+        Settings.reg(`${Settings.KEY_TOKEN_PATH}_CLIENT_FACING`, {
+            name: 'Token Folder Path',
+            hint:
+                'Select any file in the target directory. Note S3 buckets do not work with wildcard ?s due ' +
+                'to limitations of Foundry, and will use Image_01.png instead.',
+            scope: 'world',
+            type: types.FilePickerImage,
+            default: '',
             config: true,
             restricted: true,
+            onChange: (value: string) => {
+                const parts = value.split('/');
+                parts.pop();
+
+                value = parts.join('/');
+                // @ts-ignore
+                const parsedS3URL = FilePicker.parseS3URL(value);
+
+                if (parsedS3URL.bucket !== null) {
+                    Settings.set(Settings.KEY_TOKEN_TARGET_BUCKET, parsedS3URL.bucket);
+                    Settings.set(Settings.KEY_TOKEN_TARGET, 's3');
+                    Settings.set(Settings.KEY_TOKEN_PATH, value);
+                } else {
+                    Settings.set(Settings.KEY_TOKEN_TARGET, 'data');
+                    Settings.set(Settings.KEY_TOKEN_PATH, value);
+                }
+            },
         });
     }
 }
