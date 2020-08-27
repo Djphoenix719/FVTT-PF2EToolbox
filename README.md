@@ -64,8 +64,8 @@ So for example, with the "Greater Shadow" example, it will try to find these tok
 For the example "Ghost, Commoner" the name mapper will try
 
 1. `Ghost_Commoner_01.png`
-2. `Ghost_01.png`
 2. `Commoner_01.png`
+2. `Ghost_01.png`
 
 ### Features to Come
 - Loot Roller w/ automation support for Forien's Unidentified Items
