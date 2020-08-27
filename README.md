@@ -20,6 +20,7 @@ All features can be enabled or disabled on a feature-by-feature basis in the set
 - Quickly view a scene with a new "View Scene" option accessible by right clicking a scene in the sidebar
 - Configure the maximum number of hero points a player can have
 - Hold alt when you drop an item onto a loot sheet or player sheet to mystify it (requires Forien's Unidentified Items)
+- A toggle to HIDE the PFS tab (does not disable things on the tab from functioning if they were already used)
 
 ### NPC Scaler
 Right clicking an NPC in the sidebar shows a new "Scale to Level" option. You can quickly scale any NPC to any level, up or down.

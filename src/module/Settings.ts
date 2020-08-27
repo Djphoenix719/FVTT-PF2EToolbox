@@ -42,6 +42,7 @@ export default class Settings {
         TOKEN_SETUP: 'ENABLE_TOKEN_SETUP',
         ROLL_APP: 'ENABLE_ROLL_APP',
         HERO_POINTS: 'ENABLE_HERO_POINTS',
+        DISABLE_PFS_TAB: 'DISABLE_PFS_TAB',
     };
 
     public static readonly KEY_SHIFT_QUANTITY = 'QUANTITY_SHIFT_MULTIPLIER';
@@ -138,6 +139,16 @@ export default class Settings {
             scope: 'world',
             type: Boolean,
             default: true,
+            config: true,
+            restricted: true,
+        });
+
+        Settings.reg(Settings.ENABLED_FEATURES.DISABLE_PFS_TAB, {
+            name: 'Disable PFS Tab',
+            hint: 'Setting only applied on page reload.',
+            scope: 'world',
+            type: Boolean,
+            default: false,
             config: true,
             restricted: true,
         });

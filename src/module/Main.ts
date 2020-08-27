@@ -88,6 +88,9 @@ Hooks.on('setup', () => {
     if (Settings.get(Settings.ENABLED_FEATURES.HERO_POINTS)) {
         Hooks.on('renderCRBStyleCharacterActorSheetPF2E', enableHeroPoints);
     }
+    if (Settings.get(Settings.ENABLED_FEATURES.DISABLE_PFS_TAB)) {
+        Hooks.on('renderCRBStyleCharacterActorSheetPF2E', disablePFSTab);
+    }
 
     Hooks.on('ready', () => {
         if (Settings.get(Settings.ENABLED_FEATURES.QUICK_MYSTIFY)) {
@@ -290,4 +293,14 @@ function enableQuickMystify() {
             }
         }
     };
+}
+
+function disablePFSTab(app: Application, html: JQuery) {
+    for (const navTab of html.find('nav.sheet-navigation a.item')) {
+        let jTab = $(navTab);
+        if (jTab.data('tab') === 'pfs') {
+            jTab.css('display', 'none');
+            break;
+        }
+    }
 }
