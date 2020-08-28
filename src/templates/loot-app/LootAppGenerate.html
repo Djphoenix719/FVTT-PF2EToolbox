@@ -1,15 +1,67 @@
+<!--
+Copyright 2020 Andrew Cuccinello
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+PARTS OF THIS FILE ARE COVERED BY THEIR OWN COPY OF THE SAME LICENSE
+https://gitlab.com/hooking/foundry-vtt---pathfinder-2e/
+-->
 
 <nav class="generator-navigation" data-group="primary">
     <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="loot-config">Loot Config</a>
+        {{#if isGM}}
         <a class="item active" data-tab="quick-treasure">Quick Treasure</a>
+        {{/if}}
     </nav>
 </nav>
 
-<button class="clear-inventory">Clear Loot</button>
-
 <div class="generator-content sheet-content-loot">
+    <div class="tab loot-config" data-group="primary" data-tab="loot-config">
+        {{> systems/pf2e/templates/actors/loot/loot-avatar.html }}
+        {{#if isGM}}
+            <h3 class="gm-section">{{localize 'PF2E.loot.GMSettings'}}</h3>
+            <!-- GM SETTINGS -->
+            <section class="loot-gm-settings">
+                <section class="loot-sheet-type">
+                    <h3 class="gm-header">
+                        <i class="fas fa-id-card"></i>
+                        Type
+                        <i class="fas fa-info-circle help" onclick="$('.sheet-type-info').toggle();"></i>
+                    </h3>
+                    <div class="sheet-type-info">
+                        <b>{{localize 'PF2E.loot.LootLabel'}}</b>
+                        : {{localize 'PF2E.loot.LootDescription'}}
+                        <br />
+                        <b>{{localize 'PF2E.loot.MerchantLabel'}}</b>
+                        : {{localize 'PF2E.loot.MerchantDescription'}}
+                    </div>
+                    <div class="sheet-types">
+                        <h4 class="sheet-name">Type of sheet:</h4>
+                        <select class="loot-sheet-type" name="data.lootSheetType">
+                            {{#select data.lootSheetType}}
+                                <option value="Loot">{{localize 'PF2E.loot.LootLabel'}}</option>
+                                <option value="Merchant">{{localize 'PF2E.loot.MerchantLabel'}}</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                </section>
+            </section>
+        {{/if}}
+    </div>
+    {{#if isGM}}
     <div class="tab quick-treasure" data-group="primary" data-tab="quick-treasure">
+        <button class="clear-inventory">Clear Loot</button>
         {{#each treasureTables as |table|}}
             <div class="table-row">
                 <label>{{table.data.name}}</label>
@@ -21,4 +73,5 @@
             </div>
         {{/each}}
     </div>
+    {{/if}}
 </div>

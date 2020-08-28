@@ -33,7 +33,8 @@ const getItemFromCollection = async (collectionId: string, itemId: string) => {
     return entity;
 };
 
-// THE FOLLOWING CODE IS FROM THE PF2E SYSTEM
+// THE FOLLOWING CODE IS FROM THE PF2E SYSTEM LICENSED UNDER A COPY OF THE SAME LICENSE
+// https://gitlab.com/hooking/foundry-vtt---pathfinder-2e/
 type ItemPlaceholder = any;
 
 interface Coins {
