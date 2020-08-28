@@ -14,6 +14,7 @@
  */
 
 import { MODULE_NAME } from '../Constants';
+import Settings from '../settings-app/Settings';
 
 const getTables = async () => {
     const pack = game.packs.get('pf2e.rollable-tables') as Compendium;
@@ -168,7 +169,7 @@ export default function extendLootSheet() {
                 let filtered = entities.filter((i) => i !== null && i !== undefined) as Entity[];
 
                 if (filtered.length !== drawCount) {
-                    ui.notifications.warn('Found one or more items in the rollable table that do not exist the compendium, skipping these.');
+                    ui.notifications.warn('Found one or more items in the rollable table that do not exist in the compendium, skipping these.');
                 }
 
                 let results = filtered.map((i) => i.data);
@@ -179,7 +180,15 @@ export default function extendLootSheet() {
                     return i;
                 });
 
+                const existingItems = actor.items.map((i) => i.id) as string[];
                 await actor.createEmbeddedEntity('OwnedItem', results);
+
+                if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY) && event.altKey) {
+                    const newItems = actor.items.filter((i: Item) => !existingItems.includes(i.id)) as Item[];
+                    for (const item of newItems) {
+                        window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
+                    }
+                }
             });
 
             html.find('button.clear-inventory').on('click', async (event) => {
