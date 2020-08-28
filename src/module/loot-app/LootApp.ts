@@ -123,9 +123,20 @@ export default function extendLootSheet() {
                     return false;
                 });
 
-                treasureTables.sort((a, b) => {
-                    return a.name.localeCompare(b.name);
-                });
+                const getSortValue = (name: string) => {
+                    let value = 1;
+                    if (name.includes('Semiprecious')) value *= 100;
+                    if (name.includes('Precious')) value *= 200;
+                    if (name.includes('Art Object')) value *= 300;
+                    if (name.includes('Minor')) value += 10;
+                    if (name.includes('Lesser')) value += 20;
+                    if (name.includes('Moderate')) value += 30;
+                    if (name.includes('Greater')) value += 40;
+                    if (name.includes('Major')) value += 50;
+                    return value;
+                };
+
+                treasureTables = treasureTables.sort((a, b) => getSortValue(a.name) - getSortValue(b.name));
 
                 renderData['treasureTables'] = treasureTables;
 
