@@ -15,7 +15,7 @@
 
 import { MODULE_NAME } from '../Constants';
 import Settings from '../settings-app/Settings';
-import { getItemFromCollection, getTables } from './LootAppUtil';
+import { GetItemFromCollection, GetMagicItemTables, GetRollableTables, GetTreasureTables } from './LootAppUtil';
 
 export default function extendLootSheet() {
     type ActorSheetConstructor = new (...args: any[]) => ActorSheet;
@@ -24,13 +24,11 @@ export default function extendLootSheet() {
         static get defaultOptions() {
             // @ts-ignore
             const options = super.defaultOptions;
-            options.title = 'Loot Helper';
-            options.template = `modules/${MODULE_NAME}/templates/loot-app/LootApp.html`;
             options.classes = options.classes ?? [];
             options.classes = [...options.classes, 'pf2e-toolbox', 'loot-app'];
 
             options.tabs = options.tabs ?? [];
-            options.tabs = [...options.tabs, { navSelector: '.generator-navigation', contentSelector: '.generator-content', initial: 'quick-treasure' }];
+            options.tabs = [...options.tabs, { navSelector: '.generator-navigation', contentSelector: '.generator-content', initial: 'treasure' }];
             return options;
         }
 
@@ -49,35 +47,12 @@ export default function extendLootSheet() {
 
         // @ts-ignore
         getData() {
-            const actor = this.actor as Actor;
             return new Promise<any>(async (resolve) => {
                 const renderData = await super.getData();
 
-                const { pack, tables } = await getTables();
-
-                let treasureTables = tables.filter((table) => {
-                    if (table.data.name.endsWith('Art Object')) return true;
-                    if (table.data.name.endsWith('Semiprecious Stones')) return true;
-                    if (table.data.name.endsWith('Precious Stones')) return true;
-                    return false;
-                });
-
-                const getSortValue = (name: string) => {
-                    let value = 1;
-                    if (name.includes('Semiprecious')) value *= 100;
-                    if (name.includes('Precious')) value *= 200;
-                    if (name.includes('Art Object')) value *= 300;
-                    if (name.includes('Minor')) value += 10;
-                    if (name.includes('Lesser')) value += 20;
-                    if (name.includes('Moderate')) value += 30;
-                    if (name.includes('Greater')) value += 40;
-                    if (name.includes('Major')) value += 50;
-                    return value;
-                };
-
-                treasureTables = treasureTables.sort((a, b) => getSortValue(a.name) - getSortValue(b.name));
-
-                renderData['treasureTables'] = treasureTables;
+                renderData['treasureTables'] = await GetTreasureTables();
+                renderData['magicItemTables'] = await GetMagicItemTables('Permanent Items');
+                renderData['consumablesTables'] = await GetMagicItemTables('Consumables Items');
 
                 resolve(renderData);
             });
@@ -94,12 +69,12 @@ export default function extendLootSheet() {
                 const tableId = button.data('entity-id') as string;
                 const drawCount = Number(button.data('count'));
 
-                const tables = await getTables();
-                const table = (await tables.pack.getEntity(tableId)) as RollTable;
+                const table = (await GetItemFromCollection('pf2e.rollable-tables', tableId)) as RollTable;
 
                 let rolls = await table.drawMany(drawCount);
+
                 const promises = rolls.results.map((r) => {
-                    return getItemFromCollection(r.collection, r.resultId);
+                    return GetItemFromCollection(r.collection, r.resultId);
                 });
 
                 let entities: (Entity | null)[] = await Promise.all(promises);
@@ -117,6 +92,44 @@ export default function extendLootSheet() {
                     i.data.value.value = roll.total * i.data.value.value;
                     return i;
                 });
+
+                const existingItems = actor.items.map((i) => i.id) as string[];
+                await actor.createEmbeddedEntity('OwnedItem', results);
+
+                if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY) && event.altKey) {
+                    const newItems = actor.items.filter((i: Item) => !existingItems.includes(i.id)) as Item[];
+                    for (const item of newItems) {
+                        window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
+                    }
+                }
+            });
+
+            html.find('button.roll-magic-item').on('click', async (event) => {
+                event.preventDefault();
+
+                const button = $(event.currentTarget) as JQuery<HTMLButtonElement>;
+                const tableId = button.data('entity-id') as string;
+                const drawCount = Number(button.data('count'));
+
+                const table = (await GetItemFromCollection('pf2e.rollable-tables', tableId)) as RollTable;
+
+                let rolls = await table.drawMany(drawCount);
+
+                console.warn(rolls);
+
+                const promises = rolls.results.map((r) => {
+                    return GetItemFromCollection(r.collection, r.resultId);
+                });
+
+                let entities: (Entity | null)[] = await Promise.all(promises);
+
+                let filtered = entities.filter((i) => i !== null && i !== undefined) as Entity[];
+
+                if (filtered.length !== drawCount) {
+                    ui.notifications.warn('Found one or more items in the rollable table that do not exist in the compendium, skipping these.');
+                }
+
+                let results = filtered.map((i) => i.data);
 
                 const existingItems = actor.items.map((i) => i.id) as string[];
                 await actor.createEmbeddedEntity('OwnedItem', results);

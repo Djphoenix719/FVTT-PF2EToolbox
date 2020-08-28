@@ -18,11 +18,11 @@ https://gitlab.com/hooking/foundry-vtt---pathfinder-2e/
 -->
 
 <nav class="generator-navigation" data-group="primary">
-    <nav class="sheet-tabs tabs" data-group="primary">
+    <nav class="sheet-tabs tabs loot-app-nav" data-group="primary">
         <a class="item" data-tab="loot-config">Loot Config</a>
-        {{#if isGM}}
-        <a class="item active" data-tab="quick-treasure">Quick Treasure</a>
-        {{/if}}
+        <a class="item active" data-tab="treasure">Treasure</a>
+        <a class="item" data-tab="magic-items">Permanent Items</a>
+        <a class="item" data-tab="consumables">Consumables</a>
     </nav>
 </nav>
 
@@ -59,19 +59,41 @@ https://gitlab.com/hooking/foundry-vtt---pathfinder-2e/
             </section>
         {{/if}}
     </div>
-    {{#if isGM}}
-    <div class="tab quick-treasure" data-group="primary" data-tab="quick-treasure">
+    <div class="tab treasure" data-group="primary" data-tab="treasure">
         <button class="clear-inventory">Clear Loot</button>
-        {{#each treasureTables as |table|}}
+        {{#each treasureTables as |entry|}}
             <div class="table-row">
-                <label>{{table.data.name}}</label>
+                <label><b>{{entry.table.data.name}}</b> ({{entry.value}})</label>
                 <div class="form-group">
-                    <button class="roll-single-table" data-entity-id="{{table.id}}" data-count="1">Roll 1</button>
-                    <button class="roll-single-table" data-entity-id="{{table.id}}" data-count="5">Roll 5</button>
-                    <button class="roll-single-table" data-entity-id="{{table.id}}" data-count="10">Roll 10</button>
+                    <button class="roll-single-table" data-entity-id="{{entry.table.id}}" data-count="1">Roll 1</button>
+                    <button class="roll-single-table" data-entity-id="{{entry.table.id}}" data-count="5">Roll 5</button>
+                    <button class="roll-single-table" data-entity-id="{{entry.table.id}}" data-count="10">Roll 10</button>
                 </div>
             </div>
         {{/each}}
     </div>
-    {{/if}}
+    <div class="tab magic-items" data-group="primary" data-tab="magic-items">
+        <button class="clear-inventory">Clear Loot</button>
+        {{#each magicItemTables as |table|}}
+            <div class="table-row">
+                <label><b>{{table.data.name}}</b></label>
+                <div class="form-group">
+                    <button class="roll-magic-item" data-entity-id="{{table.id}}" data-count="1">Roll 1</button>
+                    <button class="roll-magic-item" data-entity-id="{{table.id}}" data-count="2">Roll 2</button>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    <div class="tab consumables" data-group="primary" data-tab="consumables">
+        <button class="clear-inventory">Clear Loot</button>
+        {{#each consumablesTables as |table|}}
+            <div class="table-row">
+                <label><b>{{table.data.name}}</b></label>
+                <div class="form-group">
+                    <button class="roll-magic-item" data-entity-id="{{table.id}}" data-count="1">Roll 1</button>
+                    <button class="roll-magic-item" data-entity-id="{{table.id}}" data-count="2">Roll 2</button>
+                </div>
+            </div>
+        {{/each}}
+    </div>
 </div>

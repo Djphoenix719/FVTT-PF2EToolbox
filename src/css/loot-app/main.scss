@@ -29,7 +29,16 @@
                 margin: 0;
             }
         }
+
+        nav.loot-app-nav {
+            height: unset;
+
+            a {
+                white-space: nowrap;
+            }
+        }
     }
+
     .content.loot-generator-body {
         width: calc(100% - 300px);
     }
