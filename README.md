@@ -67,5 +67,10 @@ For the example "Ghost, Commoner" the name mapper will try
 2. `Commoner_01.png`
 2. `Ghost_01.png`
 
+### Loot Generator
+This is a work in progress, but right now it can quickly roll treasure items including updating their values correctly. Works with the quick mystification feature if you want the items to need appraisal (hold alt as usual). It's a separate loot sheet, as noted in the preview image (click on Settings in the header and use the `pf2e-toolbox.LootApp` sheet).
+
+![image](https://github.com/Djphoenix719/FVTT-PF2EToolbox/blob/master/.github/treasure-generator-v1.png?raw=true)
+
 ### Features to Come
 - Loot Roller w/ automation support for Forien's Unidentified Items
