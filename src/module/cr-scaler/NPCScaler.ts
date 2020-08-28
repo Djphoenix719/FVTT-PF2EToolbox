@@ -60,8 +60,6 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
     }
     data['data.traits.dv'] = dvData;
 
-    console.warn(data);
-
     // parse simple modifiers
     data['data.attributes.ac.base'] = getLeveledData('armorClass', parseInt(actor.data.data.attributes.ac.base), oldLevel, newLevel).total;
     data['data.attributes.perception.base'] = getLeveledData('perception', parseInt(actor.data.data.attributes.perception.base), oldLevel, newLevel).total;
@@ -106,16 +104,19 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
                 ['data.bonus.total']: newAttack,
             };
 
-            const damage = item.data.damageRolls as any[];
-            for (let i = 0; i < damage.length; i++) {
-                attackUpdate[`data.damageRolls.${i}.damage`] = getDamageData(damage[i].damage, oldLevel, newLevel);
-                attackUpdate[`data.damageRolls.${i}.damageType`] = damage[i].damageType;
-            }
+            const damage = item.data.damageRolls as any[] | object;
 
-            // Fix for #2 - some actors contain key/value pairs instead of array elements
-            for (const key in damage) {
-                attackUpdate[`data.damageRolls.${key}.damage`] = getDamageData(damage[key].damage, oldLevel, newLevel);
-                attackUpdate[`data.damageRolls.${key}.damageType`] = damage[key].damageType;
+            if (Array.isArray(damage)) {
+                for (let i = 0; i < damage.length; i++) {
+                    attackUpdate[`data.damageRolls.${i}.damage`] = getDamageData(damage[i].damage, oldLevel, newLevel);
+                    attackUpdate[`data.damageRolls.${i}.damageType`] = damage[i].damageType;
+                }
+            } else {
+                // Fix for #2 - some actors contain key/value pairs instead of array elements
+                for (const key in damage) {
+                    attackUpdate[`data.damageRolls.${key}.damage`] = getDamageData(damage[key].damage, oldLevel, newLevel);
+                    attackUpdate[`data.damageRolls.${key}.damageType`] = damage[key].damageType;
+                }
             }
 
             itemUpdates.push(attackUpdate);
