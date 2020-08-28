@@ -18,6 +18,7 @@ import { MODULE_NAME } from './Constants';
 import Settings from './settings-app/Settings';
 import { scaleNPCToLevel } from './cr-scaler/NPCScaler';
 import { onSetupTokensContextHook } from './Tokens';
+import extendLootSheet from './loot-app/LootApp';
 
 Hooks.on('init', Settings.registerAllSettings);
 
@@ -27,6 +28,7 @@ Hooks.on('setup', async () => {
         `modules/${MODULE_NAME}/templates/roll-app/index.html`,
         `modules/${MODULE_NAME}/templates/roll-app/cell.html`,
         `modules/${MODULE_NAME}/templates/roll-app/table.html`,
+        `modules/${MODULE_NAME}/templates/loot-app/LootAppGenerate.html`,
     ];
     await loadTemplates(templatePaths);
 
@@ -94,7 +96,7 @@ Hooks.on('setup', () => {
     if (Settings.get(Settings.FEATURES.REMOVE_DEFAULT_ART)) {
         Hooks.on('ready', removeDefaultArt);
     }
-    if (Settings.get(Settings.FEATURES.REMOVE_DEFAULT_ART)) {
+    if (Settings.get(Settings.FEATURES.LOOT_APP)) {
         Hooks.on('ready', enableLootApp);
     }
 
@@ -348,4 +350,30 @@ async function removeDefaultArt() {
     ui.notifications.info('All bestiary artwork has been updated!');
 }
 
-function enableLootApp() {}
+function enableLootApp() {
+    const LootApp = extendLootSheet();
+
+    Actors.registerSheet(MODULE_NAME, LootApp, {
+        types: ['loot'],
+        makeDefault: false,
+    });
+
+    if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY)) {
+        const lootSheet = CONFIG.Actor.sheetClasses['loot']['pf2e-toolbox.LootApp'];
+        lootSheet.cls = class LootApp extends lootSheet.cls {
+            async _onDrop(event: DragEvent) {
+                // @ts-ignore
+                const actor: Actor = this.actor;
+                const existing = actor.items.map((i: Item) => i.id) as string[];
+                await super._onDrop(event);
+
+                if (event.altKey && game.user.isGM) {
+                    const newItems = actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
+                    for (const item of newItems) {
+                        window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
+                    }
+                }
+            }
+        };
+    }
+}
