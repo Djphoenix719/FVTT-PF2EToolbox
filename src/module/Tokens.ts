@@ -1,5 +1,5 @@
 import { scaleNPCToLevel } from './cr-scaler/NPCScaler';
-import Settings from './Settings';
+import Settings from './settings-app/Settings';
 
 declare function srcExists(path: string): Promise<boolean>;
 
@@ -57,15 +57,15 @@ function getValidName(name: string, basePath: string, files: string[], reverse: 
 }
 
 export async function setupActorToken(actor: Actor): Promise<void> {
-    let basePath = Settings.get(Settings.KEY_TOKEN_PATH);
-    const folderTarget = Settings.get(Settings.KEY_TOKEN_TARGET);
+    let basePath = Settings.get(Settings.TOKEN_PATH);
+    const folderTarget = Settings.get(Settings.TOKEN_TARGET);
 
     let options: undefined | object;
     let browseUrl: string = basePath;
     if (folderTarget === 's3') {
         browseUrl = basePath.split('/')[basePath.split('/').length - 1];
         options = {
-            bucket: Settings.get(Settings.KEY_TOKEN_TARGET_BUCKET),
+            bucket: Settings.get(Settings.TOKEN_TARGET_BUCKET),
         };
     }
 

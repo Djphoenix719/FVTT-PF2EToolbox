@@ -15,7 +15,7 @@
 
 import RollApp from './roll-app/RollApp';
 import { MODULE_NAME } from './Constants';
-import Settings from './Settings';
+import Settings from './settings-app/Settings';
 import { scaleNPCToLevel } from './cr-scaler/NPCScaler';
 import { onSetupTokensContextHook } from './Tokens';
 
@@ -70,36 +70,39 @@ Hooks.on('setup', () => {
 });
 
 Hooks.on('setup', () => {
-    if (Settings.get(Settings.ENABLED_FEATURES.NPC_SCALER)) {
+    if (Settings.get(Settings.FEATURES.NPC_SCALER)) {
         Hooks.on('getActorDirectoryEntryContext', onScaleNPCContextHook);
     }
-    if (Settings.get(Settings.ENABLED_FEATURES.TOKEN_SETUP)) {
+    if (Settings.get(Settings.FEATURES.TOKEN_SETUP)) {
         Hooks.on('getActorDirectoryEntryContext', onSetupTokensContextHook);
     }
-    if (Settings.get(Settings.ENABLED_FEATURES.QUICK_VIEW_SCENE)) {
+    if (Settings.get(Settings.FEATURES.QUICK_VIEW_SCENE)) {
         Hooks.on('getSceneDirectoryEntryContext', onQuickViewSceneHook);
     }
-    if (Settings.get(Settings.ENABLED_FEATURES.QUANTITIES)) {
+    if (Settings.get(Settings.FEATURES.QUANTITIES)) {
         Hooks.on('renderActorSheet', onQuantitiesHook);
     }
-    if (Settings.get(Settings.ENABLED_FEATURES.ROLL_APP)) {
+    if (Settings.get(Settings.FEATURES.ROLL_APP)) {
         Hooks.on('renderJournalDirectory', enableRollAppButton);
     }
-    if (Settings.get(Settings.ENABLED_FEATURES.HERO_POINTS)) {
+    if (Settings.get(Settings.FEATURES.HERO_POINTS)) {
         Hooks.on('renderCRBStyleCharacterActorSheetPF2E', enableHeroPoints);
     }
-    if (Settings.get(Settings.ENABLED_FEATURES.DISABLE_PFS_TAB)) {
+    if (Settings.get(Settings.FEATURES.DISABLE_PFS_TAB)) {
         Hooks.on('renderCRBStyleCharacterActorSheetPF2E', disablePFSTab);
     }
-    if (Settings.get(Settings.ENABLED_FEATURES.REMOVE_DEFAULT_ART)) {
+    if (Settings.get(Settings.FEATURES.REMOVE_DEFAULT_ART)) {
         Hooks.on('ready', removeDefaultArt);
+    }
+    if (Settings.get(Settings.FEATURES.REMOVE_DEFAULT_ART)) {
+        Hooks.on('ready', enableLootApp);
     }
 
     Hooks.on('ready', () => {
-        if (Settings.get(Settings.ENABLED_FEATURES.QUICK_MYSTIFY)) {
+        if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY)) {
             if (!window['ForienIdentification']) {
                 ui.notifications.error("PF2E Toolbox quick mystify enabled but Forien's Unidentified Items was not detected.", { permanent: true });
-                Settings.set(Settings.ENABLED_FEATURES.QUICK_MYSTIFY, false);
+                Settings.set(Settings.FEATURES.QUICK_MYSTIFY, false);
                 return;
             }
 
@@ -188,8 +191,8 @@ function onQuantitiesHook(app: ActorSheet, html: JQuery) {
 
     const getAmount = (event: JQuery.ClickEvent): number => {
         let amount = 1;
-        if (event.shiftKey) amount *= Settings.get(Settings.KEY_SHIFT_QUANTITY);
-        if (event.ctrlKey) amount *= Settings.get(Settings.KEY_CONTROL_QUANTITY);
+        if (event.shiftKey) amount *= Settings.get(Settings.SHIFT_QUANTITY);
+        if (event.ctrlKey) amount *= Settings.get(Settings.CONTROL_QUANTITY);
         return amount;
     };
 
@@ -242,7 +245,7 @@ function enableRollAppButton(app: Application, html: JQuery) {
 }
 
 function enableHeroPoints(app: Application, html: JQuery, renderData: any) {
-    renderData.data.attributes.heroPoints.max = Settings.get<number>(Settings.KEY_MAX_HERO_POINTS);
+    renderData.data.attributes.heroPoints.max = Settings.get<number>(Settings.MAX_HERO_POINTS);
 
     const { rank, max }: { rank: number; max: number } = renderData.data.attributes.heroPoints;
 
@@ -313,7 +316,7 @@ function disablePFSTab(app: Application, html: JQuery) {
 }
 
 async function removeDefaultArt() {
-    if (game.system.data.version === Settings.get(Settings.KEY_LAST_SEEN_SYSTEM)) {
+    if (game.system.data.version === Settings.get(Settings.LAST_SEEN_SYSTEM)) {
         return;
     }
 
@@ -340,7 +343,9 @@ async function removeDefaultArt() {
         }
     }
 
-    await Settings.set(Settings.KEY_LAST_SEEN_SYSTEM, game.system.data.version);
+    await Settings.set(Settings.LAST_SEEN_SYSTEM, game.system.data.version);
 
     ui.notifications.info('All bestiary artwork has been updated!');
 }
+
+function enableLootApp() {}
