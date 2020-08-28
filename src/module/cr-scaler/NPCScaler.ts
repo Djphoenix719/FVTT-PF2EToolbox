@@ -111,6 +111,13 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
                 attackUpdate[`data.damageRolls.${i}.damage`] = getDamageData(damage[i].damage, oldLevel, newLevel);
                 attackUpdate[`data.damageRolls.${i}.damageType`] = damage[i].damageType;
             }
+
+            // Fix for #2 - some actors contain key/value pairs instead of array elements
+            for (const key in damage) {
+                attackUpdate[`data.damageRolls.${key}.damage`] = getDamageData(damage[key].damage, oldLevel, newLevel);
+                attackUpdate[`data.damageRolls.${key}.damageType`] = damage[key].damageType;
+            }
+
             itemUpdates.push(attackUpdate);
         }
     }

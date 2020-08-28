@@ -43,18 +43,21 @@ export default class Settings {
         ROLL_APP: 'ENABLE_ROLL_APP',
         HERO_POINTS: 'ENABLE_HERO_POINTS',
         DISABLE_PFS_TAB: 'DISABLE_PFS_TAB',
+        REMOVE_DEFAULT_ART: 'REMOVE_DEFAULT_ART',
     };
 
     public static readonly KEY_SHIFT_QUANTITY = 'QUANTITY_SHIFT_MULTIPLIER';
     public static readonly KEY_CONTROL_QUANTITY = 'QUANTITY_CONTROL_MULTIPLIER';
 
-    public static readonly KEY_PARTY_FOLDER = 'PARTY_FOLDER_NAME';
-    public static readonly KEY_ENEMY_FOLDER = 'ENEMY_FOLDER_NAME';
+    // public static readonly KEY_PARTY_FOLDER = 'PARTY_FOLDER_NAME';
+    // public static readonly KEY_ENEMY_FOLDER = 'ENEMY_FOLDER_NAME';
     public static readonly KEY_SCALED_FOLDER = 'SCALED_FOLDER_NAME';
 
     public static readonly KEY_TOKEN_PATH = 'TOKEN_FOLDER_PATH';
     public static readonly KEY_TOKEN_TARGET = 'TOKEN_FOLDER_TARGET';
     public static readonly KEY_TOKEN_TARGET_BUCKET = 'TOKEN_FOLDER_TARGET_BUCKET';
+
+    public static readonly KEY_LAST_SEEN_SYSTEM = 'LAST_SEEN_VERSION';
 
     // public static readonly KEY_SETTINGS = 'MODULE_SETTINGS';
 
@@ -153,6 +156,16 @@ export default class Settings {
             restricted: true,
         });
 
+        Settings.reg(Settings.ENABLED_FEATURES.REMOVE_DEFAULT_ART, {
+            name: 'Remove Default Art',
+            hint: 'Removes all default artwork in bestiary compendium packs each time the PF2E system updates. Setting only applied on page reload.',
+            scope: 'world',
+            type: Boolean,
+            default: false,
+            config: true,
+            restricted: true,
+        });
+
         Settings.reg(Settings.KEY_MAX_HERO_POINTS, {
             name: 'Maximum Hero Points',
             scope: 'world',
@@ -196,14 +209,14 @@ export default class Settings {
         //     config: true,
         //     restricted: true,
         // });
-        Settings.reg(Settings.KEY_ENEMY_FOLDER, {
-            name: 'Enemy Folder Name',
-            scope: 'world',
-            type: String,
-            default: '',
-            config: true,
-            restricted: true,
-        });
+        // Settings.reg(Settings.KEY_ENEMY_FOLDER, {
+        //     name: 'Enemy Folder Name',
+        //     scope: 'world',
+        //     type: String,
+        //     default: '',
+        //     config: true,
+        //     restricted: true,
+        // });
 
         Settings.reg(Settings.KEY_TOKEN_TARGET, {
             name: 'Token Folder Target',
@@ -260,6 +273,15 @@ export default class Settings {
                     Settings.set(Settings.KEY_TOKEN_PATH, value);
                 }
             },
+        });
+
+        Settings.reg(`${Settings.KEY_LAST_SEEN_SYSTEM}`, {
+            name: 'Last Seen System Version',
+            scope: 'world',
+            type: String,
+            default: '',
+            config: false,
+            restricted: true,
         });
     }
 }

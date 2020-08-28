@@ -91,6 +91,9 @@ Hooks.on('setup', () => {
     if (Settings.get(Settings.ENABLED_FEATURES.DISABLE_PFS_TAB)) {
         Hooks.on('renderCRBStyleCharacterActorSheetPF2E', disablePFSTab);
     }
+    if (Settings.get(Settings.ENABLED_FEATURES.REMOVE_DEFAULT_ART)) {
+        Hooks.on('ready', removeDefaultArt);
+    }
 
     Hooks.on('ready', () => {
         if (Settings.get(Settings.ENABLED_FEATURES.QUICK_MYSTIFY)) {
@@ -103,6 +106,10 @@ Hooks.on('setup', () => {
             enableQuickMystify();
         }
     });
+
+    // Hooks.on('ready', () => {
+    //     new LootApp().render(true);
+    // });
 });
 
 function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
@@ -303,4 +310,37 @@ function disablePFSTab(app: Application, html: JQuery) {
             break;
         }
     }
+}
+
+async function removeDefaultArt() {
+    if (game.system.data.version === Settings.get(Settings.KEY_LAST_SEEN_SYSTEM)) {
+        return;
+    }
+
+    ui.notifications.info('PF2E Toolbox is removing default artwork... please wait.');
+
+    for (const entry of game.packs.values()) {
+        const pack = entry as Compendium;
+
+        if (pack.metadata.system === 'pf2e' && pack.metadata.module === 'pf2e' && pack.metadata.entity === 'Actor') {
+            pack.locked = false;
+
+            const content = (await pack.getContent()) as Actor[];
+            for (const actor of content) {
+                if (actor.data.img.startsWith('systems/pf2e/icons')) {
+                    await pack.updateEntity({
+                        _id: actor._id,
+                        img: 'icons/svg/mystery-man.svg',
+                    });
+                    console.log(`Updated ${actor.name}, was ${actor.img}`);
+                }
+            }
+
+            pack.locked = true;
+        }
+    }
+
+    await Settings.set(Settings.KEY_LAST_SEEN_SYSTEM, game.system.data.version);
+
+    ui.notifications.info('All bestiary artwork has been updated!');
 }
