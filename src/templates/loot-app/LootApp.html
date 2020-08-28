@@ -25,18 +25,15 @@
         </div>
     </div>
     <!-- SIDEBAR -->
-    <section class="sheet-sidebar sidebar">
-        {{> systems/pf2e/templates/actors/loot/loot-avatar.html }}
+    <section class="sheet-sidebar sidebar loot-generator-sidebar">
         {{#if isGM}}
-            <h3 class="gm-section">{{localize 'PF2E.loot.GMSettings'}}</h3>
-            <!-- GM SETTINGS -->
             <section class="loot-gm-settings">
                 {{> modules/pf2e-toolbox/templates/loot-app/LootAppGenerate.html }}
             </section>
         {{/if}}
     </section>
     <!-- BODY -->
-    <section class="sheet-body content">
+    <section class="sheet-body content loot-generator-body">
         <nav class="sheet-navigation" data-group="primary">
             <nav class="sheet-tabs tabs" data-group="primary">
                 <a class="item active" data-tab="inventory">{{localize "PF2E.TabInventoryLabel"}}</a>
