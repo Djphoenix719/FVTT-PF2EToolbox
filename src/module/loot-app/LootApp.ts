@@ -15,72 +15,7 @@
 
 import { MODULE_NAME } from '../Constants';
 import Settings from '../settings-app/Settings';
-
-const getTables = async () => {
-    const pack = game.packs.get('pf2e.rollable-tables') as Compendium;
-    const tables = (await pack.getContent()) as RollTable[];
-    return { pack, tables };
-};
-const getEquipment = async () => {
-    const pack = game.packs.get('pf2e.equipment-srd') as Compendium;
-    const items = (await pack.getContent()) as Item[];
-    return { pack, items };
-};
-const getItemFromCollection = async (collectionId: string, itemId: string) => {
-    const pack = game.packs.get(collectionId) as Compendium;
-    const entity = await pack.getEntity(itemId);
-    console.warn(entity);
-    return entity;
-};
-
-// THE FOLLOWING CODE IS FROM THE PF2E SYSTEM LICENSED UNDER A COPY OF THE SAME LICENSE
-// https://gitlab.com/hooking/foundry-vtt---pathfinder-2e/
-type ItemPlaceholder = any;
-
-interface Coins {
-    pp: number;
-    gp: number;
-    sp: number;
-    cp: number;
-}
-
-function toCoins(denomination: string, value: number): Coins {
-    return {
-        pp: denomination === 'pp' ? value : 0,
-        gp: denomination === 'gp' ? value : 0,
-        sp: denomination === 'sp' ? value : 0,
-        cp: denomination === 'cp' ? value : 0,
-    };
-}
-
-function noCoins(): Coins {
-    return {
-        pp: 0,
-        gp: 0,
-        sp: 0,
-        cp: 0,
-    };
-}
-
-function combineCoins(first: Coins, second: Coins): Coins {
-    return {
-        pp: first.pp + second.pp,
-        gp: first.gp + second.gp,
-        sp: first.sp + second.sp,
-        cp: first.cp + second.cp,
-    };
-}
-
-export function calculateWealth(items: ItemPlaceholder[]): Coins {
-    return items
-        .filter((item) => item.type === 'treasure' && item?.data?.denomination?.value !== undefined && item?.data?.denomination?.value !== null)
-        .map((item) => {
-            const value = (item.data?.value?.value ?? 1) * (item.data?.quantity?.value ?? 1);
-            return toCoins(item.data.denomination.value, value);
-        })
-        .reduce(combineCoins, noCoins());
-}
-// END PF2E CODE
+import { getItemFromCollection, getTables } from './LootAppUtil';
 
 export default function extendLootSheet() {
     type ActorSheetConstructor = new (...args: any[]) => ActorSheet;
@@ -105,7 +40,9 @@ export default function extendLootSheet() {
 
             const isEditable = this.actor.getFlag('pf2e', 'editLoot.value');
 
-            if (isEditable && game.user.isGM) return editableSheetPath;
+            if (isEditable && game.user.isGM) {
+                return editableSheetPath;
+            }
 
             return nonEditableSheetPath;
         }
