@@ -19,6 +19,8 @@ import Settings from './settings-app/Settings';
 import { scaleNPCToLevel } from './cr-scaler/NPCScaler';
 import { onSetupTokensContextHook } from './Tokens';
 import extendLootSheet from './loot-app/LootApp';
+import { IDataUpdates, IHandledItemType } from './cr-scaler/NPCScalerTypes';
+import { getDamageData, getLeveledData } from './cr-scaler/NPCScalerUtil';
 
 Hooks.on('init', Settings.registerAllSettings);
 
@@ -411,6 +413,25 @@ function onFlattenProficiencyContextHook(html: JQuery, buttons: any[]) {
 
             const level = parseInt(actor.data.data.details.level.value);
             (actor as any).addCustomModifier('all', modifierName, -level, 'untyped');
+
+            let itemUpdates: IDataUpdates[] = [];
+            for (let i = 0; i < actor.data['items'].length; i++) {
+                const item = actor.data['items'][i];
+
+                if ((item.type as IHandledItemType) === 'melee') {
+                    const oldAttack = parseInt(item.data.bonus.value);
+                    const newAttack = oldAttack - level;
+
+                    const attackUpdate: IDataUpdates = {
+                        _id: item._id,
+                        ['data.bonus.value']: newAttack,
+                        ['data.bonus.total']: newAttack,
+                    };
+
+                    itemUpdates.push(attackUpdate);
+                }
+            }
+            await actor.updateEmbeddedEntity('OwnedItem', itemUpdates);
         },
     });
 
@@ -429,6 +450,25 @@ function onFlattenProficiencyContextHook(html: JQuery, buttons: any[]) {
 
             const level = parseInt(actor.data.data.details.level.value);
             (actor as any).removeCustomModifier('all', modifierName);
+
+            let itemUpdates: IDataUpdates[] = [];
+            for (let i = 0; i < actor.data['items'].length; i++) {
+                const item = actor.data['items'][i];
+
+                if ((item.type as IHandledItemType) === 'melee') {
+                    const oldAttack = parseInt(item.data.bonus.value);
+                    const newAttack = oldAttack + level;
+
+                    const attackUpdate: IDataUpdates = {
+                        _id: item._id,
+                        ['data.bonus.value']: newAttack,
+                        ['data.bonus.total']: newAttack,
+                    };
+
+                    itemUpdates.push(attackUpdate);
+                }
+            }
+            await actor.updateEmbeddedEntity('OwnedItem', itemUpdates);
         },
     });
 }
