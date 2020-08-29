@@ -28,12 +28,13 @@ Right clicking an NPC in the sidebar shows a new "Scale to Level" option. You ca
 It's pretty darn accurate, as PF2E has pretty tight math - however, you should validate the NPC yourself. Sometimes creatures deviate from the guidelines presented in the GMG, in these cases it attempts to make a best-guess while keeping the spirit of the monster intact. For example, a creature that is below the specified HP guidelines will still be below the specified HP guidelines at the new level by the same percentage amount.
 
 It does the following
-- AC, Saving Throws, HP
+- Armor Class, Saving Throws, Hit Points
+- Ability Scores
 - Attack Modifiers, Strike Damage
-- DCs contained in ability descriptions
-- Damage contained in ability descriptions
-- Spell DCs, Spell Attack
+- DCs and Area Damage contained in ability descriptions
+- Spell DCs, Spell Attack modifiers
 - Skill modifiers
+- Weaknesses & Resistances
 
 All scaled NPCs are placed in a folder according to their level, which is nested in a folder of your choice.
 
