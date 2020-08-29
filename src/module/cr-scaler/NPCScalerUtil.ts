@@ -14,9 +14,9 @@
  */
 
 import { SCALE_APP_DATA } from './NPCScalerData';
-import { IStrikeDamage } from './NPCScalerTypes';
+import { IDicePool } from './NPCScalerTypes';
 
-function parseDamage(value: string): IStrikeDamage {
+export function parseDamage(value: string): IDicePool {
     let [diceString, bonusString] = value.split('+');
     let bonus: number = 0;
     if (bonusString !== undefined) {
@@ -38,7 +38,11 @@ function parseDamage(value: string): IStrikeDamage {
 }
 
 export function constructFormula({ diceCount, diceSize, bonus }: { diceCount: number; diceSize: number; bonus: number }) {
-    return `${diceCount}d${diceSize}+${bonus}`;
+    let formula = `${diceCount}d${diceSize}`;
+    if (bonus > 0) {
+        formula = `${formula}+${bonus}`;
+    }
+    return formula;
 }
 export function getLeveledData(key: keyof typeof SCALE_APP_DATA, oldValue: number, oldLevel: number, newLevel: number) {
     const data = SCALE_APP_DATA[key];
@@ -127,7 +131,7 @@ export function getMinMaxData(key: 'resistance' | 'weakness', oldValue: number, 
     return Math.round(newLevelData.minimum + newRange * oldPercentile);
 }
 
-export function constructRelativeDamage(oldDmg: IStrikeDamage, stdDmg: IStrikeDamage, newDmg: IStrikeDamage): IStrikeDamage {
+export function constructRelativeDamage(oldDmg: IDicePool, stdDmg: IDicePool, newDmg: IDicePool): IDicePool {
     const count = newDmg.diceCount;
     const size = newDmg.diceSize;
     const bonus = newDmg.bonus + oldDmg.bonus - stdDmg.bonus;
@@ -154,7 +158,7 @@ export function getDamageData(oldValue: string, oldLevel: number, newLevel: numb
             continue;
         }
 
-        const value = entry[1] as IStrikeDamage;
+        const value = entry[1] as IDicePool;
         const delta = Math.abs(value.average - parsedOldValue.average);
 
         if (delta < bestMatch.delta) {
@@ -167,7 +171,37 @@ export function getDamageData(oldValue: string, oldLevel: number, newLevel: numb
 
     if (bestMatch.delta < parsedOldValue.average * 0.5) {
         return constructRelativeDamage(parsedOldValue, oldLevelData[bestMatch.key], newLevelData[bestMatch.key]).original;
-        // return newLevelData[bestMatch.key].original;
+    } else {
+        return oldValue;
+    }
+}
+
+export function getAreaDamageData(oldValue: string, oldLevel: number, newLevel: number) {
+    const data = SCALE_APP_DATA['areaDamage'];
+    const oldLevelData = data[oldLevel + 1];
+    const newLevelData = data[newLevel + 1];
+    const parsedOldValue = parseDamage(oldValue);
+
+    let bestMatch: { key: string; delta: number } = { key: 'undefined', delta: Number.MAX_SAFE_INTEGER };
+    for (const entry of Object.entries(oldLevelData)) {
+        const key = entry[0];
+        if (key === 'level') {
+            continue;
+        }
+
+        const value = entry[1] as IDicePool;
+        const delta = Math.abs(value.average - parsedOldValue.average);
+
+        if (delta < bestMatch.delta) {
+            bestMatch = {
+                key,
+                delta,
+            };
+        }
+    }
+
+    if (bestMatch.delta < parsedOldValue.average * 0.5) {
+        return constructRelativeDamage(parsedOldValue, oldLevelData[bestMatch.key], newLevelData[bestMatch.key]).original;
     } else {
         return oldValue;
     }

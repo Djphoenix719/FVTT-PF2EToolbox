@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import { ROLL_APP_DATA } from '../roll-app/RollAppData';
+import { IDicePool } from './NPCScalerTypes';
 
 export const SCALE_APP_DATA = {
     hitPoints: [
@@ -527,32 +527,136 @@ export const SCALE_APP_DATA = {
         },
     ],
     areaDamage: [
-        { level: -1, unlimited: '1d4', limited: '1d6' },
-        { level: 0, unlimited: '1d6', limited: '1d10' },
-        { level: 1, unlimited: '2d4', limited: '2d6' },
-        { level: 2, unlimited: '2d6', limited: '3d6' },
-        { level: 3, unlimited: '2d8', limited: '4d6' },
-        { level: 4, unlimited: '3d6', limited: '5d6' },
-        { level: 5, unlimited: '2d10', limited: '6d6' },
-        { level: 6, unlimited: '4d6', limited: '7d6' },
-        { level: 7, unlimited: '4d6', limited: '8d6' },
-        { level: 8, unlimited: '5d6', limited: '9d6' },
-        { level: 9, unlimited: '5d6', limited: '10d6' },
-        { level: 10, unlimited: '6d6', limited: '11d6' },
-        { level: 11, unlimited: '6d6', limited: '12d6' },
-        { level: 12, unlimited: '5d8', limited: '13d6' },
-        { level: 13, unlimited: '7d6', limited: '14d6' },
-        { level: 14, unlimited: '4d12', limited: '15d6' },
-        { level: 15, unlimited: '8d6', limited: '16d6' },
-        { level: 16, unlimited: '8d6', limited: '17d6' },
-        { level: 17, unlimited: '8d6', limited: '18d6' },
-        { level: 18, unlimited: '9d6', limited: '19d6' },
-        { level: 19, unlimited: '9d6', limited: '20d6' },
-        { level: 20, unlimited: '6d10', limited: '21d6' },
-        { level: 21, unlimited: '10d6', limited: '22d6' },
-        { level: 22, unlimited: '8d8', limited: '23d6' },
-        { level: 23, unlimited: '11d6', limited: '24d6' },
-        { level: 24, unlimited: '11d6', limited: '25d6' },
+        {
+            limited: { diceCount: 1, diceSize: 6, original: '1d6', average: 3.5, bonus: 0 },
+            unlimited: { diceCount: 1, diceSize: 4, original: '1d4', average: 2.5, bonus: 0 },
+            level: -1,
+        },
+        {
+            limited: { diceCount: 1, diceSize: 10, original: '1d10', average: 5.5, bonus: 0 },
+            unlimited: { diceCount: 1, diceSize: 6, original: '1d6', average: 3.5, bonus: 0 },
+            level: 0,
+        },
+        {
+            limited: { diceCount: 2, diceSize: 6, original: '2d6', average: 7, bonus: 0 },
+            unlimited: { diceCount: 2, diceSize: 4, original: '2d4', average: 5, bonus: 0 },
+            level: 1,
+        },
+        {
+            limited: { diceCount: 3, diceSize: 6, original: '3d6', average: 10.5, bonus: 0 },
+            unlimited: { diceCount: 2, diceSize: 6, original: '2d6', average: 7, bonus: 0 },
+            level: 2,
+        },
+        {
+            limited: { diceCount: 4, diceSize: 6, original: '4d6', average: 14, bonus: 0 },
+            unlimited: { diceCount: 2, diceSize: 8, original: '2d8', average: 9, bonus: 0 },
+            level: 3,
+        },
+        {
+            limited: { diceCount: 5, diceSize: 6, original: '5d6', average: 17.5, bonus: 0 },
+            unlimited: { diceCount: 3, diceSize: 6, original: '3d6', average: 10.5, bonus: 0 },
+            level: 4,
+        },
+        {
+            limited: { diceCount: 6, diceSize: 6, original: '6d6', average: 21, bonus: 0 },
+            unlimited: { diceCount: 2, diceSize: 10, original: '2d10', average: 11, bonus: 0 },
+            level: 5,
+        },
+        {
+            limited: { diceCount: 7, diceSize: 6, original: '7d6', average: 24.5, bonus: 0 },
+            unlimited: { diceCount: 4, diceSize: 6, original: '4d6', average: 14, bonus: 0 },
+            level: 6,
+        },
+        {
+            limited: { diceCount: 8, diceSize: 6, original: '8d6', average: 28, bonus: 0 },
+            unlimited: { diceCount: 4, diceSize: 6, original: '4d6', average: 14, bonus: 0 },
+            level: 7,
+        },
+        {
+            limited: { diceCount: 9, diceSize: 6, original: '9d6', average: 31.5, bonus: 0 },
+            unlimited: { diceCount: 5, diceSize: 6, original: '5d6', average: 17.5, bonus: 0 },
+            level: 8,
+        },
+        {
+            limited: { diceCount: 10, diceSize: 6, original: '10d6', average: 35, bonus: 0 },
+            unlimited: { diceCount: 5, diceSize: 6, original: '5d6', average: 17.5, bonus: 0 },
+            level: 9,
+        },
+        {
+            limited: { diceCount: 11, diceSize: 6, original: '11d6', average: 38.5, bonus: 0 },
+            unlimited: { diceCount: 6, diceSize: 6, original: '6d6', average: 21, bonus: 0 },
+            level: 10,
+        },
+        {
+            limited: { diceCount: 12, diceSize: 6, original: '12d6', average: 42, bonus: 0 },
+            unlimited: { diceCount: 6, diceSize: 6, original: '6d6', average: 21, bonus: 0 },
+            level: 11,
+        },
+        {
+            limited: { diceCount: 13, diceSize: 6, original: '13d6', average: 45.5, bonus: 0 },
+            unlimited: { diceCount: 5, diceSize: 8, original: '5d8', average: 22.5, bonus: 0 },
+            level: 12,
+        },
+        {
+            limited: { diceCount: 14, diceSize: 6, original: '14d6', average: 49, bonus: 0 },
+            unlimited: { diceCount: 7, diceSize: 6, original: '7d6', average: 24.5, bonus: 0 },
+            level: 13,
+        },
+        {
+            limited: { diceCount: 15, diceSize: 6, original: '15d6', average: 52.5, bonus: 0 },
+            unlimited: { diceCount: 4, diceSize: 12, original: '4d12', average: 26, bonus: 0 },
+            level: 14,
+        },
+        {
+            limited: { diceCount: 16, diceSize: 6, original: '16d6', average: 56, bonus: 0 },
+            unlimited: { diceCount: 8, diceSize: 6, original: '8d6', average: 28, bonus: 0 },
+            level: 15,
+        },
+        {
+            limited: { diceCount: 17, diceSize: 6, original: '17d6', average: 59.5, bonus: 0 },
+            unlimited: { diceCount: 8, diceSize: 6, original: '8d6', average: 28, bonus: 0 },
+            level: 16,
+        },
+        {
+            limited: { diceCount: 18, diceSize: 6, original: '18d6', average: 63, bonus: 0 },
+            unlimited: { diceCount: 8, diceSize: 6, original: '8d6', average: 28, bonus: 0 },
+            level: 17,
+        },
+        {
+            limited: { diceCount: 19, diceSize: 6, original: '19d6', average: 66.5, bonus: 0 },
+            unlimited: { diceCount: 9, diceSize: 6, original: '9d6', average: 31.5, bonus: 0 },
+            level: 18,
+        },
+        {
+            limited: { diceCount: 20, diceSize: 6, original: '20d6', average: 70, bonus: 0 },
+            unlimited: { diceCount: 9, diceSize: 6, original: '9d6', average: 31.5, bonus: 0 },
+            level: 19,
+        },
+        {
+            limited: { diceCount: 21, diceSize: 6, original: '21d6', average: 73.5, bonus: 0 },
+            unlimited: { diceCount: 6, diceSize: 10, original: '6d10', average: 33, bonus: 0 },
+            level: 20,
+        },
+        {
+            limited: { diceCount: 22, diceSize: 6, original: '22d6', average: 77, bonus: 0 },
+            unlimited: { diceCount: 10, diceSize: 6, original: '10d6', average: 35, bonus: 0 },
+            level: 21,
+        },
+        {
+            limited: { diceCount: 23, diceSize: 6, original: '23d6', average: 80.5, bonus: 0 },
+            unlimited: { diceCount: 8, diceSize: 8, original: '8d8', average: 36, bonus: 0 },
+            level: 22,
+        },
+        {
+            limited: { diceCount: 24, diceSize: 6, original: '24d6', average: 84, bonus: 0 },
+            unlimited: { diceCount: 11, diceSize: 6, original: '11d6', average: 38.5, bonus: 0 },
+            level: 23,
+        },
+        {
+            limited: { diceCount: 25, diceSize: 6, original: '25d6', average: 87.5, bonus: 0 },
+            unlimited: { diceCount: 11, diceSize: 6, original: '11d6', average: 38.5, bonus: 0 },
+            level: 24,
+        },
     ],
     difficultyClass: [
         { level: -1, extreme: 19, high: 16, moderate: 13 },

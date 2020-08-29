@@ -16,7 +16,7 @@
 import Settings from '../settings-app/Settings';
 import { IDataUpdates, IHandledItemType } from './NPCScalerTypes';
 import { getActor, getFolder, getFolderInFolder } from '../Utilities';
-import { getDamageData, getHPData, getLeveledData, getMinMaxData } from './NPCScalerUtil';
+import { getAreaDamageData, getDamageData, getHPData, getLeveledData, getMinMaxData } from './NPCScalerUtil';
 
 const EMBEDDED_ENTITY_TYPE = 'OwnedItem';
 
@@ -153,13 +153,17 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
         const description = item.data.data.description.value as string;
         let newDescription = description;
         let match: RegExpExecArray | null = DC_REGEX.exec(description);
+        let indexOffset = 0;
         while (match !== null) {
-            const index = match.index;
             const [fullMatch, dcPart, valuePart] = match;
+            const index = match.index + indexOffset;
             const newDCValue = getLeveledData('difficultyClass', parseInt(valuePart), oldLevel, newLevel).total;
             const newDCString = `${dcPart} ${newDCValue}`;
 
             newDescription = newDescription.substr(0, index) + newDCString + newDescription.substr(index + fullMatch.length);
+
+            indexOffset += newDescription.length - description.length - indexOffset;
+
             match = DC_REGEX.exec(description);
         }
 
@@ -173,18 +177,21 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
 
     itemUpdates = [];
     for (const item of newActor.items.values()) {
-        const DC_REGEX = /[0-9]+d[0-9]+(\+[0-9]*)?/g;
+        const DMG_REGEX = /[0-9]+d[0-9]+(\+[0-9]*)?/g;
         const description = item.data.data.description.value as string;
         let newDescription = description;
-        let match: RegExpExecArray | null = DC_REGEX.exec(description);
+        let match: RegExpExecArray | null = DMG_REGEX.exec(description);
+        let indexOffset = 0;
         while (match !== null) {
-            const index = match.index;
             const [fullMatch] = match;
-            const newDamageFormula = getDamageData(fullMatch, oldLevel, newLevel);
+            const index = match.index + indexOffset;
+            const newDamageFormula = getAreaDamageData(fullMatch, oldLevel, newLevel);
 
             newDescription = newDescription.substr(0, index) + newDamageFormula + newDescription.substr(index + fullMatch.length);
 
-            match = DC_REGEX.exec(description);
+            indexOffset += newDescription.length - description.length - indexOffset;
+
+            match = DMG_REGEX.exec(description);
         }
 
         itemUpdates.push({

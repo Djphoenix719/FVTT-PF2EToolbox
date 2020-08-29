@@ -18,7 +18,7 @@ export type IDataUpdates = {
     [key: string]: any;
 };
 
-export type IStrikeDamage = {
+export type IDicePool = {
     average: number;
     bonus: number;
     diceCount: number;
