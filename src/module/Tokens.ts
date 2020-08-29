@@ -98,6 +98,7 @@ export async function setupActorToken(actor: Actor): Promise<void> {
 
     if (path === null) {
         ui.notifications.warn(`Could not find a token image for ${actor.name}.`);
+        return;
     } else {
         if (folderTarget === 's3') {
             path = path.replace(`??.png`, '01.png');
@@ -109,5 +110,5 @@ export async function setupActorToken(actor: Actor): Promise<void> {
 
     await actor.update(actorUpdate);
 
-    ui.notifications.info(`Updated ${actor.name}`);
+    ui.notifications.info(`Updated ${actor.name} to use image path "${path}"`);
 }

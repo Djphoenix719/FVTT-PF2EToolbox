@@ -18,6 +18,7 @@ import '../../external/settings-extender.js';
 
 const Features = {
     DISABLE_PFS_TAB: 'DISABLE_PFS_TAB',
+    FLATTEN_PROFICIENCY: 'FLATTEN_PROFICIENCY',
     HERO_POINTS: 'ENABLE_HERO_POINTS',
     LOOT_APP: 'ENABLE_LOOT_APP',
     NPC_SCALER: 'ENABLE_NPC_SCALER',
@@ -49,6 +50,9 @@ export default class Settings {
         DISABLE_PFS_TAB: {
             name: 'Disable PFS Tab',
             default: false,
+        },
+        FLATTEN_PROFICIENCY: {
+            name: 'Enable Flatten Proficiency',
         },
         HERO_POINTS: {
             name: 'Enable Hero Points',
@@ -91,8 +95,6 @@ export default class Settings {
     public static readonly TOKEN_TARGET_BUCKET = 'TOKEN_FOLDER_TARGET_BUCKET';
 
     public static readonly LAST_SEEN_SYSTEM = 'LAST_SEEN_VERSION';
-
-    // public static readonly KEY_SETTINGS = 'MODULE_SETTINGS';
 
     public static get<T = any>(key: string): T {
         return game.settings.get(MODULE_NAME, key) as T;

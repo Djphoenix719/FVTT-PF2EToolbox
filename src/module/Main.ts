@@ -75,6 +75,9 @@ Hooks.on('setup', () => {
     if (Settings.get(Settings.FEATURES.NPC_SCALER)) {
         Hooks.on('getActorDirectoryEntryContext', onScaleNPCContextHook);
     }
+    if (Settings.get(Settings.FEATURES.FLATTEN_PROFICIENCY)) {
+        Hooks.on('getActorDirectoryEntryContext', onFlattenProficiencyContextHook);
+    }
     if (Settings.get(Settings.FEATURES.TOKEN_SETUP)) {
         Hooks.on('getActorDirectoryEntryContext', onSetupTokensContextHook);
     }
@@ -376,4 +379,56 @@ function enableLootApp() {
             }
         };
     }
+}
+
+function onFlattenProficiencyContextHook(html: JQuery, buttons: any[]) {
+    const modifierName = 'Proficiency Without Level';
+    const hasModifier = (actor: Actor) => {
+        const data = actor.data.data;
+        if (data.customModifiers && data.customModifiers.all) {
+            const all = data.customModifiers.all;
+            for (const modifier of all) {
+                if (modifier.name === modifierName) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    buttons.unshift({
+        name: 'Flatten NPC',
+        icon: '<i class="fas fa-level-down-alt"></i>',
+        condition: (li: JQuery<HTMLLIElement>) => {
+            const id = li.data('entity-id') as string;
+            const actor = game.actors.get(id);
+
+            return actor.data.type === 'npc' && !hasModifier(actor);
+        },
+        callback: async (li: JQuery<HTMLLIElement>) => {
+            const id = li.data('entity-id') as string;
+            const actor = game.actors.get(id);
+
+            const level = parseInt(actor.data.data.details.level.value);
+            (actor as any).addCustomModifier('all', modifierName, -level, 'untyped');
+        },
+    });
+
+    buttons.unshift({
+        name: 'Unflatten NPC',
+        icon: '<i class="fas fa-level-up-alt"></i>',
+        condition: (li: JQuery<HTMLLIElement>) => {
+            const id = li.data('entity-id') as string;
+            const actor = game.actors.get(id);
+
+            return actor.data.type === 'npc' && hasModifier(actor);
+        },
+        callback: async (li: JQuery<HTMLLIElement>) => {
+            const id = li.data('entity-id') as string;
+            const actor = game.actors.get(id);
+
+            const level = parseInt(actor.data.data.details.level.value);
+            (actor as any).removeCustomModifier('all', modifierName);
+        },
+    });
 }
