@@ -376,8 +376,4 @@ function enableLootApp() {
             }
         };
     }
-
-    setTimeout(() => {
-        game.actors.getName('New Loot Sheet')?.sheet.render(true);
-    }, 500);
 }
