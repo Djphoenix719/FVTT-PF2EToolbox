@@ -1,0 +1,11 @@
+<form class="flexcol">
+    {{#each settings as |setting|}}
+    <div class="form-group">
+        <label>{{setting.label}}</label>
+        <div class="form-fields">
+            <input type="{{setting.type}}" name="{{setting.name}}" data-dtype="{{setting.dtype}}" {{checked setting.value}}>
+        </div>
+        <p class="notes">{{setting.hint}}</p>
+    </div>
+    {{/each}}
+</form>
