@@ -185,37 +185,15 @@ async function watch() {
 async function buildSass() {
     return gulp
         .src('src/css/bundle.scss')
+        .on('error', function (error) {
+            console.log(error.toString());
+
+            this.emit('end');
+        })
         .pipe(gulpsass().on('error', gulpsass.logError))
         .pipe(sourcemaps.init({ loadMaps: true }))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(destFolder));
-}
-
-/**
- * DOCS
- */
-async function docs() {
-    return gulp
-        .src(['src/pdfoundry/**/*.ts'])
-        .on('error', function (error) {
-            logger.error(error);
-            this.emit('end');
-        })
-        .pipe(
-            typedoc({
-                name: 'PDFoundry',
-                target: 'es6',
-                out: 'docs/',
-                mode: 'modules',
-                plugins: ['@convergencelabs/typedoc-plugin-custom-modules'],
-                exclude: ['./src/pdfoundry/util.ts'],
-                readme: './EXAMPLES.md',
-                excludePrivate: true,
-                excludeProtected: true,
-                stripInternal: true,
-                version: true,
-            }),
-        );
 }
 
 exports.clean = cleanDist;

@@ -1,0 +1,9 @@
+<section class="create-weapon">
+    <select name="flags.pf2e-toolbox.create-base-weapon">
+        {{#select flags.pf2e-toolbox.create-base-weapon}}
+            {{#each create.weapons as |item|}}
+                <option value="{{item.data._id}}">{{item.data.name}}</option>
+            {{/each}}
+        {{/select}}
+    </select>
+</section>

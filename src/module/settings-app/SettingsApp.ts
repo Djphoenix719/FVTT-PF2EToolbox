@@ -25,7 +25,7 @@ export default class SettingsApp extends FormApplication {
         return options;
     }
 
-    constructor(object: any, options: FormApplicationOptions) {
+    constructor(object: any, options?: FormApplicationOptions) {
         super(object, options);
 
         if (this.object === undefined) {
@@ -37,5 +37,11 @@ export default class SettingsApp extends FormApplication {
         const renderData = super.getData(options);
 
         return renderData;
+    }
+
+    protected async _updateObject(event: JQuery.Event, formData: any): Promise<void> {}
+
+    protected activateListeners(html: JQuery) {
+        super.activateListeners(html);
     }
 }

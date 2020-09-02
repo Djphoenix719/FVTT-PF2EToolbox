@@ -28,7 +28,7 @@ export default function extendLootSheet() {
             options.classes = [...options.classes, 'pf2e-toolbox', 'loot-app'];
 
             options.tabs = options.tabs ?? [];
-            options.tabs = [...options.tabs, { navSelector: '.generator-navigation', contentSelector: '.generator-content', initial: 'treasure' }];
+            options.tabs = [...options.tabs, { navSelector: '.loot-app-nav', contentSelector: '.loot-app-content', initial: 'treasure' }];
             return options;
         }
 
@@ -54,12 +54,33 @@ export default function extendLootSheet() {
                 renderData['magicItemTables'] = await GetMagicItemTables('Permanent Items');
                 renderData['consumablesTables'] = await GetMagicItemTables('Consumables Items');
 
+                renderData['flags'] = this.actor.data.flags;
+
+                renderData['create'] = {
+                    types: ['weapon', 'armor', 'scroll'],
+                };
+
+                const equipment = game.packs.get('pf2e.equipment-srd') as Compendium;
+                const content = (await equipment.getContent()) as Item[];
+
+                const basicWeapons = content.filter((i) => {
+                    if (i.data.type !== 'weapon') return false;
+                    if (i.data.data.level.value > 1) return false;
+                    return true;
+                });
+
+                renderData['create']['weapons'] = basicWeapons;
+
                 resolve(renderData);
             });
         }
 
         activateListeners(html: JQuery) {
             super.activateListeners(html);
+
+            html.find('select').on('input', (event) => {
+                this._onSubmit(event);
+            });
 
             const actor = this.actor as Actor;
             html.find('button.roll-single-table').on('click', async (event) => {
@@ -92,44 +113,6 @@ export default function extendLootSheet() {
                     i.data.value.value = roll.total * i.data.value.value;
                     return i;
                 });
-
-                const existingItems = actor.items.map((i) => i.id) as string[];
-                await actor.createEmbeddedEntity('OwnedItem', results);
-
-                if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY) && event.altKey) {
-                    const newItems = actor.items.filter((i: Item) => !existingItems.includes(i.id)) as Item[];
-                    for (const item of newItems) {
-                        window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
-                    }
-                }
-            });
-
-            html.find('button.roll-magic-item').on('click', async (event) => {
-                event.preventDefault();
-
-                const button = $(event.currentTarget) as JQuery<HTMLButtonElement>;
-                const tableId = button.data('entity-id') as string;
-                const drawCount = Number(button.data('count'));
-
-                const table = (await GetItemFromCollection('pf2e.rollable-tables', tableId)) as RollTable;
-
-                let rolls = await table.drawMany(drawCount);
-
-                console.warn(rolls);
-
-                const promises = rolls.results.map((r) => {
-                    return GetItemFromCollection(r.collection, r.resultId);
-                });
-
-                let entities: (Entity | null)[] = await Promise.all(promises);
-
-                let filtered = entities.filter((i) => i !== null && i !== undefined) as Entity[];
-
-                if (filtered.length !== drawCount) {
-                    ui.notifications.warn('Found one or more items in the rollable table that do not exist in the compendium, skipping these.');
-                }
-
-                let results = filtered.map((i) => i.data);
 
                 const existingItems = actor.items.map((i) => i.id) as string[];
                 await actor.createEmbeddedEntity('OwnedItem', results);

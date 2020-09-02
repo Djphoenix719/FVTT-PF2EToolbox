@@ -12,10 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.pf2e-toolbox.loot-app {
+div.pf2e-toolbox.loot-app {
     min-width: 975px;
 
-    .sidebar.loot-generator-sidebar {
+    section.sidebar.loot-generator-sidebar {
         width: 300px;
 
         div.table-row {
@@ -29,17 +29,15 @@
                 margin: 0;
             }
         }
+    }
 
-        nav.loot-app-nav {
-            height: unset;
-
-            a {
-                white-space: nowrap;
-            }
+    nav.loot-app-nav {
+        & > .item {
+            padding: 4px;
         }
     }
 
-    .content.loot-generator-body {
+    section.content.loot-generator-body {
         width: calc(100% - 300px);
     }
 }

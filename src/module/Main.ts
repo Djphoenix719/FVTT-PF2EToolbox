@@ -20,58 +20,12 @@ import { scaleNPCToLevel } from './cr-scaler/NPCScaler';
 import { onSetupTokensContextHook } from './Tokens';
 import extendLootSheet from './loot-app/LootApp';
 import { IDataUpdates, IHandledItemType } from './cr-scaler/NPCScalerTypes';
-import { getDamageData, getLeveledData } from './cr-scaler/NPCScalerUtil';
+import { registerHandlebarsHelpers, registerHandlebarsTemplates } from './Handlebars';
 
 Hooks.on('init', Settings.registerAllSettings);
 
-Hooks.on('setup', async () => {
-    // prettier-ignore
-    const templatePaths = [
-        `modules/${MODULE_NAME}/templates/roll-app/index.html`,
-        `modules/${MODULE_NAME}/templates/roll-app/cell.html`,
-        `modules/${MODULE_NAME}/templates/roll-app/table.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/LootAppGenerate.html`,
-    ];
-    await loadTemplates(templatePaths);
-
-    Handlebars.registerPartial('rollAppTable', `{{> "modules/${MODULE_NAME}/templates/roll-app/table.html"}}`);
-    Handlebars.registerPartial('rollAppCell', `{{> "modules/${MODULE_NAME}/templates/roll-app/cell.html"}}`);
-});
-
-Hooks.on('setup', () => {
-    Handlebars.registerHelper('includes', function (array: any[], value: any, options: any) {
-        if (array.includes(value)) {
-            return options.fn(this);
-        } else {
-            return options.inverse(this);
-        }
-    });
-    Handlebars.registerHelper('ifne', function (v1, v2, options) {
-        if (v1 !== v2) return options.fn(this);
-        else return options.inverse(this);
-    });
-
-    Handlebars.registerHelper('isNaN', function (context, options) {
-        if (isNaN(context) && !(typeof context === 'string')) {
-            return options.fn(this);
-        } else {
-            return options.inverse(this);
-        }
-    });
-
-    Handlebars.registerHelper('undefined', function () {
-        return undefined;
-    });
-
-    Handlebars.registerHelper('hasKey', function (context, key) {
-        for (const prop of context) {
-            if (prop.hasOwnProperty(key)) {
-                return true;
-            }
-        }
-        return false;
-    });
-});
+Hooks.on('setup', registerHandlebarsTemplates);
+Hooks.on('setup', registerHandlebarsHelpers);
 
 Hooks.on('setup', () => {
     if (Settings.get(Settings.FEATURES.NPC_SCALER)) {
@@ -117,9 +71,9 @@ Hooks.on('setup', () => {
         }
     });
 
-    // Hooks.on('ready', () => {
-    //     new LootApp().render(true);
-    // });
+    Hooks.on('ready', () => {
+        setTimeout(() => (game.actors.getName('Loot') as Actor).sheet.render(true), 500);
+    });
 });
 
 function onScaleNPCContextHook(html: JQuery, buttons: any[]) {

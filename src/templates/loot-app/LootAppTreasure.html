@@ -1,0 +1,10 @@
+{{#each treasureTables as |entry|}}
+    <div class="table-row">
+        <label><b>{{entry.table.data.name}}</b> ({{entry.value}})</label>
+        <div class="form-group">
+            <button class="roll-single-table" data-entity-id="{{entry.table.id}}" data-count="1">Roll 1</button>
+            <button class="roll-single-table" data-entity-id="{{entry.table.id}}" data-count="5">Roll 5</button>
+            <button class="roll-single-table" data-entity-id="{{entry.table.id}}" data-count="10">Roll 10</button>
+        </div>
+    </div>
+{{/each}}

@@ -17,19 +17,20 @@ PARTS OF THIS FILE ARE COVERED BY THEIR OWN COPY OF THE SAME LICENSE
 https://gitlab.com/hooking/foundry-vtt---pathfinder-2e/
 -->
 
-<nav class="generator-navigation" data-group="primary">
-    <nav class="sheet-tabs tabs loot-app-nav" data-group="primary">
-        <a class="item" data-tab="loot-config">Loot Config</a>
-        <a class="item active" data-tab="treasure">Treasure</a>
-        <a class="item" data-tab="magic-items">Permanent Items</a>
-        <a class="item" data-tab="consumables">Consumables</a>
-    </nav>
+<nav class="sheet-tabs tabs loot-app-nav" data-group="primary">
+    <a class="item" data-tab="loot-config" title="Loot Config"><i class="fas fa-cog"></i></a>
+    <a class="item active" data-tab="treasure" title="Treasure"><i class="fas fa-coins"></i></a>
+    <a class="item" data-tab="magic-items" title="Magic Items [WIP]"><i class="fas fa-shield-alt"></i></a>
+    <a class="item" data-tab="consumables" title="Consumables [WIP]"><i class="fas fa-wine-bottle"></i></a>
+    <a class="item" data-tab="scrolls" title="Scrolls [WIP]"><i class="fas fa-scroll"></i></a>
+    <a class="item" data-tab="create" title="Create Item [WIP]"><i class="fas fa-plus-square"></i></a>
 </nav>
 
-<div class="generator-content sheet-content-loot">
+<div class="loot-app-content sheet-content-loot">
     <div class="tab loot-config" data-group="primary" data-tab="loot-config">
         {{> systems/pf2e/templates/actors/loot/loot-avatar.html }}
         {{#if isGM}}
+            <button class="clear-inventory">Clear Loot</button>
             <h3 class="gm-section">{{localize 'PF2E.loot.GMSettings'}}</h3>
             <!-- GM SETTINGS -->
             <section class="loot-gm-settings">
@@ -60,40 +61,18 @@ https://gitlab.com/hooking/foundry-vtt---pathfinder-2e/
         {{/if}}
     </div>
     <div class="tab treasure" data-group="primary" data-tab="treasure">
-        <button class="clear-inventory">Clear Loot</button>
-        {{#each treasureTables as |entry|}}
-            <div class="table-row">
-                <label><b>{{entry.table.data.name}}</b> ({{entry.value}})</label>
-                <div class="form-group">
-                    <button class="roll-single-table" data-entity-id="{{entry.table.id}}" data-count="1">Roll 1</button>
-                    <button class="roll-single-table" data-entity-id="{{entry.table.id}}" data-count="5">Roll 5</button>
-                    <button class="roll-single-table" data-entity-id="{{entry.table.id}}" data-count="10">Roll 10</button>
-                </div>
-            </div>
-        {{/each}}
+        {{> modules/pf2e-toolbox/templates/loot-app/LootAppTreasure.html }}
     </div>
     <div class="tab magic-items" data-group="primary" data-tab="magic-items">
-        <button class="clear-inventory">Clear Loot</button>
-        {{#each magicItemTables as |table|}}
-            <div class="table-row">
-                <label><b>{{table.data.name}}</b></label>
-                <div class="form-group">
-                    <button class="roll-magic-item" data-entity-id="{{table.id}}" data-count="1">Roll 1</button>
-                    <button class="roll-magic-item" data-entity-id="{{table.id}}" data-count="2">Roll 2</button>
-                </div>
-            </div>
-        {{/each}}
+        {{> modules/pf2e-toolbox/templates/loot-app/LootAppMagicItems.html }}
     </div>
     <div class="tab consumables" data-group="primary" data-tab="consumables">
-        <button class="clear-inventory">Clear Loot</button>
-        {{#each consumablesTables as |table|}}
-            <div class="table-row">
-                <label><b>{{table.data.name}}</b></label>
-                <div class="form-group">
-                    <button class="roll-magic-item" data-entity-id="{{table.id}}" data-count="1">Roll 1</button>
-                    <button class="roll-magic-item" data-entity-id="{{table.id}}" data-count="2">Roll 2</button>
-                </div>
-            </div>
-        {{/each}}
+        {{> modules/pf2e-toolbox/templates/loot-app/LootAppConsumables.html }}
+    </div>
+    <div class="tab consumables" data-group="primary" data-tab="scrolls">
+        {{> modules/pf2e-toolbox/templates/loot-app/LootAppScrolls.html }}
+    </div>
+    <div class="tab creation" data-group="primary" data-tab="create">
+        {{> modules/pf2e-toolbox/templates/loot-app/create/LootAppCreate.html }}
     </div>
 </div>

@@ -1,0 +1,11 @@
+<select name="flags.pf2e-toolbox.create-mode">
+    {{#select flags.pf2e-toolbox.create-mode}}
+    {{#each create.types as |type|}}
+        <option value="{{type}}">{{type}}</option>
+    {{/each}}
+    {{/select}}
+</select>
+
+{{#ifeq flags.pf2e-toolbox.create-mode "weapon"}}
+    {{> modules/pf2e-toolbox/templates/loot-app/create/LootAppWeapon.html}}
+{{/ifeq}}
