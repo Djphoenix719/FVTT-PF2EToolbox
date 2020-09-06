@@ -37,6 +37,14 @@ export function registerHandlebarsHelpers() {
         if (v1 !== v2) return options.fn(this);
         else return options.inverse(this);
     });
+    Handlebars.registerHelper('ifgt', function (v1, v2, options) {
+        if (v1 > v2) return options.fn(this);
+        else return options.inverse(this);
+    });
+    Handlebars.registerHelper('iflt', function (v1, v2, options) {
+        if (v1 < v2) return options.fn(this);
+        else return options.inverse(this);
+    });
 
     Handlebars.registerHelper('isNaN', function (context, options) {
         if (isNaN(context) && !(typeof context === 'string')) {

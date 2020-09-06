@@ -15,7 +15,37 @@
 
 import { MODULE_NAME } from '../Constants';
 import Settings from '../settings-app/Settings';
-import { GetItemFromCollection, GetMagicItemTables, GetRollableTables, GetTreasureTables } from './LootAppUtil';
+import { GetItemFromCollection, GetMagicItemTables, GetTreasureTables } from './LootAppUtil';
+import { CREATE_KEY_NONE, CREATE_MODES, CreateMode, IGradeStats, ITEM_GRADES, ITEM_MATERIALS, ITEM_RUNES } from './LootAppData';
+
+type IMaterials = typeof ITEM_MATERIALS;
+type IMaterial = IMaterials[keyof typeof ITEM_MATERIALS];
+
+const CREATE_MODE = 'create-mode';
+
+const CREATE_BASE_WEAPON = 'create-base-weapon';
+const CREATE_BASE_ARMOR = 'create-base-armor';
+
+const CREATE_MATERIAL = 'create-material';
+const CREATE_GRADE = 'create-grade';
+const CREATE_POTENCY = 'create-potency';
+const CREATE_FUNDAMENTAL = 'create-fundamental';
+
+interface ItemNameAndId {
+    id: string;
+    label: string;
+}
+
+const equipmentMap = (item: Item): ItemNameAndId => {
+    return {
+        id: item.id,
+        label: item.name,
+    };
+};
+
+const materialHasGrade = (materialKey: string, gradeKey: string): boolean => {
+    return ITEM_MATERIALS[materialKey]?.hasOwnProperty(gradeKey);
+};
 
 export default function extendLootSheet() {
     type ActorSheetConstructor = new (...args: any[]) => ActorSheet;
@@ -28,9 +58,11 @@ export default function extendLootSheet() {
             options.classes = [...options.classes, 'pf2e-toolbox', 'loot-app'];
 
             options.tabs = options.tabs ?? [];
-            options.tabs = [...options.tabs, { navSelector: '.loot-app-nav', contentSelector: '.loot-app-content', initial: 'treasure' }];
+            options.tabs = [...options.tabs, { navSelector: '.loot-app-nav', contentSelector: '.loot-app-content', initial: 'create' }];
             return options;
         }
+
+        actor: Actor;
 
         get template() {
             const editableSheetPath = `modules/${MODULE_NAME}/templates/loot-app/LootApp.html`;
@@ -45,10 +77,85 @@ export default function extendLootSheet() {
             return nonEditableSheetPath;
         }
 
+        get createMode(): CreateMode {
+            return this.actor.getFlag(MODULE_NAME, CREATE_MODE);
+        }
+        get selectedMaterialKey(): string {
+            return this.actor.getFlag(MODULE_NAME, CREATE_MATERIAL) ?? CREATE_KEY_NONE;
+        }
+        get selectedGradeKey(): string {
+            return this.actor.getFlag(MODULE_NAME, CREATE_GRADE) ?? CREATE_KEY_NONE;
+        }
+
+        // async getBaseItem(): Promise<Item | null> {
+        //     const content = await this.getEquipmentContent();
+        //     switch (this.createMode) {
+        //         case CreateMode.Weapon:
+        //             return content.find((i) => i.id === this.)
+        //             break;
+        //         case CreateMode.Armor:
+        //             break;
+        //     }
+        // }
+
+        calculateCreatePrice(): number {
+            let matKey = this.selectedMaterialKey;
+            let grdKey = this.selectedGradeKey;
+
+            if (!materialHasGrade(matKey, grdKey)) {
+                grdKey = ITEM_MATERIALS[matKey].defaultGrade;
+            }
+
+            let mat = duplicate(ITEM_MATERIALS[matKey]);
+            let grd = duplicate(ITEM_MATERIALS[matKey][grdKey]) as IGradeStats;
+
+            return 0;
+        }
+        calculateCreateLevel(): number {
+            return 0;
+        }
+
+        async getEquipmentContent(): Promise<Item[]> {
+            const equipment = game.packs.get('pf2e.equipment-srd') as Compendium;
+            return (await equipment.getContent()) as Item[];
+        }
+
+        async collectBaseArmors(): Promise<ItemNameAndId[]> {
+            const equipmentContent = await this.getEquipmentContent();
+            return equipmentContent
+                .filter((i) => {
+                    if (i.data.type !== 'armor') return false;
+                    if (i.data.data.level.value > 0) return false;
+                    if ([''].includes(i.data.data.group.value)) return false;
+                    return true;
+                })
+                .map(equipmentMap);
+        }
+
+        async collectBaseWeapons(): Promise<ItemNameAndId[]> {
+            const equipmentContent = await this.getEquipmentContent();
+            return equipmentContent
+                .filter((i) => {
+                    if (i.data.type !== 'weapon') return false;
+                    if (i.data.name === 'Aldori Dueling Sword') return true;
+                    if (i.data.data.level.value > 0) return false;
+                    if (['bomb'].includes(i.data.data.group.value)) return false;
+                    return true;
+                })
+                .map(equipmentMap);
+        }
+
         // @ts-ignore
         getData() {
             return new Promise<any>(async (resolve) => {
                 const renderData = await super.getData();
+
+                const getFlag = (key: string): any => {
+                    return this.actor.getFlag(MODULE_NAME, key);
+                };
+                const setFlag = async (key: string, value: string): Promise<Actor> => {
+                    return await this.actor.setFlag(MODULE_NAME, key, value);
+                };
 
                 renderData['treasureTables'] = await GetTreasureTables();
                 renderData['magicItemTables'] = await GetMagicItemTables('Permanent Items');
@@ -56,20 +163,40 @@ export default function extendLootSheet() {
 
                 renderData['flags'] = this.actor.data.flags;
 
-                renderData['create'] = {
-                    types: ['weapon', 'armor', 'scroll'],
-                };
+                renderData['createModes'] = CREATE_MODES;
+                renderData['create'] = {};
 
-                const equipment = game.packs.get('pf2e.equipment-srd') as Compendium;
-                const content = (await equipment.getContent()) as Item[];
+                const selectedGrade = getFlag(CREATE_GRADE);
+                const selectedMaterial = getFlag(CREATE_MATERIAL);
+                const selectedPotency = getFlag(CREATE_POTENCY);
 
-                const basicWeapons = content.filter((i) => {
-                    if (i.data.type !== 'weapon') return false;
-                    if (i.data.data.level.value > 1) return false;
-                    return true;
+                if (selectedMaterial && !materialHasGrade(selectedMaterial, selectedGrade)) {
+                    await setFlag(CREATE_GRADE, ITEM_MATERIALS[selectedMaterial].defaultGrade);
+                }
+
+                renderData['create']['materials'] = Object.keys(ITEM_MATERIALS).map((key) => {
+                    return {
+                        key,
+                        id: ITEM_MATERIALS[key].id,
+                        label: ITEM_MATERIALS[key].label,
+                    };
                 });
+                renderData['create']['grades'] = Object.keys(ITEM_GRADES)
+                    .map((key) => {
+                        return {
+                            key,
+                            id: ITEM_GRADES[key].id,
+                            label: ITEM_GRADES[key].label,
+                        };
+                    })
+                    .filter((grade) => materialHasGrade(selectedMaterial, grade.key));
+                renderData['create']['runes'] = ITEM_RUNES;
 
-                renderData['create']['weapons'] = basicWeapons;
+                renderData['price'] = this.calculateCreatePrice();
+                renderData['level'] = this.calculateCreateLevel();
+
+                renderData['create']['weapons'] = await this.collectBaseWeapons();
+                renderData['create']['armors'] = await this.collectBaseArmors();
 
                 resolve(renderData);
             });
@@ -80,6 +207,13 @@ export default function extendLootSheet() {
 
             html.find('select').on('input', (event) => {
                 this._onSubmit(event);
+            });
+
+            html.find('#create-mode').on('input', async (event) => {
+                await this.actor.update({
+                    [`flags.pf2e-toolbox.${CREATE_BASE_WEAPON}`]: '',
+                    [`flags.pf2e-toolbox.${CREATE_BASE_ARMOR}`]: '',
+                });
             });
 
             const actor = this.actor as Actor;

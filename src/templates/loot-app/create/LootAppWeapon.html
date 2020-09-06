@@ -1,9 +1,110 @@
 <section class="create-weapon">
-    <select name="flags.pf2e-toolbox.create-base-weapon">
-        {{#select flags.pf2e-toolbox.create-base-weapon}}
-            {{#each create.weapons as |item|}}
-                <option value="{{item.data._id}}">{{item.data.name}}</option>
-            {{/each}}
-        {{/select}}
-    </select>
+    <div class="form-group">
+        <label for="create-base-weapon">Base Weapon</label>
+        <select id="create-base-weapon" name="flags.pf2e-toolbox.create-base-weapon">
+            {{#select flags.pf2e-toolbox.create-base-weapon}}
+                {{#each create.weapons as |item|}}
+                    <option value="{{item.id}}">{{item.label}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="create-material">Material</label>
+        <select id="create-material" name="flags.pf2e-toolbox.create-material">
+            {{#select flags.pf2e-toolbox.create-material}}
+                {{#each create.materials as |material|}}
+                    <option value="{{material.id}}">{{material.label}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="create-grade">Material Grade</label>
+        <select id="create-grade" name="flags.pf2e-toolbox.create-grade">
+            {{#select flags.pf2e-toolbox.create-grade}}
+                {{#each create.grades as |grade|}}
+                    <option value="{{grade.id}}">{{grade.label}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="create-weapon-potency">Potency Rune</label>
+        <select id="create-weapon-potency" name="flags.pf2e-toolbox.create-weapon-potency">
+            {{#select flags.pf2e-toolbox.create-weapon-potency}}
+                {{#each create.runes.weapon.potency as |potency|}}
+                    <option value="{{potency.id}}">{{potency.label}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
+    </div>
+
+    {{#ifgt flags.pf2e-toolbox.create-weapon-potency 0}}
+        <div class="form-group">
+            <label for="create-weapon-striking">Striking Rune</label>
+            <select id="create-weapon-striking" name="flags.pf2e-toolbox.create-weapon-striking">
+                {{#select flags.pf2e-toolbox.create-weapon-striking}}
+                    {{#each create.runes.weapon.striking as |rune|}}
+                        <option value="{{rune.id}}">{{rune.label}}</option>
+                    {{/each}}
+                {{/select}}
+            </select>
+        </div>
+    {{/ifgt}}
+
+    {{#ifgt flags.pf2e-toolbox.create-weapon-potency 0}}
+        <div class="form-group">
+            <label for="create-weapon-rune-1">Property Rune 1</label>
+            <select id="create-weapon-rune-1" name="flags.pf2e-toolbox.create-weapon-rune-1">
+                {{#select flags.pf2e-toolbox.create-weapon-rune-1}}
+                    {{#each create.runes.weapon.property as |rune|}}
+                        <option value="{{rune.id}}">{{rune.label}}</option>
+                    {{/each}}
+                {{/select}}
+            </select>
+        </div>
+    {{/ifgt}}
+
+    {{#ifgt flags.pf2e-toolbox.create-weapon-potency 1}}
+        <div class="form-group">
+            <label for="create-weapon-rune-2">Property Rune 2</label>
+            <select id="create-weapon-rune-2" name="flags.pf2e-toolbox.create-weapon-rune-2">
+                {{#select flags.pf2e-toolbox.create-weapon-rune-2}}
+                    {{#each create.runes.weapon.property as |rune|}}
+                        <option value="{{rune.id}}">{{rune.label}}</option>
+                    {{/each}}
+                {{/select}}
+            </select>
+        </div>
+    {{/ifgt}}
+
+    {{#ifgt flags.pf2e-toolbox.create-weapon-potency 2}}
+        <div class="form-group">
+            <label for="create-weapon-rune-3">Property Rune 3</label>
+            <select id="create-weapon-rune-3" name="flags.pf2e-toolbox.create-weapon-rune-3">
+                {{#select flags.pf2e-toolbox.create-weapon-rune-3}}
+                    {{#each create.runes.weapon.property as |rune|}}
+                        <option value="{{rune.id}}">{{rune.label}}</option>
+                    {{/each}}
+                {{/select}}
+            </select>
+        </div>
+    {{/ifgt}}
+
+    {{#ifgt flags.pf2e-toolbox.create-weapon-potency 3}}
+        <div class="form-group">
+            <label for="create-weapon-rune-4">Property Rune 4</label>
+            <select id="create-weapon-rune-4" name="flags.pf2e-toolbox.create-weapon-rune-4">
+                {{#select flags.pf2e-toolbox.create-weapon-rune-4}}
+                    {{#each create.runes.weapon.property as |rune|}}
+                        <option value="{{rune.id}}">{{rune.label}}</option>
+                    {{/each}}
+                {{/select}}
+            </select>
+        </div>
+    {{/ifgt}}
 </section>

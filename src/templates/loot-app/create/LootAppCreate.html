@@ -1,11 +1,26 @@
-<select name="flags.pf2e-toolbox.create-mode">
-    {{#select flags.pf2e-toolbox.create-mode}}
-    {{#each create.types as |type|}}
-        <option value="{{type}}">{{type}}</option>
-    {{/each}}
-    {{/select}}
-</select>
+<div class="form-group">
+    <label>Item Type</label>
+
+    <select id="create-mode" name="flags.pf2e-toolbox.create-mode">
+        {{#select flags.pf2e-toolbox.create-mode}}
+            {{#each createModes as |type|}}
+                <option value="{{type}}">{{type}}</option>
+            {{/each}}
+        {{/select}}
+    </select>
+</div>
+
+<p>Level: <b>{{level}}</b></p>
+<p>Price: <b>{{price}}</b> gp</p>
 
 {{#ifeq flags.pf2e-toolbox.create-mode "weapon"}}
     {{> modules/pf2e-toolbox/templates/loot-app/create/LootAppWeapon.html}}
+{{/ifeq}}
+
+{{#ifeq flags.pf2e-toolbox.create-mode "armor"}}
+    <span>WIP</span>
+{{/ifeq}}
+
+{{#ifeq flags.pf2e-toolbox.create-mode "scroll"}}
+    <span>WIP</span>
 {{/ifeq}}
