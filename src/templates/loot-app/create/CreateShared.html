@@ -1,0 +1,85 @@
+{{> modules/pf2e-toolbox/templates/loot-app/create/SelectRow.html name="baseItem"
+        label="Base Item" value=create.baseItem options=create.baseItemOptions}}
+
+{{#if create.baseItem}}
+    {{> modules/pf2e-toolbox/templates/loot-app/create/RuneStats.html level=create.baseItemLevel price=create.baseItemPrice}}
+{{/if}}
+
+<h4>Material</h4>
+{{> modules/pf2e-toolbox/templates/loot-app/create/SelectRow.html name="material"
+        label="Material" value=create.material options=create.materialOptions}}
+
+{{> modules/pf2e-toolbox/templates/loot-app/create/SelectRow.html name="grade"
+        label="Grade" value=create.grade options=create.gradeOptions}}
+
+{{#if create.material}}
+    <p class="clearfix" style="width: 100%">
+        <span style="float: left">
+            <i class="fas fa-shield-alt"></i> <b>{{create.materialHardness}}</b>
+            <i class="fas fa-heart"></i> <b>{{create.materialHp}}</b>
+            <i class="fas fa-heart-broken"></i> <b>{{create.materialBt}}</b>
+        </span>
+        <span style="float: right">
+            <i class="fas fa-coins"></i> +<b>{{create.materialPrice}}</b> gp/bulk
+        </span>
+    </p>
+{{/if}}
+
+<h4>Runes</h4>
+{{> modules/pf2e-toolbox/templates/loot-app/create/SelectRow.html name="potency"
+        label="Potency" value=create.potency options=create.potencyOptions}}
+
+{{#if create.potency}}
+    {{> modules/pf2e-toolbox/templates/loot-app/create/RuneStats.html level=create.potencyLevel price=create.potencyPrice}}
+{{/if}}
+
+{{#ifgt create.potency.nId 0}}
+    {{> modules/pf2e-toolbox/templates/loot-app/create/SelectRow.html name="property1"
+            label="Property 1" value=create.property1 options=create.propertyOptions}}
+    {{#if create.property1}}
+        {{> modules/pf2e-toolbox/templates/loot-app/create/RuneStats.html level=create.property1Level price=create.property1Price}}
+    {{/if}}
+{{/ifgt}}
+
+{{#ifgt create.potency.nId 1}}
+    {{> modules/pf2e-toolbox/templates/loot-app/create/SelectRow.html name="property2"
+            label="Property 2" value=create.property2 options=create.propertyOptions}}
+    {{#if create.property2}}
+        {{> modules/pf2e-toolbox/templates/loot-app/create/RuneStats.html level=create.property2Level price=create.property2Price}}
+    {{/if}}
+{{/ifgt}}
+
+{{#ifgt create.potency.nId 2}}
+    {{> modules/pf2e-toolbox/templates/loot-app/create/SelectRow.html name="property3"
+            label="Property 3" value=create.property3 options=create.propertyOptions}}
+    {{#if create.property3}}
+        {{> modules/pf2e-toolbox/templates/loot-app/create/RuneStats.html level=create.property3Level price=create.property3Price}}
+    {{/if}}
+{{/ifgt}}
+
+<h3>Final Stats</h3>
+<p style="text-align: center">
+    {{#if create.potency}}
+        +{{create.potency.nId}}
+
+        {{#if create.property1}}
+            {{create.property1.label}}
+        {{/if}}
+        {{#if create.property2}}
+            {{create.property2.label}}
+        {{/if}}
+        {{#if create.property3}}
+            {{create.property3.label}}
+        {{/if}}
+
+    {{/if}}
+    {{create.baseItem.name}}
+</p>
+<p class="clearfix" style="width: 100%">
+    <span style="float: left">
+        <i class="fas fa-level-up-alt"></i> <b>{{create.itemLevel}}</b>
+    </span>
+    <span style="float: right">
+        <i class="fas fa-coins"></i> <b>{{create.itemPrice}}</b> gp
+    </span>
+</p>

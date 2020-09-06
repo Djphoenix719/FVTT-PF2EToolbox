@@ -23,28 +23,53 @@ type IMaterial = IMaterials[keyof typeof ITEM_MATERIALS];
 
 const CREATE_MODE = 'create-mode';
 
-const CREATE_BASE_WEAPON = 'create-base-weapon';
-const CREATE_BASE_ARMOR = 'create-base-armor';
+const KEY_ITE = 'create-baseItem';
+const KEY_MAT = 'create-material';
+const KEY_GRD = 'create-grade';
+const KEY_POT = 'create-potency';
+const KEY_FUN = 'create-fundamental';
+const KEY_RU1 = 'create-property1';
+const KEY_RU2 = 'create-property2';
+const KEY_RU3 = 'create-property3';
 
-const CREATE_MATERIAL = 'create-material';
-const CREATE_GRADE = 'create-grade';
-const CREATE_POTENCY = 'create-potency';
-const CREATE_FUNDAMENTAL = 'create-fundamental';
-
-interface ItemNameAndId {
+interface SelectOption {
     id: string;
     label: string;
 }
 
-const equipmentMap = (item: Item): ItemNameAndId => {
+const itemToOption = (item: Item): SelectOption => {
     return {
         id: item.id,
         label: item.name,
     };
 };
+const materialToOption = (mat: IMaterial): SelectOption => {
+    return {
+        id: mat.id,
+        label: mat.label,
+    };
+};
 
 const materialHasGrade = (materialKey: string, gradeKey: string): boolean => {
     return ITEM_MATERIALS[materialKey]?.hasOwnProperty(gradeKey);
+};
+
+const getItemPrice = (stringValue: string): number => {
+    const [value, denomination] = stringValue.split(' ');
+    if (denomination === 'pp') return parseInt(value) * 10;
+    if (denomination === 'gp') return parseInt(value);
+    if (denomination === 'sp') return parseInt(value) / 10;
+    if (denomination === 'cp') return parseInt(value) / 100;
+    return parseInt(value);
+};
+const getMaterialPrice = (bulkString: string, pricePerBulk: number): number => {
+    let bulkNumber = 0;
+
+    if (bulkString === '-') bulkNumber = 0;
+    else if (bulkString === 'L') bulkNumber = 0.1;
+    else bulkNumber = parseInt(bulkString);
+
+    return bulkNumber * pricePerBulk;
 };
 
 export default function extendLootSheet() {
@@ -63,6 +88,7 @@ export default function extendLootSheet() {
         }
 
         actor: Actor;
+        cacheContent: Item[] | undefined;
 
         get template() {
             const editableSheetPath = `modules/${MODULE_NAME}/templates/loot-app/LootApp.html`;
@@ -78,29 +104,39 @@ export default function extendLootSheet() {
         }
 
         get createMode(): CreateMode {
-            return this.actor.getFlag(MODULE_NAME, CREATE_MODE);
-        }
-        get selectedMaterialKey(): string {
-            return this.actor.getFlag(MODULE_NAME, CREATE_MATERIAL) ?? CREATE_KEY_NONE;
-        }
-        get selectedGradeKey(): string {
-            return this.actor.getFlag(MODULE_NAME, CREATE_GRADE) ?? CREATE_KEY_NONE;
+            return this.actor.getFlag(MODULE_NAME, CREATE_MODE) ?? CreateMode.Weapon;
         }
 
-        // async getBaseItem(): Promise<Item | null> {
-        //     const content = await this.getEquipmentContent();
-        //     switch (this.createMode) {
-        //         case CreateMode.Weapon:
-        //             return content.find((i) => i.id === this.)
-        //             break;
-        //         case CreateMode.Armor:
-        //             break;
-        //     }
-        // }
+        get selIteKey(): string {
+            return this.actor.getFlag(MODULE_NAME, KEY_ITE) ?? CREATE_KEY_NONE;
+        }
+        get selMatKey(): string {
+            return this.actor.getFlag(MODULE_NAME, KEY_MAT) ?? CREATE_KEY_NONE;
+        }
+        get selGrdKey(): string {
+            return this.actor.getFlag(MODULE_NAME, KEY_GRD) ?? CREATE_KEY_NONE;
+        }
+        get selPotKey(): string {
+            return this.actor.getFlag(MODULE_NAME, KEY_POT) ?? CREATE_KEY_NONE;
+        }
+        get selFunKey(): string {
+            return this.actor.getFlag(MODULE_NAME, KEY_FUN) ?? CREATE_KEY_NONE;
+        }
+
+        async getSelectedItem(): Promise<Item | undefined> {
+            const equipment = await this.getEquipmentContent();
+
+            const id = this.selIteKey;
+            return equipment.find((i) => i.id === id);
+        }
 
         calculateCreatePrice(): number {
-            let matKey = this.selectedMaterialKey;
-            let grdKey = this.selectedGradeKey;
+            let matKey = this.selMatKey;
+            let grdKey = this.selGrdKey;
+
+            if (!matKey || !grdKey) {
+                return 0;
+            }
 
             if (!materialHasGrade(matKey, grdKey)) {
                 grdKey = ITEM_MATERIALS[matKey].defaultGrade;
@@ -111,16 +147,23 @@ export default function extendLootSheet() {
 
             return 0;
         }
+
         calculateCreateLevel(): number {
             return 0;
         }
 
         async getEquipmentContent(): Promise<Item[]> {
+            // cache content to avoid 2-3s delay on .getContent
+            if (this.cacheContent) {
+                return this.cacheContent;
+            }
+
             const equipment = game.packs.get('pf2e.equipment-srd') as Compendium;
-            return (await equipment.getContent()) as Item[];
+            this.cacheContent = (await equipment.getContent()) as Item[];
+            return this.cacheContent;
         }
 
-        async collectBaseArmors(): Promise<ItemNameAndId[]> {
+        async collectBaseArmors(): Promise<SelectOption[]> {
             const equipmentContent = await this.getEquipmentContent();
             return equipmentContent
                 .filter((i) => {
@@ -129,10 +172,10 @@ export default function extendLootSheet() {
                     if ([''].includes(i.data.data.group.value)) return false;
                     return true;
                 })
-                .map(equipmentMap);
+                .map(itemToOption);
         }
 
-        async collectBaseWeapons(): Promise<ItemNameAndId[]> {
+        async collectBaseWeapons(): Promise<SelectOption[]> {
             const equipmentContent = await this.getEquipmentContent();
             return equipmentContent
                 .filter((i) => {
@@ -142,7 +185,7 @@ export default function extendLootSheet() {
                     if (['bomb'].includes(i.data.data.group.value)) return false;
                     return true;
                 })
-                .map(equipmentMap);
+                .map(itemToOption);
         }
 
         // @ts-ignore
@@ -166,37 +209,105 @@ export default function extendLootSheet() {
                 renderData['createModes'] = CREATE_MODES;
                 renderData['create'] = {};
 
-                const selectedGrade = getFlag(CREATE_GRADE);
-                const selectedMaterial = getFlag(CREATE_MATERIAL);
-                const selectedPotency = getFlag(CREATE_POTENCY);
-
-                if (selectedMaterial && !materialHasGrade(selectedMaterial, selectedGrade)) {
-                    await setFlag(CREATE_GRADE, ITEM_MATERIALS[selectedMaterial].defaultGrade);
+                if (this.selMatKey && !materialHasGrade(this.selMatKey, this.selGrdKey)) {
+                    await setFlag(KEY_GRD, ITEM_MATERIALS[this.selMatKey].defaultGrade);
                 }
 
-                renderData['create']['materials'] = Object.keys(ITEM_MATERIALS).map((key) => {
+                // Item materials
+                renderData['create']['material'] = ITEM_MATERIALS[this.selMatKey];
+                renderData['create']['materialOptions'] = Object.keys(ITEM_MATERIALS).map((key) => {
                     return {
-                        key,
                         id: ITEM_MATERIALS[key].id,
                         label: ITEM_MATERIALS[key].label,
                     };
                 });
-                renderData['create']['grades'] = Object.keys(ITEM_GRADES)
+
+                // Material hardness, hp, bt
+                let material = ITEM_MATERIALS[this.selMatKey];
+                let materialGradeStats = material[this.selGrdKey] as IGradeStats | undefined;
+                if (materialGradeStats === undefined) {
+                    materialGradeStats = material[material.defaultGrade] as IGradeStats;
+                }
+
+                let thicknessKey = this.createMode === CreateMode.Weapon ? 'thinItems' : 'items';
+                if (thicknessKey === 'thinItems' && materialGradeStats[thicknessKey] === undefined) {
+                    thicknessKey = 'items';
+                }
+
+                renderData['create']['materialHardness'] = materialGradeStats[thicknessKey].hardness;
+                renderData['create']['materialHp'] = materialGradeStats[thicknessKey].hp;
+                renderData['create']['materialBt'] = materialGradeStats[thicknessKey].bt;
+                renderData['create']['materialPrice'] = materialGradeStats.pricePerBulk;
+
+                // Material grades
+                renderData['create']['grade'] = ITEM_GRADES[this.selGrdKey];
+                renderData['create']['gradeOptions'] = Object.keys(ITEM_GRADES)
+                    .filter((grade) => materialHasGrade(this.selMatKey, grade))
                     .map((key) => {
                         return {
-                            key,
                             id: ITEM_GRADES[key].id,
                             label: ITEM_GRADES[key].label,
                         };
-                    })
-                    .filter((grade) => materialHasGrade(selectedMaterial, grade.key));
+                    });
+
+                // Item runes
                 renderData['create']['runes'] = ITEM_RUNES;
 
-                renderData['price'] = this.calculateCreatePrice();
-                renderData['level'] = this.calculateCreateLevel();
+                // Base item
+                const baseItem = await this.getSelectedItem();
+                renderData['create']['baseItem'] = baseItem;
+                if (baseItem) {
+                    renderData['create']['baseItemLevel'] = baseItem.data.data.level.value;
+                    renderData['create']['baseItemPrice'] = getItemPrice(baseItem.data.data.price.value);
+                }
 
-                renderData['create']['weapons'] = await this.collectBaseWeapons();
-                renderData['create']['armors'] = await this.collectBaseArmors();
+                switch (this.createMode) {
+                    case CreateMode.Weapon:
+                        renderData['create']['baseItemOptions'] = await this.collectBaseWeapons();
+                        break;
+                    case CreateMode.Armor:
+                        renderData['create']['baseItemOptions'] = await this.collectBaseArmors();
+                        break;
+                }
+
+                const getRuneData = (name: string, key: string) => {
+                    const selKey = this.actor.getFlag(MODULE_NAME, key) as string | undefined;
+                    if (!selKey) return;
+
+                    const rune = ITEM_RUNES[this.createMode].property[selKey];
+
+                    renderData['create'][name] = rune;
+                    renderData['create'][`${name}Level`] = rune.level;
+                    renderData['create'][`${name}Price`] = rune.price;
+                };
+
+                // Item potency
+                const potency = ITEM_RUNES[this.createMode].potency[this.selPotKey];
+                renderData['create']['potency'] = potency;
+                renderData['create']['potencyOptions'] = ITEM_RUNES[this.createMode].potency;
+                renderData['create']['potencyLevel'] = potency.level;
+                renderData['create']['potencyPrice'] = potency.price;
+
+                // Item property
+                renderData['create']['propertyOptions'] = ITEM_RUNES[this.createMode].property;
+                getRuneData('property1', KEY_RU1);
+                getRuneData('property2', KEY_RU2);
+                getRuneData('property3', KEY_RU3);
+
+                renderData['create']['itemPrice'] = this.calculateCreatePrice();
+                renderData['create']['itemLevel'] = this.calculateCreateLevel();
+
+                renderData['create']['itemPrice'] += renderData['create']['potencyPrice'];
+                renderData['create']['itemLevel'] = Math.max(renderData['create']['itemLevel'], renderData['create'][`potencyLevel`]);
+                renderData['create']['itemPrice'] += renderData['create']['baseItemPrice'];
+                renderData['create']['itemPrice'] += getMaterialPrice(baseItem?.data.data.weight.value, renderData['create']['materialPrice']);
+
+                for (let i = 1; i < 4; i++) {
+                    renderData['create']['itemPrice'] += renderData['create'][`property${i}Price`];
+                    renderData['create']['itemLevel'] = Math.max(renderData['create']['itemLevel'], renderData['create'][`property${i}Level`]);
+                }
+
+                console.warn(renderData);
 
                 resolve(renderData);
             });
@@ -207,13 +318,6 @@ export default function extendLootSheet() {
 
             html.find('select').on('input', (event) => {
                 this._onSubmit(event);
-            });
-
-            html.find('#create-mode').on('input', async (event) => {
-                await this.actor.update({
-                    [`flags.pf2e-toolbox.${CREATE_BASE_WEAPON}`]: '',
-                    [`flags.pf2e-toolbox.${CREATE_BASE_ARMOR}`]: '',
-                });
             });
 
             const actor = this.actor as Actor;

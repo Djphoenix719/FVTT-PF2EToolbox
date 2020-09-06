@@ -6,9 +6,9 @@ export enum CreateMode {
 export const CREATE_MODES = [CreateMode.Weapon, CreateMode.Armor];
 
 export interface IMaterialMap {
-    [key: string]: IMateral;
+    [key: string]: IMaterial;
 }
-export interface IMateral {
+export interface IMaterial {
     id: string;
     label: string;
     defaultGrade: 'low' | 'standard' | 'high';
@@ -34,7 +34,7 @@ export const ITEM_MATERIALS: IMaterialMap = {
         label: 'Cloth',
         defaultGrade: 'standard',
         standard: {
-            pricePerBulk: 1,
+            pricePerBulk: 0,
             thinItems: { hardness: 0, hp: 1, bt: 0 },
             items: { hardness: 1, hp: 4, bt: 2 },
         },
@@ -44,7 +44,7 @@ export const ITEM_MATERIALS: IMaterialMap = {
         label: 'Leather',
         defaultGrade: 'standard',
         standard: {
-            pricePerBulk: 1,
+            pricePerBulk: 0,
             items: { hardness: 4, hp: 16, bt: 8 },
         },
     },
@@ -53,7 +53,7 @@ export const ITEM_MATERIALS: IMaterialMap = {
         label: 'Metal',
         defaultGrade: 'standard',
         standard: {
-            pricePerBulk: 1,
+            pricePerBulk: 0,
             items: { hardness: 9, hp: 36, bt: 18 },
         },
     },
@@ -62,7 +62,7 @@ export const ITEM_MATERIALS: IMaterialMap = {
         label: 'Wood',
         defaultGrade: 'standard',
         standard: {
-            pricePerBulk: 1,
+            pricePerBulk: 0,
             items: { hardness: 5, hp: 20, bt: 10 },
         },
     },
@@ -234,36 +234,41 @@ export const ITEM_GRADES: IGradesMap = {
 export const CREATE_KEY_NONE = '';
 const CREATE_OBJECT_NONE = {
     id: CREATE_KEY_NONE,
+    nId: 0,
     label: 'None',
     price: 0,
     level: 0,
 };
 export const ITEM_RUNES = {
-    weapon: {
+    [CreateMode.Weapon]: {
         potency: {
             [CREATE_KEY_NONE]: {
                 ...CREATE_OBJECT_NONE,
             },
             '1': {
                 id: '1',
+                nId: 1,
                 label: 'Weapon Potency (+1)',
                 level: 2,
                 price: 35,
             },
             '2': {
                 id: '2',
+                nId: 2,
                 label: 'Weapon Potency (+2)',
                 level: 10,
                 price: 935,
             },
             '3': {
                 id: '3',
+                nId: 3,
                 label: 'Weapon Potency (+3)',
                 level: 16,
                 price: 8935,
             },
             '4': {
                 id: '4',
+                nId: 4,
                 label: 'Weapon Potency (+4)',
                 level: 16,
                 price: 8935,
@@ -502,31 +507,35 @@ export const ITEM_RUNES = {
             },
         },
     },
-    armor: {
+    [CreateMode.Armor]: {
         potency: {
             [CREATE_KEY_NONE]: {
                 ...CREATE_OBJECT_NONE,
             },
             '1': {
                 id: '1',
+                nId: 1,
                 label: 'Armor Potency (+1)',
                 level: 5,
                 price: 160,
             },
             '2': {
                 id: '2',
+                nId: 2,
                 label: 'Armor Potency (+2)',
                 level: 11,
                 price: 1060,
             },
             '3': {
                 id: '3',
+                nId: 3,
                 label: 'Armor Potency (+3)',
                 level: 18,
                 price: 20560,
             },
             '4': {
                 id: '4',
+                nId: 4,
                 label: 'Armor Potency (+4)',
                 level: 18,
                 price: 20560,

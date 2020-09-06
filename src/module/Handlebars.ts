@@ -12,8 +12,13 @@ export async function registerHandlebarsTemplates() {
         `modules/${MODULE_NAME}/templates/loot-app/LootAppConsumables.html`,
         `modules/${MODULE_NAME}/templates/loot-app/LootAppMagicItems.html`,
         `modules/${MODULE_NAME}/templates/loot-app/LootAppScrolls.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/create/LootAppCreate.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/create/LootAppWeapon.html`,
+
+        `modules/${MODULE_NAME}/templates/loot-app/create/CreateTab.html`,
+        `modules/${MODULE_NAME}/templates/loot-app/create/CreateShared.html`,
+        `modules/${MODULE_NAME}/templates/loot-app/create/CreateArmor.html`,
+        `modules/${MODULE_NAME}/templates/loot-app/create/CreateWeapon.html`,
+        `modules/${MODULE_NAME}/templates/loot-app/create/SelectRow.html`,
+        `modules/${MODULE_NAME}/templates/loot-app/create/RuneStats.html`,
     ];
     await loadTemplates(templatePaths);
 
