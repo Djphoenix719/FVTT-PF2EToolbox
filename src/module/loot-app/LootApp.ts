@@ -63,8 +63,7 @@ const getItemPrice = (stringValue: string): number => {
     return parseInt(value);
 };
 const getMaterialPrice = (bulkString: string, pricePerBulk: number): number => {
-    let bulkNumber = 0;
-
+    let bulkNumber;
     if (bulkString === '-') bulkNumber = 0;
     else if (bulkString === 'L') bulkNumber = 0.1;
     else bulkNumber = parseInt(bulkString);
@@ -130,28 +129,6 @@ export default function extendLootSheet() {
             return equipment.find((i) => i.id === id);
         }
 
-        calculateCreatePrice(): number {
-            let matKey = this.selMatKey;
-            let grdKey = this.selGrdKey;
-
-            if (!matKey || !grdKey) {
-                return 0;
-            }
-
-            if (!materialHasGrade(matKey, grdKey)) {
-                grdKey = ITEM_MATERIALS[matKey].defaultGrade;
-            }
-
-            let mat = duplicate(ITEM_MATERIALS[matKey]);
-            let grd = duplicate(ITEM_MATERIALS[matKey][grdKey]) as IGradeStats;
-
-            return 0;
-        }
-
-        calculateCreateLevel(): number {
-            return 0;
-        }
-
         async getEquipmentContent(): Promise<Item[]> {
             // cache content to avoid 2-3s delay on .getContent
             if (this.cacheContent) {
@@ -169,7 +146,6 @@ export default function extendLootSheet() {
                 .filter((i) => {
                     if (i.data.type !== 'armor') return false;
                     if (i.data.data.level.value > 0) return false;
-                    if ([''].includes(i.data.data.group.value)) return false;
                     return true;
                 })
                 .map(itemToOption);
@@ -199,6 +175,9 @@ export default function extendLootSheet() {
                 const setFlag = async (key: string, value: string): Promise<Actor> => {
                     return await this.actor.setFlag(MODULE_NAME, key, value);
                 };
+                const unsetFlag = async (key: string): Promise<Actor> => {
+                    return await this.actor.unsetFlag(MODULE_NAME, key);
+                };
 
                 renderData['treasureTables'] = await GetTreasureTables();
                 renderData['magicItemTables'] = await GetMagicItemTables('Permanent Items');
@@ -206,8 +185,10 @@ export default function extendLootSheet() {
 
                 renderData['flags'] = this.actor.data.flags;
 
-                renderData['createModes'] = CREATE_MODES;
-                renderData['create'] = {};
+                renderData['create'] = {
+                    mode: this.createMode,
+                    modes: CREATE_MODES,
+                };
 
                 if (this.selMatKey && !materialHasGrade(this.selMatKey, this.selGrdKey)) {
                     await setFlag(KEY_GRD, ITEM_MATERIALS[this.selMatKey].defaultGrade);
@@ -223,7 +204,11 @@ export default function extendLootSheet() {
                 });
 
                 // Material hardness, hp, bt
-                let material = ITEM_MATERIALS[this.selMatKey];
+                let material = ITEM_MATERIALS[this.selMatKey] as IMaterial | undefined;
+                if (material === undefined) {
+                    material = ITEM_MATERIALS['metal'];
+                }
+
                 let materialGradeStats = material[this.selGrdKey] as IGradeStats | undefined;
                 if (materialGradeStats === undefined) {
                     materialGradeStats = material[material.defaultGrade] as IGradeStats;
@@ -257,24 +242,35 @@ export default function extendLootSheet() {
                 const baseItem = await this.getSelectedItem();
                 renderData['create']['baseItem'] = baseItem;
                 if (baseItem) {
-                    renderData['create']['baseItemLevel'] = baseItem.data.data.level.value;
+                    renderData['create']['baseItemLevel'] = parseInt(baseItem.data.data.level.value);
                     renderData['create']['baseItemPrice'] = getItemPrice(baseItem.data.data.price.value);
                 }
 
+                let items: SelectOption[];
                 switch (this.createMode) {
                     case CreateMode.Weapon:
-                        renderData['create']['baseItemOptions'] = await this.collectBaseWeapons();
+                        items = await this.collectBaseWeapons();
+                        renderData['create']['baseItemOptions'] = items;
                         break;
                     case CreateMode.Armor:
-                        renderData['create']['baseItemOptions'] = await this.collectBaseArmors();
+                        items = await this.collectBaseArmors();
+                        renderData['create']['baseItemOptions'] = items;
                         break;
                 }
 
-                const getRuneData = (name: string, key: string) => {
-                    const selKey = this.actor.getFlag(MODULE_NAME, key) as string | undefined;
+                if (!items.find((i) => i.id === this.selIteKey)) {
+                    await setFlag(KEY_ITE, items[0].id);
+                }
+
+                const getRuneData = async (name: string, key: string) => {
+                    const selKey = getFlag(`${key}`) as string | undefined;
                     if (!selKey) return;
 
-                    const rune = ITEM_RUNES[this.createMode].property[selKey];
+                    let rune = ITEM_RUNES[this.createMode].property[selKey];
+                    if (rune === undefined) {
+                        await setFlag(key, CREATE_KEY_NONE);
+                        return;
+                    }
 
                     renderData['create'][name] = rune;
                     renderData['create'][`${name}Level`] = rune.level;
@@ -288,29 +284,164 @@ export default function extendLootSheet() {
                 renderData['create']['potencyLevel'] = potency.level;
                 renderData['create']['potencyPrice'] = potency.price;
 
-                // Item property
-                renderData['create']['propertyOptions'] = ITEM_RUNES[this.createMode].property;
-                getRuneData('property1', KEY_RU1);
-                getRuneData('property2', KEY_RU2);
-                getRuneData('property3', KEY_RU3);
+                // Fundamental runes
+                let fundamental = ITEM_RUNES[this.createMode].fundamental[this.selFunKey];
+                if (fundamental === undefined) {
+                    await setFlag(KEY_FUN, CREATE_KEY_NONE);
+                    fundamental = ITEM_RUNES[this.createMode].fundamental[this.selFunKey];
+                }
 
-                renderData['create']['itemPrice'] = this.calculateCreatePrice();
-                renderData['create']['itemLevel'] = this.calculateCreateLevel();
+                renderData['create']['fundamental'] = fundamental;
+                renderData['create']['fundamentalOptions'] = ITEM_RUNES[this.createMode].fundamental;
+                renderData['create']['fundamentalLevel'] = fundamental.level;
+                renderData['create']['fundamentalPrice'] = fundamental.price;
+
+                if (potency.nId === 0 && getFlag(KEY_FUN) !== CREATE_KEY_NONE) {
+                    await setFlag(KEY_FUN, CREATE_KEY_NONE);
+                }
+
+                // Item property
+                for (let i = 3; i > 0; i--) {
+                    const key = `create-property${i}`;
+                    if (potency.nId < i && getFlag(key) !== CREATE_KEY_NONE) {
+                        await setFlag(key, CREATE_KEY_NONE);
+                    }
+                }
+
+                renderData['create']['propertyOptions'] = ITEM_RUNES[this.createMode].property;
+                await getRuneData('property1', KEY_RU1);
+                await getRuneData('property2', KEY_RU2);
+                await getRuneData('property3', KEY_RU3);
+
+                renderData['create']['itemPrice'] = renderData['create']['baseItemPrice'];
+                renderData['create']['itemLevel'] = renderData['create']['baseItemLevel'];
+
+                renderData['create']['itemPrice'] += getMaterialPrice(baseItem?.data.data.weight.value, materialGradeStats.pricePerBulk);
 
                 renderData['create']['itemPrice'] += renderData['create']['potencyPrice'];
                 renderData['create']['itemLevel'] = Math.max(renderData['create']['itemLevel'], renderData['create'][`potencyLevel`]);
-                renderData['create']['itemPrice'] += renderData['create']['baseItemPrice'];
-                renderData['create']['itemPrice'] += getMaterialPrice(baseItem?.data.data.weight.value, renderData['create']['materialPrice']);
+
+                renderData['create']['itemPrice'] += renderData['create']['fundamentalPrice'];
+                renderData['create']['itemLevel'] = Math.max(renderData['create']['itemLevel'], renderData['create'][`fundamentalLevel`]);
 
                 for (let i = 1; i < 4; i++) {
-                    renderData['create']['itemPrice'] += renderData['create'][`property${i}Price`];
-                    renderData['create']['itemLevel'] = Math.max(renderData['create']['itemLevel'], renderData['create'][`property${i}Level`]);
+                    const price = `property${i}Price`;
+                    const level = `property${i}Level`;
+
+                    if (renderData['create'][price]) {
+                        renderData['create']['itemPrice'] += renderData['create'][price];
+                    }
+                    if (renderData['create'][level]) {
+                        renderData['create']['itemLevel'] = Math.max(renderData['create']['itemLevel'], renderData['create'][level]);
+                    }
                 }
 
-                console.warn(renderData);
+                renderData['create']['itemRarity'] = baseItem?.data.data.traits.rarity.value.capitalize();
+                if (renderData['create']['itemLevel'] === 25) {
+                    renderData['create']['itemRarity'] = 'Unique';
+                }
 
                 resolve(renderData);
             });
+        }
+
+        async createCustomItem(event: JQuery.ClickEvent): Promise<void> {
+            const getFlag = (key: string): any => {
+                return this.actor.getFlag(MODULE_NAME, key);
+            };
+            const getSelected = (key: string): string => {
+                return getFlag(key) ?? CREATE_KEY_NONE;
+            };
+
+            const baseItem = (await this.getSelectedItem()) as Item;
+            const newItemData = duplicate(baseItem?.data) as ItemData;
+
+            let itemPrice = getItemPrice(baseItem.data.data.price.value);
+            let itemLevel = parseInt(baseItem.data.data.level.value);
+
+            const material = ITEM_MATERIALS[this.selMatKey];
+            const gradeStats = material[this.selGrdKey] as IGradeStats;
+            let thicknessKey = this.createMode === CreateMode.Weapon ? 'thinItems' : 'items';
+            if (thicknessKey === 'thinItems' && gradeStats[thicknessKey] === undefined) {
+                thicknessKey = 'items';
+            }
+
+            newItemData.data.hardness.value = gradeStats[thicknessKey].hardness;
+            newItemData.data.brokenThreshold.value = gradeStats[thicknessKey].bt;
+            newItemData.data.hp.value = gradeStats[thicknessKey].hp;
+            newItemData.data.maxHp.value = gradeStats[thicknessKey].hp;
+
+            newItemData.data.preciousMaterial.value = material.id;
+            newItemData.data.preciousMaterialGrade.value = this.selGrdKey;
+
+            itemPrice += getMaterialPrice(baseItem.data.data.weight.value, gradeStats.pricePerBulk);
+
+            let potencyRune = ITEM_RUNES[this.createMode].potency[this.selPotKey];
+            newItemData.data.potencyRune.value = this.selPotKey;
+
+            itemPrice += potencyRune.price;
+            itemLevel = Math.max(itemLevel, potencyRune.level);
+
+            switch (this.createMode) {
+                case CreateMode.Weapon:
+                    newItemData.data.strikingRune.value = this.selFunKey;
+                    break;
+                case CreateMode.Armor:
+                    newItemData.data.resiliencyRune.value = this.selFunKey;
+                    break;
+            }
+
+            let propertyRune1 = ITEM_RUNES[this.createMode].property[getSelected(KEY_RU1)];
+            let propertyRune2 = ITEM_RUNES[this.createMode].property[getSelected(KEY_RU2)];
+            let propertyRune3 = ITEM_RUNES[this.createMode].property[getSelected(KEY_RU3)];
+            let fundamentalRune = ITEM_RUNES[this.createMode].fundamental[getSelected(KEY_FUN)];
+
+            newItemData.data.propertyRune1.value = propertyRune1.id;
+            newItemData.data.propertyRune2.value = propertyRune2.id;
+            newItemData.data.propertyRune3.value = propertyRune3.id;
+
+            itemPrice += propertyRune1.price;
+            itemPrice += propertyRune2.price;
+            itemPrice += propertyRune3.price;
+
+            itemLevel = Math.max(itemLevel, propertyRune1.level);
+            itemLevel = Math.max(itemLevel, propertyRune1.level);
+            itemLevel = Math.max(itemLevel, propertyRune1.level);
+
+            let itemName = baseItem.name;
+
+            for (let i = 3; i > 0; i--) {
+                const key = `create-property${i}`;
+                const keyRu = this.actor.getFlag(MODULE_NAME, key);
+                if (potencyRune.nId >= i && keyRu !== CREATE_KEY_NONE) {
+                    const rune = ITEM_RUNES[this.createMode].property[keyRu];
+                    itemName = `${rune.label} ${itemName}`;
+                }
+            }
+
+            if (fundamentalRune.id !== CREATE_KEY_NONE) {
+                itemName = `${fundamentalRune.label} ${itemName}`;
+            }
+
+            if (potencyRune.nId > 0) {
+                itemName = `+${potencyRune.nId} ${itemName}`;
+            }
+
+            newItemData.data.level.value = itemLevel;
+            newItemData.data.price.value = `${itemPrice} gp`;
+
+            if (itemLevel === 25) {
+                newItemData.data.traits.rarity.value = 'unique';
+                newItemData.data.price.value = `—`;
+            }
+
+            newItemData.name = itemName;
+
+            const newItem = await this.actor.createOwnedItem(newItemData);
+
+            if (event.altKey && Settings.get(Settings.FEATURES.QUICK_MYSTIFY)) {
+                await window['ForienIdentification'].mystify(`Actor.${this.actor.id}.OwnedItem.${newItem['_id']}`, { replace: true });
+            }
         }
 
         activateListeners(html: JQuery) {
@@ -318,6 +449,10 @@ export default function extendLootSheet() {
 
             html.find('select').on('input', (event) => {
                 this._onSubmit(event);
+            });
+
+            html.find('#create').on('click', (event) => {
+                this.createCustomItem(event);
             });
 
             const actor = this.actor as Actor;

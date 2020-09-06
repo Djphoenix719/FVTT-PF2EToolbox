@@ -3,21 +3,21 @@
 
     <select id="create-mode" name="flags.pf2e-toolbox.create-mode">
         {{#select flags.pf2e-toolbox.create-mode}}
-            {{#each createModes as |type|}}
+            {{#each create.modes as |type|}}
                 <option value="{{type}}">{{type}}</option>
             {{/each}}
         {{/select}}
     </select>
 </div>
 
-{{#ifeq flags.pf2e-toolbox.create-mode "weapon"}}
+{{#ifeq create.mode "weapon"}}
     {{> modules/pf2e-toolbox/templates/loot-app/create/CreateWeapon.html}}
 {{/ifeq}}
 
-{{#ifeq flags.pf2e-toolbox.create-mode "armor"}}
+{{#ifeq create.mode "armor"}}
     {{> modules/pf2e-toolbox/templates/loot-app/create/CreateArmor.html}}
 {{/ifeq}}
 
-{{#ifeq flags.pf2e-toolbox.create-mode "scroll"}}
+{{#ifeq create.mode "scroll"}}
     <span>WIP</span>
 {{/ifeq}}

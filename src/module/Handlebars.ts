@@ -62,6 +62,9 @@ export function registerHandlebarsHelpers() {
     Handlebars.registerHelper('undefined', function () {
         return undefined;
     });
+    Handlebars.registerHelper('commas', function (context) {
+        return context.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    });
 
     Handlebars.registerHelper('hasKey', function (context, key) {
         for (const prop of context) {

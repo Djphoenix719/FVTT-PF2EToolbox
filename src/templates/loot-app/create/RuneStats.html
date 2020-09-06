@@ -1,8 +1,10 @@
 <p class="clearfix" style="width: 100%">
+    {{#ifgt level 0}}
     <span style="float: left">
         <i class="fas fa-level-up-alt"></i> <b>{{level}}</b>
     </span>
+    {{/ifgt}}
     <span style="float: right">
-        <i class="fas fa-coins"></i> +<b>{{price}}</b> gp
+        <i class="fas fa-coins"></i> +<b>{{commas price}}</b> gp
     </span>
 </p>
