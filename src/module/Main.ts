@@ -316,25 +316,6 @@ function enableLootApp() {
         types: ['loot'],
         makeDefault: false,
     });
-
-    if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY)) {
-        const lootSheet = CONFIG.Actor.sheetClasses['loot']['pf2e-toolbox.LootApp'];
-        lootSheet.cls = class LootApp extends lootSheet.cls {
-            async _onDrop(event: DragEvent) {
-                // @ts-ignore
-                const actor: Actor = this.actor;
-                const existing = actor.items.map((i: Item) => i.id) as string[];
-                await super._onDrop(event);
-
-                if (event.altKey && game.user.isGM) {
-                    const newItems = actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
-                    for (const item of newItems) {
-                        window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
-                    }
-                }
-            }
-        };
-    }
 }
 
 function onFlattenProficiencyContextHook(html: JQuery, buttons: any[]) {

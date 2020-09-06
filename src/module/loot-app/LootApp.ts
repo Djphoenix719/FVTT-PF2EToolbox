@@ -169,19 +169,10 @@ export default function extendLootSheet() {
             return new Promise<any>(async (resolve) => {
                 const renderData = await super.getData();
 
-                const getFlag = (key: string): any => {
-                    return this.actor.getFlag(MODULE_NAME, key);
-                };
-                const setFlag = async (key: string, value: string): Promise<Actor> => {
-                    return await this.actor.setFlag(MODULE_NAME, key, value);
-                };
-                const unsetFlag = async (key: string): Promise<Actor> => {
-                    return await this.actor.unsetFlag(MODULE_NAME, key);
-                };
-
                 renderData['treasureTables'] = await GetTreasureTables();
-                renderData['magicItemTables'] = await GetMagicItemTables('Permanent Items');
-                renderData['consumablesTables'] = await GetMagicItemTables('Consumables Items');
+                // Quick Mystification breaks when these are enabled, investigate.
+                // renderData['magicItemTables'] = await GetMagicItemTables('Permanent Items');
+                // renderData['consumablesTables'] = await GetMagicItemTables('Consumables Items');
 
                 renderData['flags'] = this.actor.data.flags;
 
@@ -191,7 +182,7 @@ export default function extendLootSheet() {
                 };
 
                 if (this.selMatKey && !materialHasGrade(this.selMatKey, this.selGrdKey)) {
-                    await setFlag(KEY_GRD, ITEM_MATERIALS[this.selMatKey].defaultGrade);
+                    await this.actor.setFlag(MODULE_NAME, KEY_GRD, ITEM_MATERIALS[this.selMatKey].defaultGrade);
                 }
 
                 // Item materials
@@ -259,16 +250,16 @@ export default function extendLootSheet() {
                 }
 
                 if (!items.find((i) => i.id === this.selIteKey)) {
-                    await setFlag(KEY_ITE, items[0].id);
+                    await this.actor.setFlag(MODULE_NAME, KEY_ITE, items[0].id);
                 }
 
                 const getRuneData = async (name: string, key: string) => {
-                    const selKey = getFlag(`${key}`) as string | undefined;
+                    const selKey = this.actor.getFlag(MODULE_NAME, `${key}`) as string | undefined;
                     if (!selKey) return;
 
                     let rune = ITEM_RUNES[this.createMode].property[selKey];
                     if (rune === undefined) {
-                        await setFlag(key, CREATE_KEY_NONE);
+                        await this.actor.setFlag(MODULE_NAME, key, CREATE_KEY_NONE);
                         return;
                     }
 
@@ -287,7 +278,7 @@ export default function extendLootSheet() {
                 // Fundamental runes
                 let fundamental = ITEM_RUNES[this.createMode].fundamental[this.selFunKey];
                 if (fundamental === undefined) {
-                    await setFlag(KEY_FUN, CREATE_KEY_NONE);
+                    await this.actor.setFlag(MODULE_NAME, KEY_FUN, CREATE_KEY_NONE);
                     fundamental = ITEM_RUNES[this.createMode].fundamental[this.selFunKey];
                 }
 
@@ -296,15 +287,15 @@ export default function extendLootSheet() {
                 renderData['create']['fundamentalLevel'] = fundamental.level;
                 renderData['create']['fundamentalPrice'] = fundamental.price;
 
-                if (potency.nId === 0 && getFlag(KEY_FUN) !== CREATE_KEY_NONE) {
-                    await setFlag(KEY_FUN, CREATE_KEY_NONE);
+                if (potency.nId === 0 && this.actor.getFlag(MODULE_NAME, KEY_FUN) !== CREATE_KEY_NONE) {
+                    await this.actor.setFlag(MODULE_NAME, KEY_FUN, CREATE_KEY_NONE);
                 }
 
                 // Item property
                 for (let i = 3; i > 0; i--) {
                     const key = `create-property${i}`;
-                    if (potency.nId < i && getFlag(key) !== CREATE_KEY_NONE) {
-                        await setFlag(key, CREATE_KEY_NONE);
+                    if (potency.nId < i && this.actor.getFlag(MODULE_NAME, key) !== CREATE_KEY_NONE) {
+                        await this.actor.setFlag(MODULE_NAME, key, CREATE_KEY_NONE);
                     }
                 }
 
@@ -441,6 +432,7 @@ export default function extendLootSheet() {
 
             if (event.altKey && Settings.get(Settings.FEATURES.QUICK_MYSTIFY)) {
                 await window['ForienIdentification'].mystify(`Actor.${this.actor.id}.OwnedItem.${newItem['_id']}`, { replace: true });
+                // this.render();
             }
         }
 
@@ -503,6 +495,23 @@ export default function extendLootSheet() {
                     items: [],
                 });
             });
+        }
+
+        async _onDrop(event: DragEvent) {
+            if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY)) {
+                const existing = this.actor.items.map((i: Item) => i.id) as string[];
+                await super._onDrop(event);
+
+                if (event.altKey && game.user.isGM) {
+                    const newItems = this.actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
+                    for (const item of newItems) {
+                        await window['ForienIdentification'].mystify(`Actor.${this.actor.id}.OwnedItem.${item.id}`, { replace: true });
+                    }
+                    setTimeout(() => this.render(true), 1);
+                }
+            } else {
+                return super._onDrop(event);
+            }
         }
     };
 }
