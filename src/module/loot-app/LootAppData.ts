@@ -426,7 +426,7 @@ export const ITEM_RUNES = {
             },
             holy: {
                 id: 'holy',
-                label: 'goly',
+                label: 'holy',
                 price: 1400,
                 level: 11,
             },
