@@ -1,0 +1,12 @@
+<div class="tab features" data-group="primary" data-tab="features">
+    <h1>Features</h1>
+    {{#each features as |feature|}}
+        <div class="form-group">
+            <label>{{feature.name}}</label>
+            <div class="form-fields">
+                <input type="{{feature.type}}" name="{{feature.name}}" data-dtype="{{feature.dtype}}" {{checked setting.value}}>
+            </div>
+            <p class="notes">{{feature.hint}}</p>
+        </div>
+    {{/each}}
+</div>

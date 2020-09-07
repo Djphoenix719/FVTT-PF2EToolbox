@@ -21,6 +21,7 @@ import { onSetupTokensContextHook } from './Tokens';
 import extendLootSheet from './loot-app/LootApp';
 import { IDataUpdates, IHandledItemType } from './cr-scaler/NPCScalerTypes';
 import { registerHandlebarsHelpers, registerHandlebarsTemplates } from './Handlebars';
+import SettingsApp from './settings-app/SettingsApp';
 
 Hooks.on('init', Settings.registerAllSettings);
 
@@ -74,6 +75,9 @@ Hooks.on('setup', () => {
     // Hooks.on('ready', () => {
     //     setTimeout(() => (game.actors.getName('Loot') as Actor).sheet.render(true), 500);
     // });
+    Hooks.on('ready', () => {
+        setTimeout(() => new SettingsApp({}).render(true), 500);
+    });
 });
 
 function onScaleNPCContextHook(html: JQuery, buttons: any[]) {

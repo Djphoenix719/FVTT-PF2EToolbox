@@ -1,0 +1,43 @@
+.pf2e-toolbox.settings-app {
+    min-height: 600px;
+
+    form {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+
+        width: 100%;
+
+        nav.settings-app-nav,
+        div.settings-app-body {
+            flex-direction: column;
+        }
+
+        nav.settings-app-nav {
+            display: flex;
+            padding-right: 0.25em;
+            border-right: 1px solid #782e22c0;
+
+            a.item {
+                border-bottom: 1px solid #782e22;
+                min-width: 8em;
+                width: 100%;
+
+                transition: 0.2s font-size, font-weight;
+
+                &:hover {
+                    font-size: 1.1em;
+                    font-weight: bold;
+                }
+            }
+        }
+        div.settings-app-body {
+            flex: 1;
+            padding-left: 0.25em;
+            border-left: 1px solid #999;
+        }
+    }
+}
+
+@import './features';

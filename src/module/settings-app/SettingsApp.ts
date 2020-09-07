@@ -19,18 +19,27 @@ export default class SettingsApp extends FormApplication {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.title = 'PF2E Toolbox Settings';
-        options.template = `modules/${MODULE_NAME}/templates/settings-app/index.html`;
+        options.template = `modules/${MODULE_NAME}/templates/settings-app/SettingsApp.html`;
+        options.classes = options.classes ?? [];
+        options.classes = [...options.classes, 'pf2e-toolbox', 'settings-app'];
+        options.tabs = [
+            {
+                navSelector: `.settings-app-nav`,
+                contentSelector: `.settings-app-body`,
+                initial: `.settings-app-about`,
+            },
+        ];
         options.width = 600;
         options.height = 'auto';
         return options;
     }
 
-    constructor(object: any, options?: FormApplicationOptions) {
-        super(object, options);
-
-        if (this.object === undefined) {
-            this.object = {};
+    constructor(object: object | undefined, options?: FormApplicationOptions) {
+        if (object === undefined) {
+            object = {};
         }
+
+        super(object, options);
     }
 
     getData(options?: object): object {

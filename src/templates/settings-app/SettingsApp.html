@@ -1,0 +1,15 @@
+<form class="settings-app">
+
+    <nav id="settings-app-nav" class="settings-app-nav">
+        <a class="item" data-tab="about">About</a>
+        <a class="item" data-tab="features">Features</a>
+        <a class="item" data-tab="options">Options</a>
+    </nav>
+
+    <div class="settings-app-body">
+        {{> modules/pf2e-toolbox/templates/settings-app/tabs/About.html }}
+        {{> modules/pf2e-toolbox/templates/settings-app/tabs/Features.html }}
+        {{> modules/pf2e-toolbox/templates/settings-app/tabs/Options.html }}
+    </div>
+
+</form>
