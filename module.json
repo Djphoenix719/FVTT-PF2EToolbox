@@ -2,7 +2,7 @@
     "name": "pf2e-toolbox",
     "title": "PF2E Toolbox",
     "description": "A collection of utilities I made mostly for myself, but may be useful to others to run games in PF2E.",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "author": "Andrew Cuccinello [DJ#1982]",
     "packs": [],
     "esmodules": ["./bundle.js"],
@@ -12,6 +12,6 @@
     "compatibleCoreVersion": "0.6.5",
     "minimumCoreVersion": "0.6.0",
     "manifest": "https://raw.githubusercontent.com/Djphoenix719/FVTT-PF2EToolbox/master/module.json",
-    "download": "https://github.com/Djphoenix719/FVTT-PF2EToolbox/releases/download/v1.4.0/pf2e-toolbox-v1.4.0.zip",
+    "download": "https://github.com/Djphoenix719/FVTT-PF2EToolbox/releases/download/v1.4.1/pf2e-toolbox-v1.4.1.zip",
     "url": "https://github.com/Djphoenix719/FVTT-PF2EToolbox"
 }
