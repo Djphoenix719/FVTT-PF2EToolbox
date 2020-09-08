@@ -44,6 +44,62 @@ type FeatureDefines = {
     [P in keyof typeof Features]: FeatureDefine;
 };
 
+const allFeatures: FeatureDefines = {
+    DISABLE_PFS_TAB: {
+        name: 'Disable PFS Tab',
+        default: false,
+    },
+    FLATTEN_PROFICIENCY: {
+        name: 'Enable Flatten Proficiency',
+    },
+    HERO_POINTS: {
+        name: 'Enable Hero Points',
+    },
+    LOOT_APP: {
+        name: 'Enable Loot App',
+        hint: 'Ensure no actors are using the new loot sheet before disabling. Setting only applied on page reload.',
+    },
+    NPC_SCALER: {
+        name: 'Enable NPC Scaler',
+    },
+    QUANTITIES: {
+        name: 'Enable Quick Quantities',
+    },
+    QUICK_MYSTIFY: {
+        name: 'Enable Quick Mystify',
+    },
+    QUICK_VIEW_SCENE: {
+        name: 'Enable Quick View Scene',
+    },
+    REMOVE_DEFAULT_ART: {
+        name: 'Remove Default Art',
+    },
+    ROLL_APP: {
+        name: 'Enable Roll App',
+    },
+    TOKEN_SETUP: {
+        name: 'Enable Token Setup',
+    },
+};
+
+const defaultFeatureDefine = {
+    hint: 'Setting only applied on page reload.',
+    scope: 'world',
+    type: Boolean,
+    default: true,
+    config: true,
+    restricted: true,
+};
+
+for (const [index, key] of Object.entries(Features)) {
+    allFeatures[index] = {
+        ...defaultFeatureDefine,
+        ...allFeatures[index],
+    };
+}
+
+export const FEATURE_DEFINES = allFeatures;
+
 export default class Settings {
     public static readonly FEATURES = Features;
     public static readonly FEATURE_DEFINES: FeatureDefines = {
@@ -52,7 +108,7 @@ export default class Settings {
             default: false,
         },
         FLATTEN_PROFICIENCY: {
-            name: 'Enable Flatten Proficiency',
+            name: 'Flatten Proficiency',
         },
         HERO_POINTS: {
             name: 'Enable Hero Points',

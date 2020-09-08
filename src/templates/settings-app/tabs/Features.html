@@ -1,12 +1,68 @@
 <div class="tab features" data-group="primary" data-tab="features">
     <h1>Features</h1>
+
     {{#each features as |feature|}}
-        <div class="form-group">
-            <label>{{feature.name}}</label>
-            <div class="form-fields">
-                <input type="{{feature.type}}" name="{{feature.name}}" data-dtype="{{feature.dtype}}" {{checked setting.value}}>
+    <div class="feature">
+        <div class="feature-header">
+            <span class="title">{{feature.name}}</span>
+            <div class="attributes">
+                {{#each feature.attributes as |attribute|}}
+                    <i class="{{attribute.icon}}" title="{{attribute.title}}"></i>
+                {{/each}}
             </div>
-            <p class="notes">{{feature.hint}}</p>
         </div>
+
+        <p class="feature-description">
+            {{feature.description}}
+        </p>
+
+        <div class="feature-content">
+            {{#each feature.inputs as |input|}}
+                <div class="form-group">
+
+                    <label for="{{input.name}}">{{input.label}}</label>
+
+                    {{#ifeq input.type "checkbox"}}
+                        <input type="checkbox" name="{{input.name}}" {{checked input.value}}>
+                    {{/ifeq}}
+
+                </div>
+            {{/each}}
+<!--            <div class="form-group">-->
+<!--                <label>Number</label>-->
+<!--                <input type="number">-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--                <label>Checkbox</label>-->
+<!--                <input type="checkbox">-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--                <label>Text</label>-->
+<!--                <input type="text">-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--                <label>Color</label>-->
+<!--                <input type="color">-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--                <label>File</label>-->
+<!--                <input type="file">-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--                <label>Select</label>-->
+<!--                <select>-->
+<!--                    <option value="1">One</option>-->
+<!--                    <option value="2">Two</option>-->
+<!--                </select>-->
+<!--            </div>-->
+        </div>
+
+        {{#if feature.help}}
+            <p class="feature-help">
+                {{{feature.help}}}
+            </p>
+        {{/if}}
+
+    </div>
     {{/each}}
 </div>
