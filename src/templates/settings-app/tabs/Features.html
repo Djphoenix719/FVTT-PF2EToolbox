@@ -13,7 +13,7 @@
         </div>
 
         <p class="feature-description">
-            {{feature.description}}
+            {{{feature.description}}}
         </p>
 
         <div class="feature-content">
@@ -24,6 +24,9 @@
 
                     {{#ifeq input.type "checkbox"}}
                         <input type="checkbox" name="{{input.name}}" {{checked input.value}}>
+                    {{/ifeq}}
+                    {{#ifeq input.type "number"}}
+                        <input type="number" name="{{input.name}}" value="{{input.value}}">
                     {{/ifeq}}
 
                 </div>

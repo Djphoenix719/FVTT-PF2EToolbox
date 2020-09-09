@@ -14,31 +14,7 @@
  */
 
 import { MODULE_NAME } from '../Constants';
-import Settings from './Settings';
-
-type IFeatureInputType = 'checkbox';
-interface IFeatureAttribute {
-    icon: string;
-    title: string;
-}
-interface IFeatureInput {
-    name: string;
-    label: string;
-    type: IFeatureInputType;
-    value: any;
-}
-interface IFeatureDefinition {
-    name: string;
-    attributes?: IFeatureAttribute[];
-    description: string;
-    inputs: IFeatureInput[];
-    help?: string;
-}
-
-const ATTR_RELOAD_REQUIRED: IFeatureAttribute = {
-    icon: 'fas fa-sync',
-    title: 'Reload Required',
-};
+import Settings, { FEATURES } from './Settings';
 
 export default class SettingsApp extends FormApplication {
     static get defaultOptions() {
@@ -55,8 +31,7 @@ export default class SettingsApp extends FormApplication {
             },
         ];
         options.width = 600;
-        options.height = 'auto';
-        options.resizable = true;
+        options.height = 800;
         return options;
     }
 
@@ -71,31 +46,22 @@ export default class SettingsApp extends FormApplication {
     getData(options?: object): object {
         const renderData = super.getData(options);
 
-        let features: IFeatureDefinition[] = [
-            {
-                name: 'Disable PFS Tab',
-                attributes: [ATTR_RELOAD_REQUIRED],
-                description: `Hide the button to access the Pathfinder Society tab of the player character sheet.`,
-                inputs: [
-                    {
-                        name: Settings.FEATURES.DISABLE_PFS_TAB,
-                        label: 'Disable?',
-                        type: 'checkbox',
-                        value: Settings.get(Settings.FEATURES.DISABLE_PFS_TAB),
-                    },
-                ],
-                help:
-                    'Does not disable any features of the PFS tab, only hides it. If the PFS tab imposes mechanical' +
-                    ' changes to a character they will still apply.',
-            },
-        ];
-
+        let features = duplicate(FEATURES);
+        for (const setting of features) {
+            for (const input of setting.inputs) {
+                input['value'] = Settings.get(input.name);
+            }
+        }
         renderData['features'] = features;
 
         return renderData;
     }
 
-    protected async _updateObject(event: JQuery.Event, formData: any): Promise<void> {}
+    protected async _updateObject(event: JQuery.Event, formData: any): Promise<void> {
+        for (const [key, value] of Object.entries(formData)) {
+            await Settings.set(key, value);
+        }
+    }
 
     protected activateListeners(html: JQuery) {
         super.activateListeners(html);

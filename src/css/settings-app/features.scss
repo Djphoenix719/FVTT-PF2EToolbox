@@ -1,4 +1,8 @@
 div.settings-app-body .features {
+    h1 {
+        margin: 0;
+    }
+
     div.feature {
         padding-bottom: 1em;
         border-bottom: 1px solid #782e22;
@@ -39,6 +43,10 @@ div.settings-app-body .features {
             border: 1px solid #999;
             border-radius: 3px;
             background: rgba(0, 0, 0, 0.1);
+
+            label {
+                font-weight: bold;
+            }
         }
 
         p.feature-help {

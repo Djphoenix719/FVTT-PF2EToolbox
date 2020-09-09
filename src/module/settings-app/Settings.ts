@@ -15,6 +15,7 @@
 
 import { MODULE_NAME } from '../Constants';
 import '../../external/settings-extender.js';
+import SettingsApp from './SettingsApp';
 
 const Features = {
     DISABLE_PFS_TAB: 'DISABLE_PFS_TAB',
@@ -30,115 +31,367 @@ const Features = {
     TOKEN_SETUP: 'ENABLE_TOKEN_SETUP',
 };
 
-interface FeatureDefine {
+const MAX_HERO_POINTS = 'MAX_HERO_POINTS';
+const SHIFT_QUANTITY = 'QUANTITY_SHIFT_MULTIPLIER';
+const CONTROL_QUANTITY = 'QUANTITY_CONTROL_MULTIPLIER';
+
+const SCALED_FOLDER = 'SCALED_FOLDER_NAME';
+
+const TOKEN_PATH = 'TOKEN_FOLDER_PATH';
+const TOKEN_TARGET = 'TOKEN_FOLDER_TARGET';
+const TOKEN_TARGET_BUCKET = 'TOKEN_FOLDER_TARGET_BUCKET';
+
+const LAST_SEEN_SYSTEM = 'LAST_SEEN_VERSION';
+
+const MENU_KEY = 'SETTINGS_MENU';
+
+type IFeatureInputType = 'checkbox' | 'number' | 'text' | 'file';
+interface IFeatureAttribute {
+    icon: string;
+    title: string;
+}
+interface IFeatureInput {
     name: string;
-    hint?: string;
-    scope?: 'world' | 'client' | 'user';
-    type?: BooleanConstructor;
-    default?: Boolean;
-    config?: Boolean;
-    restricted?: Boolean;
+    label: string;
+    type: IFeatureInputType;
+    value: any;
+    max?: number;
+    min?: number;
+}
+interface IFeatureRegistration {
+    name: string;
+    type: BooleanConstructor | NumberConstructor | StringConstructor;
+    default: any;
+    onChange?: (value: any) => void;
+}
+interface IFeatureDefinition {
+    name: string;
+    attributes?: IFeatureAttribute[];
+    description: string;
+    inputs: IFeatureInput[];
+    register: IFeatureRegistration[];
+    help?: string;
 }
 
-type FeatureDefines = {
-    [P in keyof typeof Features]: FeatureDefine;
+const ATTR_RELOAD_REQUIRED: IFeatureAttribute = {
+    icon: 'fas fa-sync',
+    title: 'Reload Required',
+};
+const ATTR_REOPEN_SHEET_REQUIRED: IFeatureAttribute = {
+    icon: 'fas fa-sticky-note',
+    title: 'Sheets must be closed and re-opened.',
 };
 
-const allFeatures: FeatureDefines = {
-    DISABLE_PFS_TAB: {
-        name: 'Disable PFS Tab',
-        default: false,
+export const FEATURES: IFeatureDefinition[] = [
+    {
+        name: 'Hide PFS Tab',
+        attributes: [ATTR_RELOAD_REQUIRED],
+        description: `Hide the button to access the Pathfinder Society tab of the player character sheet.`,
+        inputs: [
+            {
+                name: Features.DISABLE_PFS_TAB,
+                label: 'Disable',
+                type: 'checkbox',
+                value: false,
+            },
+        ],
+        register: [
+            {
+                name: Features.DISABLE_PFS_TAB,
+                type: Boolean,
+                default: false,
+            },
+        ],
+        help: 'Does not disable any features of the PFS tab, only hides it. If the PFS tab imposes mechanical changes to a character they will still apply.',
     },
-    FLATTEN_PROFICIENCY: {
-        name: 'Enable Flatten Proficiency',
+    {
+        name: 'Quick Roll App',
+        attributes: [ATTR_RELOAD_REQUIRED],
+        description: `An app with all the data available for monsters in convenient tables that can be clicked to roll.`,
+        inputs: [
+            {
+                name: Features.ROLL_APP,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true,
+            },
+        ],
+        register: [
+            {
+                name: Features.ROLL_APP,
+                type: Boolean,
+                default: true,
+            },
+        ],
     },
-    HERO_POINTS: {
-        name: 'Enable Hero Points',
+    {
+        name: 'Quick Mystification',
+        attributes: [ATTR_RELOAD_REQUIRED],
+        description: `Holding alt when dragging an item onto a sheet immediately mystifies it.`,
+        inputs: [
+            {
+                name: Features.QUICK_MYSTIFY,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true,
+            },
+        ],
+        register: [
+            {
+                name: Features.QUICK_MYSTIFY,
+                type: Boolean,
+                default: false,
+            },
+        ],
     },
-    LOOT_APP: {
-        name: 'Enable Loot App',
-        hint: 'Ensure no actors are using the new loot sheet before disabling. Setting only applied on page reload.',
+    {
+        name: 'Quick View Scene',
+        attributes: [ATTR_RELOAD_REQUIRED],
+        description: `Adds a "View Scene" context menu option to scenes in the scene directory.`,
+        inputs: [
+            {
+                name: Features.QUICK_VIEW_SCENE,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true,
+            },
+        ],
+        register: [
+            {
+                name: Features.QUICK_VIEW_SCENE,
+                type: Boolean,
+                default: true,
+            },
+        ],
     },
-    NPC_SCALER: {
-        name: 'Enable NPC Scaler',
-    },
-    QUANTITIES: {
-        name: 'Enable Quick Quantities',
-    },
-    QUICK_MYSTIFY: {
-        name: 'Enable Quick Mystify',
-    },
-    QUICK_VIEW_SCENE: {
-        name: 'Enable Quick View Scene',
-    },
-    REMOVE_DEFAULT_ART: {
+    {
         name: 'Remove Default Art',
-    },
-    ROLL_APP: {
-        name: 'Enable Roll App',
-    },
-    TOKEN_SETUP: {
-        name: 'Enable Token Setup',
-    },
-};
+        attributes: [ATTR_RELOAD_REQUIRED],
+        description: `Each new version of PF2E, will remove default art from all bestiary compendiums.`,
 
-const defaultFeatureDefine = {
-    hint: 'Setting only applied on page reload.',
-    scope: 'world',
-    type: Boolean,
-    default: true,
-    config: true,
-    restricted: true,
-};
+        inputs: [
+            {
+                name: Features.REMOVE_DEFAULT_ART,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true,
+            },
+        ],
+        register: [
+            {
+                name: Features.REMOVE_DEFAULT_ART,
+                type: Boolean,
+                default: false,
+            },
+        ],
+    },
+    {
+        name: 'Quick Quantities',
+        attributes: [ATTR_RELOAD_REQUIRED],
+        description: `Allows you to hold shift or control when increasing/decreasing an item quantity on the player sheet to quickly increase/decrease quantities.`,
 
-for (const [index, key] of Object.entries(Features)) {
-    allFeatures[index] = {
-        ...defaultFeatureDefine,
-        ...allFeatures[index],
-    };
-}
+        inputs: [
+            {
+                name: Features.QUANTITIES,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true,
+            },
+            {
+                name: SHIFT_QUANTITY,
+                label: 'Shift Quantity',
+                type: 'number',
+                value: 5,
+            },
+            {
+                name: CONTROL_QUANTITY,
+                label: 'Control Quantity',
+                type: 'number',
+                value: 10,
+            },
+        ],
+        register: [
+            {
+                name: Features.QUANTITIES,
+                type: Boolean,
+                default: false,
+            },
+            {
+                name: SHIFT_QUANTITY,
+                type: Number,
+                default: 5,
+            },
+            {
+                name: CONTROL_QUANTITY,
+                type: Number,
+                default: 10,
+            },
+        ],
+    },
+    {
+        name: 'Flatten Proficiency',
+        attributes: [ATTR_RELOAD_REQUIRED],
+        description: `A helper for the "Proficiency without Level" variant rule (GMG 198) will be added to the context menu of NPCs to 
+        remove the creatures level from all relevant stats.`,
+        inputs: [
+            {
+                name: Features.FLATTEN_PROFICIENCY,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true,
+            },
+        ],
+        register: [
+            {
+                name: Features.FLATTEN_PROFICIENCY,
+                type: Boolean,
+                default: false,
+            },
+        ],
+    },
+    {
+        name: 'NPC Scaler',
+        attributes: [ATTR_RELOAD_REQUIRED],
+        description: `Adds the ability to scale NPCs to any range of levels to the context menu. Will scale all relevant statistics 
+        of the creature, including DCs and damage displayed in ability descriptions.`,
+        inputs: [
+            {
+                name: Features.NPC_SCALER,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true,
+            },
+        ],
+        register: [
+            {
+                name: Features.NPC_SCALER,
+                type: Boolean,
+                default: false,
+            },
+        ],
+    },
+    {
+        name: 'Loot Enhancements',
+        attributes: [ATTR_RELOAD_REQUIRED],
+        description: `Adds a new loot actor sheet with many enhancements such as a treasure roller, magic item creator, and more.`,
+        help: `You must set all loot actors back to the default sheet before disabling this option or the actor will not function after
+        it is disabled.`,
+        inputs: [
+            {
+                name: Features.LOOT_APP,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true,
+            },
+        ],
+        register: [
+            {
+                name: Features.LOOT_APP,
+                type: Boolean,
+                default: false,
+            },
+        ],
+    },
+    {
+        name: 'Maximum Hero Points',
+        attributes: [ATTR_REOPEN_SHEET_REQUIRED],
+        description: `Changes the maximum number of hero points a player can have.`,
+        inputs: [
+            {
+                name: Features.HERO_POINTS,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true,
+            },
+            {
+                name: MAX_HERO_POINTS,
+                label: 'Max Hero Points',
+                type: 'number',
+                value: 3,
+                min: 1,
+                max: 999,
+            },
+        ],
+        register: [
+            {
+                name: Features.HERO_POINTS,
+                type: Boolean,
+                default: false,
+            },
+            {
+                name: MAX_HERO_POINTS,
+                type: Number,
+                default: 3,
+            },
+        ],
+    },
+    {
+        name: 'Token Setup Helper',
+        attributes: [ATTR_RELOAD_REQUIRED],
+        description: `Adds a context menu option to setup a token using a pre-defined naming scheme. See the
+        <a href="https://github.com/Djphoenix719/FVTT-PF2EToolbox" target="_blank">GitHub</a> for details.`,
+        inputs: [
+            {
+                name: Features.TOKEN_SETUP,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true,
+            },
+            {
+                name: TOKEN_PATH,
+                label: 'Token Path',
+                type: 'file',
+                value: '',
+            },
+        ],
+        register: [
+            {
+                name: Features.TOKEN_SETUP,
+                type: Boolean,
+                default: false,
+            },
+            {
+                name: TOKEN_PATH,
+                type: Boolean,
+                default: false,
+                onChange: (value: string) => {
+                    if (value === Settings.get(TOKEN_PATH)) {
+                        return;
+                    }
 
-export const FEATURE_DEFINES = allFeatures;
+                    const parts = value.split('/');
+                    parts.pop();
+
+                    value = parts.join('/');
+                    // @ts-ignore
+                    const parsedS3URL = FilePicker.parseS3URL(value);
+
+                    if (parsedS3URL.bucket !== null) {
+                        Settings.set(Settings.TOKEN_TARGET_BUCKET, parsedS3URL.bucket);
+                        Settings.set(Settings.TOKEN_TARGET, 's3');
+                        Settings.set(Settings.TOKEN_PATH, value);
+                    } else {
+                        Settings.set(Settings.TOKEN_TARGET, 'data');
+                        Settings.set(Settings.TOKEN_PATH, value);
+                    }
+                },
+            },
+            {
+                name: TOKEN_TARGET,
+                type: String,
+                default: '',
+            },
+            {
+                name: TOKEN_TARGET_BUCKET,
+                type: String,
+                default: '',
+            },
+        ],
+    },
+];
 
 export default class Settings {
     public static readonly FEATURES = Features;
-    public static readonly FEATURE_DEFINES: FeatureDefines = {
-        DISABLE_PFS_TAB: {
-            name: 'Disable PFS Tab',
-            default: false,
-        },
-        FLATTEN_PROFICIENCY: {
-            name: 'Flatten Proficiency',
-        },
-        HERO_POINTS: {
-            name: 'Enable Hero Points',
-        },
-        LOOT_APP: {
-            name: 'Enable Loot App',
-            hint: 'Ensure no actors are using the new loot sheet before disabling. Setting only applied on page reload.',
-        },
-        NPC_SCALER: {
-            name: 'Enable NPC Scaler',
-        },
-        QUANTITIES: {
-            name: 'Enable Quick Quantities',
-        },
-        QUICK_MYSTIFY: {
-            name: 'Enable Quick Mystify',
-        },
-        QUICK_VIEW_SCENE: {
-            name: 'Enable Quick View Scene',
-        },
-        REMOVE_DEFAULT_ART: {
-            name: 'Remove Default Art',
-        },
-        ROLL_APP: {
-            name: 'Enable Roll App',
-        },
-        TOKEN_SETUP: {
-            name: 'Enable Token Setup',
-        },
-    };
 
     public static readonly MAX_HERO_POINTS = 'MAX_HERO_POINTS';
     public static readonly SHIFT_QUANTITY = 'QUANTITY_SHIFT_MULTIPLIER';
@@ -165,49 +418,26 @@ export default class Settings {
     }
 
     public static registerAllSettings() {
-        const types = window['Azzu'].SettingsTypes;
-
-        const defaultFeatureDefine = {
-            hint: 'Setting only applied on page reload.',
-            scope: 'world',
-            type: Boolean,
-            default: true,
-            config: true,
-            restricted: true,
-        };
-
-        for (const [index, key] of Object.entries(Settings.FEATURES)) {
-            const define = {
-                ...defaultFeatureDefine,
-                ...Settings.FEATURE_DEFINES[index],
-            };
-
-            Settings.reg(key, define);
+        for (const feature of FEATURES) {
+            for (const registration of feature.register) {
+                const setting = {
+                    name: registration.name,
+                    scope: 'world',
+                    type: registration.type,
+                    default: registration.default,
+                    config: false,
+                    restricted: true,
+                };
+                Settings.reg(registration.name, setting);
+            }
         }
 
-        Settings.reg(Settings.MAX_HERO_POINTS, {
-            name: 'Maximum Hero Points',
-            scope: 'world',
-            type: Number,
-            default: 3,
-            config: true,
-            restricted: true,
-        });
-
-        Settings.reg(Settings.SHIFT_QUANTITY, {
-            name: 'Shift Quantity Multiplier',
-            scope: 'world',
-            type: Number,
-            default: 5,
-            config: true,
-            restricted: true,
-        });
-        Settings.reg(Settings.CONTROL_QUANTITY, {
-            name: 'Control Quantity Multiplier',
-            scope: 'world',
-            type: Number,
-            default: 10,
-            config: true,
+        game.settings.registerMenu(MODULE_NAME, MENU_KEY, {
+            name: 'PF2E Toolbox Settings',
+            label: 'PF2E Toolbox Settings',
+            hint: 'Configure PF2E Toolbox enabled features and other options.',
+            icon: 'fas fa-cogs',
+            type: SettingsApp,
             restricted: true,
         });
 
@@ -218,63 +448,6 @@ export default class Settings {
             default: '',
             config: true,
             restricted: true,
-        });
-
-        Settings.reg(Settings.TOKEN_TARGET, {
-            name: 'Token Folder Target',
-            hint: 'Either "data" or "s3".',
-            scope: 'world',
-            type: String,
-            default: 'data',
-            config: false,
-            restricted: true,
-        });
-        Settings.reg(Settings.TOKEN_TARGET_BUCKET, {
-            name: 'S3 Bucket',
-            hint: 'Only needed when Token Folder Target is "s3".',
-            scope: 'world',
-            type: String,
-            default: 'data',
-            config: false,
-            restricted: true,
-        });
-
-        Settings.reg(Settings.TOKEN_PATH, {
-            name: 'True Token Folder Path',
-            scope: 'world',
-            type: String,
-            default: '',
-            config: false,
-            restricted: true,
-        });
-
-        Settings.reg(`${Settings.TOKEN_PATH}_CLIENT_FACING`, {
-            name: 'Token Folder Path',
-            hint:
-                'Select any file in the target directory. Note S3 buckets do not work with wildcard ?s due ' +
-                'to limitations of Foundry, and will use Image_01.png instead.',
-            scope: 'world',
-            type: types.FilePickerImage,
-            default: '',
-            config: true,
-            restricted: true,
-            onChange: (value: string) => {
-                const parts = value.split('/');
-                parts.pop();
-
-                value = parts.join('/');
-                // @ts-ignore
-                const parsedS3URL = FilePicker.parseS3URL(value);
-
-                if (parsedS3URL.bucket !== null) {
-                    Settings.set(Settings.TOKEN_TARGET_BUCKET, parsedS3URL.bucket);
-                    Settings.set(Settings.TOKEN_TARGET, 's3');
-                    Settings.set(Settings.TOKEN_PATH, value);
-                } else {
-                    Settings.set(Settings.TOKEN_TARGET, 'data');
-                    Settings.set(Settings.TOKEN_PATH, value);
-                }
-            },
         });
 
         Settings.reg(`${Settings.LAST_SEEN_SYSTEM}`, {

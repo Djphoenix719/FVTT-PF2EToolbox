@@ -7,22 +7,23 @@
         flex-wrap: wrap;
         justify-content: flex-start;
 
+        height: 100%;
         width: 100%;
 
         nav.settings-app-nav,
         div.settings-app-body {
             flex-direction: column;
+            height: 100%;
         }
 
         nav.settings-app-nav {
             display: flex;
-            padding-right: 0.25em;
+            padding-right: 8px;
             border-right: 1px solid #782e22c0;
 
             a.item {
                 border-bottom: 1px solid #782e22;
-                min-width: 8em;
-                width: 100%;
+                width: 8rem;
 
                 transition: 0.2s font-size, font-weight;
 
@@ -35,12 +36,30 @@
                     font-weight: bold;
                 }
             }
+            button {
+                margin-top: auto;
+            }
         }
         div.settings-app-body {
             flex: 1;
             padding-left: 8px;
             border-left: 1px solid #999;
+            overflow-y: scroll;
+            height: 100%;
+
+            div.tab.active {
+                display: inline-block;
+                padding-right: 8px;
+                width: 100%;
+
+                h1 {
+                    border-bottom: 1px solid #782e22;
+                }
+            }
         }
+    }
+    section.window-content {
+        overflow-y: hidden;
     }
 }
 
