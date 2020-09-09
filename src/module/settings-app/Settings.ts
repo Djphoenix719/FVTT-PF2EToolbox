@@ -54,7 +54,7 @@ interface IFeatureInput {
     name: string;
     label: string;
     type: IFeatureInputType;
-    hint?: string;
+    help?: string;
     value: any;
     max?: number;
     min?: number;
@@ -91,7 +91,7 @@ export const FEATURES: IFeatureDefinition[] = [
         inputs: [
             {
                 name: Features.DISABLE_PFS_TAB,
-                label: 'Disable',
+                label: 'Enable',
                 type: 'checkbox',
                 value: false,
             },
@@ -262,11 +262,22 @@ export const FEATURES: IFeatureDefinition[] = [
                 type: 'checkbox',
                 value: true,
             },
+            {
+                name: SCALED_FOLDER,
+                label: 'Output Folder',
+                type: 'text',
+                value: '',
+            },
         ],
         register: [
             {
                 name: Features.NPC_SCALER,
                 type: Boolean,
+                default: false,
+            },
+            {
+                name: SCALED_FOLDER,
+                type: String,
                 default: false,
             },
         ],
@@ -310,7 +321,7 @@ export const FEATURES: IFeatureDefinition[] = [
                 type: 'number',
                 value: 3,
                 min: 1,
-                max: 999,
+                max: 20,
             },
         ],
         register: [
@@ -323,6 +334,14 @@ export const FEATURES: IFeatureDefinition[] = [
                 name: MAX_HERO_POINTS,
                 type: Number,
                 default: 3,
+                onChange: (value: number) => {
+                    if (value < 1) {
+                        Settings.set(MAX_HERO_POINTS, 1);
+                    }
+                    if (value > 20) {
+                        Settings.set(MAX_HERO_POINTS, 20);
+                    }
+                },
             },
         ],
     },
@@ -339,10 +358,11 @@ export const FEATURES: IFeatureDefinition[] = [
                 value: true,
             },
             {
-                name: TOKEN_PATH,
+                name: `${TOKEN_PATH}_CLIENT_FACING`,
                 label: 'Token Path',
                 type: 'file',
                 value: '',
+                help: 'Choose any file in the target token mapping directory.',
             },
         ],
         register: [
@@ -352,14 +372,10 @@ export const FEATURES: IFeatureDefinition[] = [
                 default: false,
             },
             {
-                name: TOKEN_PATH,
-                type: Boolean,
+                name: `${TOKEN_PATH}_CLIENT_FACING`,
+                type: String,
                 default: false,
-                onChange: (value: string) => {
-                    if (value === Settings.get(TOKEN_PATH)) {
-                        return;
-                    }
-
+                onChange: async (value: string) => {
                     const parts = value.split('/');
                     parts.pop();
 
@@ -376,6 +392,11 @@ export const FEATURES: IFeatureDefinition[] = [
                         Settings.set(Settings.TOKEN_PATH, value);
                     }
                 },
+            },
+            {
+                name: TOKEN_PATH,
+                type: String,
+                default: '',
             },
             {
                 name: TOKEN_TARGET,
@@ -428,6 +449,7 @@ export default class Settings {
                     default: registration.default,
                     config: false,
                     restricted: true,
+                    onChange: registration.onChange,
                 };
                 Settings.reg(registration.name, setting);
             }

@@ -21,8 +21,8 @@ div.settings-app-body .features {
                 line-height: 1.5rem;
                 flex-shrink: 1;
 
-                i,
-                span {
+                i {
+                    display: inline-block;
                     line-height: 1.5rem;
                     cursor: help;
                 }
@@ -46,6 +46,9 @@ div.settings-app-body .features {
 
             label {
                 font-weight: bold;
+            }
+            p.feature-help {
+                margin: 0;
             }
         }
 

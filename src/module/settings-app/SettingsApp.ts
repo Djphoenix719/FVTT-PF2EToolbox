@@ -50,7 +50,6 @@ export default class SettingsApp extends FormApplication {
         for (const setting of features) {
             for (const input of setting.inputs) {
                 input['value'] = Settings.get(input.name);
-                console.warn(input);
             }
         }
         renderData['features'] = features;
@@ -62,9 +61,5 @@ export default class SettingsApp extends FormApplication {
         for (const [key, value] of Object.entries(formData)) {
             await Settings.set(key, value);
         }
-    }
-
-    protected activateListeners(html: JQuery) {
-        super.activateListeners(html);
     }
 }

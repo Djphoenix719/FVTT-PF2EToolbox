@@ -26,20 +26,25 @@
                         <input type="checkbox" name="{{input.name}}" {{checked input.value}}>
                     {{/ifeq}}
                     {{#ifeq input.type "number"}}
-                        <input type="number" name="{{input.name}}" value="{{input.value}}">
+                        <input type="number" name="{{input.name}}" value="{{input.value}}"
+                               {{#if input.min}}min="{{input.min}}"{{/if}}
+                               {{#if input.max}}max="{{input.max}}"{{/if}}>
+                    {{/ifeq}}
+                    {{#ifeq input.type "text"}}
+                        <input type="text" name="{{input.name}}" value="{{input.value}}">
                     {{/ifeq}}
                     {{#ifeq input.type "file"}}
                         <input type="text" name="{{input.name}}" value="{{input.value}}">
                         {{filePicker target=input.name type="image"}}
                     {{/ifeq}}
 
-                    {{#if input.help}}
-                        <p class="feature-help">
-                            {{{input.help}}}
-                        </p>
-                    {{/if}}
-
                 </div>
+
+                {{#if input.help}}
+                    <p class="feature-help">
+                        {{{input.help}}}
+                    </p>
+                {{/if}}
             {{/each}}
         </div>
 
