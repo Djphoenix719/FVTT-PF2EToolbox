@@ -464,15 +464,6 @@ export default class Settings {
             restricted: true,
         });
 
-        Settings.reg(Settings.SCALED_FOLDER, {
-            name: 'Scaled NPC Folder',
-            scope: 'world',
-            type: String,
-            default: '',
-            config: true,
-            restricted: true,
-        });
-
         Settings.reg(`${Settings.LAST_SEEN_SYSTEM}`, {
             name: 'Last Seen System Version',
             scope: 'world',

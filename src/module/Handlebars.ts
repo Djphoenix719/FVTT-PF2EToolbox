@@ -16,7 +16,7 @@ export async function registerHandlebarsTemplates() {
         `modules/${MODULE_NAME}/templates/settings-app/SettingsApp.html`,
         `modules/${MODULE_NAME}/templates/settings-app/tabs/About.html`,
         `modules/${MODULE_NAME}/templates/settings-app/tabs/Features.html`,
-        `modules/${MODULE_NAME}/templates/settings-app/tabs/Options.html`,
+        `modules/${MODULE_NAME}/templates/settings-app/tabs/License.html`,
 
         `modules/${MODULE_NAME}/templates/loot-app/create/CreateTab.html`,
         `modules/${MODULE_NAME}/templates/loot-app/create/CreateShared.html`,

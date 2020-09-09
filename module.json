@@ -4,7 +4,64 @@
     "description": "A collection of utilities I made mostly for myself, but may be useful to others to run games in PF2E.",
     "version": "1.4.1",
     "author": "Andrew Cuccinello [DJ#1982]",
-    "packs": [],
+    "packs": [
+        {
+            "label": "Secrets of Magic Playtest Feats",
+            "entity": "Item",
+            "name": "secrets-of-magic-playtest-feats",
+            "path": "packs/secrets-of-magic-playtest-feats.db",
+            "system": "pf2e",
+            "package": "pf2e-toolbox"
+        },
+        {
+            "label": "Secrets of Magic Playtest Class Features",
+            "entity": "Item",
+            "name": "secrets-of-magic-playtest-class-features",
+            "path": "packs/secrets-of-magic-playtest-class-features.db",
+            "system": "pf2e",
+            "package": "pf2e-toolbox"
+        },
+        {
+            "label": "Secrets of Magic Playtest Spells",
+            "entity": "Item",
+            "name": "secrets-of-magic-playtest-spells",
+            "path": "packs/secrets-of-magic-playtest-spells.db",
+            "system": "pf2e",
+            "package": "pf2e-toolbox"
+        },
+        {
+            "label": "Secrets of Magic Playtest Actions",
+            "entity": "Item",
+            "name": "secrets-of-magic-playtest-actions",
+            "path": "packs/secrets-of-magic-playtest-actions.db",
+            "system": "pf2e",
+            "package": "pf2e-toolbox"
+        },
+        {
+            "label": "Secrets of Magic Playtest Classes",
+            "entity": "JournalEntry",
+            "name": "secrets-of-magic-playtest-classes",
+            "path": "packs/secrets-of-magic-playtest-classes.db",
+            "system": "pf2e",
+            "package": "pf2e-toolbox"
+        },
+        {
+            "label": "Secrets of Magic Playtest Eidolon Feats",
+            "entity": "Item",
+            "name": "secrets-of-magic-playtest-eidolon-feats",
+            "path": "packs/secrets-of-magic-playtest-eidolon-feats.db",
+            "system": "pf2e",
+            "package": "pf2e-toolbox"
+        },
+        {
+            "label": "Secrets of Magic Playtest Eidolons",
+            "entity": "Actor",
+            "name": "secrets-of-magic-playtest-eidolons",
+            "path": "packs/secrets-of-magic-playtest-eidolons.db",
+            "system": "pf2e",
+            "package": "pf2e-toolbox"
+        }
+    ],
     "esmodules": ["./bundle.js"],
     "styles": ["./bundle.css"],
     "socket": true,

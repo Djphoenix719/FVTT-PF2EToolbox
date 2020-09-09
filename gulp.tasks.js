@@ -131,6 +131,7 @@ async function buildJS() {
 async function copyAssets() {
     gulp.src('module.json').pipe(gulp.dest(destFolder));
     gulp.src('src/templates/**/*').pipe(gulp.dest(path.resolve(destFolder, 'templates')));
+    gulp.src('src/packs/**/*').pipe(gulp.dest(path.resolve(destFolder, 'packs')));
     gulp.src('LICENSE').pipe(gulp.dest(destFolder));
 }
 
@@ -145,6 +146,7 @@ async function watch() {
 
     watch('module.json', '');
     watch('src/templates/**/*', 'templates');
+    watch('src/packs/**/*', 'packs');
     watch('LICENSE', '');
 
     gulp.watch('src/css/**/*.scss').on('change', async () => await buildSass());

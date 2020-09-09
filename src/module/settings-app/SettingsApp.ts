@@ -27,7 +27,7 @@ export default class SettingsApp extends FormApplication {
             {
                 navSelector: `.settings-app-nav`,
                 contentSelector: `.settings-app-body`,
-                initial: `features`,
+                initial: `about`,
             },
         ];
         options.width = 600;
