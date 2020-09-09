@@ -54,6 +54,7 @@ interface IFeatureInput {
     name: string;
     label: string;
     type: IFeatureInputType;
+    hint?: string;
     value: any;
     max?: number;
     min?: number;

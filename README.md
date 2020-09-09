@@ -76,3 +76,23 @@ This is a work in progress, but right now it can quickly roll treasure items inc
 
 ### Features to Come
 - Loot Roller w/ automation support for Forien's Unidentified Items
+
+## License
+
+### Project Licensing:
+Content Usage and Licensing:
+
+#### Pathfinder Second Edition
+This project is fan-made, and is not associated with Paizo Inc. in any way.
+
+PF2E Toolbox uses trademarks and/or copyrights owned by Paizo Inc., used under Paizo's Community Use Policy (paizo.com/communityuse). We are expressly prohibited from charging you to use or access this content. PF2E Toolbox is not published, endorsed, or specifically approved by Paizo. For more information about Paizo Inc. and Paizo products, visit [paizo.com](https://www.paizo.com).
+
+Any Pathfinder Second Edition information used under the Paizo Inc. Community Use Policy (https://paizo.com/community/communityuse)
+
+Game system information and mechanics are licensed under the Open Game License (OPEN GAME LICENSE Version 1.0a).
+
+#### Playtest
+Pathfinder Secrets of Magic Class Playtest © 2020, Paizo Inc.; Author: Jason Bulmahn, Logan Bonner, Lyz Liddell and Mark Seifter
+
+#### Virtual Table Top Platform Licenses
+Foundry VTT support is covered by the following license: Limited License Agreement for module development 09/02/2020.

@@ -28,36 +28,19 @@
                     {{#ifeq input.type "number"}}
                         <input type="number" name="{{input.name}}" value="{{input.value}}">
                     {{/ifeq}}
+                    {{#ifeq input.type "file"}}
+                        <input type="text" name="{{input.name}}" value="{{input.value}}">
+                        {{filePicker target=input.name type="image"}}
+                    {{/ifeq}}
+
+                    {{#if input.help}}
+                        <p class="feature-help">
+                            {{{input.help}}}
+                        </p>
+                    {{/if}}
 
                 </div>
             {{/each}}
-<!--            <div class="form-group">-->
-<!--                <label>Number</label>-->
-<!--                <input type="number">-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--                <label>Checkbox</label>-->
-<!--                <input type="checkbox">-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--                <label>Text</label>-->
-<!--                <input type="text">-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--                <label>Color</label>-->
-<!--                <input type="color">-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--                <label>File</label>-->
-<!--                <input type="file">-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--                <label>Select</label>-->
-<!--                <select>-->
-<!--                    <option value="1">One</option>-->
-<!--                    <option value="2">Two</option>-->
-<!--                </select>-->
-<!--            </div>-->
         </div>
 
         {{#if feature.help}}

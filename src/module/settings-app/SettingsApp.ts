@@ -50,6 +50,7 @@ export default class SettingsApp extends FormApplication {
         for (const setting of features) {
             for (const input of setting.inputs) {
                 input['value'] = Settings.get(input.name);
+                console.warn(input);
             }
         }
         renderData['features'] = features;
