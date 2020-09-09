@@ -71,13 +71,6 @@ Hooks.on('setup', () => {
             enableQuickMystify();
         }
     });
-
-    // Hooks.on('ready', () => {
-    //     setTimeout(() => (game.actors.getName('Loot') as Actor).sheet.render(true), 500);
-    // });
-    Hooks.on('ready', () => {
-        setTimeout(() => new SettingsApp({}).render(true), 500);
-    });
 });
 
 function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
