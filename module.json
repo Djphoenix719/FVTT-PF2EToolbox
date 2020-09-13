@@ -6,6 +6,14 @@
     "author": "Andrew Cuccinello [DJ#1982]",
     "packs": [
         {
+            "label": "PF2E Toolbox: Macros",
+            "entity": "Macro",
+            "name": "pf2e-toolbox-macros",
+            "path": "packs/pf2e-toolbox-macros.db",
+            "system": "pf2e",
+            "package": "pf2e-toolbox"
+        },
+        {
             "label": "Secrets of Magic Playtest Feats",
             "entity": "Item",
             "name": "secrets-of-magic-playtest-feats",

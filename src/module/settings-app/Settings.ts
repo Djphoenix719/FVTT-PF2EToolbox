@@ -415,17 +415,17 @@ export const FEATURES: IFeatureDefinition[] = [
 export default class Settings {
     public static readonly FEATURES = Features;
 
-    public static readonly MAX_HERO_POINTS = 'MAX_HERO_POINTS';
-    public static readonly SHIFT_QUANTITY = 'QUANTITY_SHIFT_MULTIPLIER';
-    public static readonly CONTROL_QUANTITY = 'QUANTITY_CONTROL_MULTIPLIER';
+    public static readonly MAX_HERO_POINTS = MAX_HERO_POINTS;
+    public static readonly SHIFT_QUANTITY = SHIFT_QUANTITY;
+    public static readonly CONTROL_QUANTITY = CONTROL_QUANTITY;
 
-    public static readonly SCALED_FOLDER = 'SCALED_FOLDER_NAME';
+    public static readonly SCALED_FOLDER = SCALED_FOLDER;
 
-    public static readonly TOKEN_PATH = 'TOKEN_FOLDER_PATH';
-    public static readonly TOKEN_TARGET = 'TOKEN_FOLDER_TARGET';
-    public static readonly TOKEN_TARGET_BUCKET = 'TOKEN_FOLDER_TARGET_BUCKET';
+    public static readonly TOKEN_PATH = TOKEN_PATH;
+    public static readonly TOKEN_TARGET = TOKEN_TARGET;
+    public static readonly TOKEN_TARGET_BUCKET = TOKEN_TARGET_BUCKET;
 
-    public static readonly LAST_SEEN_SYSTEM = 'LAST_SEEN_VERSION';
+    public static readonly LAST_SEEN_SYSTEM = LAST_SEEN_SYSTEM;
 
     public static get<T = any>(key: string): T {
         return game.settings.get(MODULE_NAME, key) as T;
