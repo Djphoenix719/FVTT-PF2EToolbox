@@ -23,6 +23,13 @@ All features can be enabled or disabled on a feature-by-feature basis in the set
 - A toggle to HIDE the PFS tab (does not disable things on the tab from functioning if they were already used)
 - Flatten NPC feature to using the variant rules from the GMG for *Proficiency without Level*
 
+### Macro Helpers
+A growing collection of macro helpers.
+
+`game.PF2EToolbox.rollSecretSkill(skill_id)` can roll an always-secret skill check for the selected token, or if none is selected for the user's configured character. If no skill id is passed in it will show a prompt to determine the skill. You can use `game.PF2EToolbox.rollSecretSkill('give me the ids!')` to get a list of skill ids for the selected token.
+
+`game.PF2EToolbox.distributeXp(amount)` can distribute an amount of XP to selected tokens. If no amount is provided, shows a prompt for the amount.
+
 ### NPC Scaler
 Right clicking an NPC in the sidebar shows a new "Scale to Level" option. You can quickly scale any NPC to any level, up or down.
 
