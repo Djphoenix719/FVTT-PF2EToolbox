@@ -39,5 +39,6 @@ div.pf2e-toolbox.loot-app {
 
     section.content.loot-generator-body {
         width: calc(100% - 300px);
+        overflow-y: auto;
     }
 }
