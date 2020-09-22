@@ -31,19 +31,13 @@ export default async function secretSkillRoll(skillName?: string) {
     const rollSkill = async (skillName: string) => {
         // @ts-ignore
         const opts = actor.getRollOptions(['all', 'skill-check', SKILL_DICTIONARY[skillName] ?? skillName]);
-        const oldMode = game.settings.get('core', 'rollMode');
-        await game.settings.set('core', 'rollMode', 'blindroll');
-        actor.data.data.skills[skillName].roll(new Event('click'), opts);
-        await game.settings.set('core', 'rollMode', oldMode);
+        actor.data.data.skills[skillName].roll(new Event('click'), [...opts, 'secret']);
     };
 
     const rollAttr = async (attrName: string) => {
         // @ts-ignore
         const opts = actor.getRollOptions(['all', attrName]);
-        const oldMode = game.settings.get('core', 'rollMode');
-        await game.settings.set('core', 'rollMode', 'blindroll');
-        actor.data.data.attributes[attrName].roll(new Event('click'), opts);
-        await game.settings.set('core', 'rollMode', oldMode);
+        actor.data.data.attributes[attrName].roll(new Event('click'), [...opts, 'secret']);
     };
 
     if (typeof skillName !== 'string') {
