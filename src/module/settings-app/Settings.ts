@@ -134,7 +134,7 @@ export const FEATURES: IFeatureDefinition[] = [
                 name: Features.QUICK_MYSTIFY,
                 label: 'Enable',
                 type: 'checkbox',
-                value: true,
+                value: false,
             },
         ],
         register: [
@@ -175,7 +175,7 @@ export const FEATURES: IFeatureDefinition[] = [
                 name: Features.REMOVE_DEFAULT_ART,
                 label: 'Enable',
                 type: 'checkbox',
-                value: true,
+                value: false,
             },
         ],
         register: [
@@ -215,7 +215,7 @@ export const FEATURES: IFeatureDefinition[] = [
             {
                 name: Features.QUANTITIES,
                 type: Boolean,
-                default: false,
+                default: true,
             },
             {
                 name: SHIFT_QUANTITY,
@@ -239,7 +239,7 @@ export const FEATURES: IFeatureDefinition[] = [
                 name: Features.FLATTEN_PROFICIENCY,
                 label: 'Enable',
                 type: 'checkbox',
-                value: true,
+                value: false,
             },
         ],
         register: [
@@ -273,12 +273,12 @@ export const FEATURES: IFeatureDefinition[] = [
             {
                 name: Features.NPC_SCALER,
                 type: Boolean,
-                default: false,
+                default: true,
             },
             {
                 name: SCALED_FOLDER,
                 type: String,
-                default: false,
+                default: '',
             },
         ],
     },
@@ -300,7 +300,7 @@ export const FEATURES: IFeatureDefinition[] = [
             {
                 name: Features.LOOT_APP,
                 type: Boolean,
-                default: false,
+                default: true,
             },
         ],
     },
@@ -328,7 +328,7 @@ export const FEATURES: IFeatureDefinition[] = [
             {
                 name: Features.HERO_POINTS,
                 type: Boolean,
-                default: false,
+                default: true,
             },
             {
                 name: MAX_HERO_POINTS,
@@ -355,7 +355,7 @@ export const FEATURES: IFeatureDefinition[] = [
                 name: Features.TOKEN_SETUP,
                 label: 'Enable',
                 type: 'checkbox',
-                value: true,
+                value: false,
             },
             {
                 name: `${TOKEN_PATH}_CLIENT_FACING`,
@@ -374,7 +374,7 @@ export const FEATURES: IFeatureDefinition[] = [
             {
                 name: `${TOKEN_PATH}_CLIENT_FACING`,
                 type: String,
-                default: false,
+                default: '',
                 onChange: async (value: string) => {
                     const parts = value.split('/');
                     parts.pop();
