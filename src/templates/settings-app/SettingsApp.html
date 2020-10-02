@@ -1,6 +1,6 @@
 <form class="settings-app">
 
-    <nav id="settings-app-nav" class="settings-app-nav">
+    <nav id="settings-app-nav" class="settings-app-nav" data-group="primary">
         <a class="item" data-tab="about">About</a>
         <a class="item" data-tab="features">Features</a>
         <a class="item" data-tab="license">License</a>
@@ -8,7 +8,7 @@
         <button type="submit">Save & Close</button>
     </nav>
 
-    <div class="settings-app-body">
+    <div id="settings-app-body" class="settings-app-body">
         {{> modules/pf2e-toolbox/templates/settings-app/tabs/About.html }}
         {{> modules/pf2e-toolbox/templates/settings-app/tabs/Features.html }}
         {{> modules/pf2e-toolbox/templates/settings-app/tabs/License.html }}
