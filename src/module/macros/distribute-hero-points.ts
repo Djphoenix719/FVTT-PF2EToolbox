@@ -1,22 +1,29 @@
-export default async function distributeXp(amount?: number) {
+import Settings from '../settings-app/Settings';
+
+export async function distributeHeroPoints(amount: number) {
     const selected = canvas.tokens.controlled;
+    const max: number = Settings.get(Settings.MAX_HERO_POINTS);
 
     const distribute = async (amount: number) => {
         for (const token of selected) {
             const actor = token.actor;
 
-            const details = actor.data.data.details;
-            if (details === undefined) {
+            const heroPoints = actor.data.data.attributes.heroPoints;
+            if (heroPoints === undefined) {
                 continue;
             }
 
-            const { xp } = details;
-            if (xp === undefined) {
+            const { rank } = heroPoints;
+            if (rank === undefined) {
+                continue;
+            }
+
+            if (rank === max) {
                 continue;
             }
 
             await actor.update({
-                ['data.details.xp.value']: xp.value + amount,
+                ['data.attributes.heroPoints.rank']: Math.min(rank + amount, max),
             });
         }
     };
@@ -28,7 +35,7 @@ export default async function distributeXp(amount?: number) {
         </div>`;
 
         let d = new Dialog({
-            title: `Distribute XP`,
+            title: `Distribute Hero Point(s)`,
             content,
             buttons: {
                 distribute: {

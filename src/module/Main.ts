@@ -23,6 +23,7 @@ import { IDataUpdates, IHandledItemType } from './cr-scaler/NPCScalerTypes';
 import { registerHandlebarsHelpers, registerHandlebarsTemplates } from './Handlebars';
 import secretSkillRoll from './macros/secret-skill-roll';
 import distributeXp from './macros/distribute-xp';
+import { distributeHeroPoints } from './macros/distribute-hero-points';
 
 Hooks.on('init', Settings.registerAllSettings);
 
@@ -74,6 +75,7 @@ Hooks.on('setup', () => {
         game['PF2EToolbox'] = {
             secretSkillRoll: secretSkillRoll,
             distributeXp: distributeXp,
+            distributeHeroPoints: distributeHeroPoints,
         };
     });
 });
