@@ -17,7 +17,6 @@ All features can be enabled or disabled on a feature-by-feature basis in the set
 
 ### Small Features
 - Hold control or shift to quickly increase/decrease item quantities by configurable amounts
-- Quickly view a scene with a new "View Scene" option accessible by right clicking a scene in the sidebar
 - Configure the maximum number of hero points a player can have
 - Hold alt when you drop an item onto a loot sheet or player sheet to mystify it (requires Forien's Unidentified Items)
 - A toggle to HIDE the PFS tab (does not disable things on the tab from functioning if they were already used)
