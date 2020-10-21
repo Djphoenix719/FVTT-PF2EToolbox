@@ -39,9 +39,6 @@ Hooks.on('setup', () => {
     if (Settings.get(Settings.FEATURES.TOKEN_SETUP)) {
         Hooks.on('getActorDirectoryEntryContext', onSetupTokensContextHook);
     }
-    if (Settings.get(Settings.FEATURES.QUICK_VIEW_SCENE)) {
-        Hooks.on('getSceneDirectoryEntryContext', onQuickViewSceneHook);
-    }
     if (Settings.get(Settings.FEATURES.QUANTITIES)) {
         Hooks.on('renderActorSheet', onQuantitiesHook);
     }
@@ -122,26 +119,6 @@ function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
                 default: 'scale',
             });
             d.render(true);
-        },
-    });
-}
-
-function onQuickViewSceneHook(html: JQuery, buttons: any[]) {
-    buttons.unshift({
-        name: 'View Scene',
-        icon: '<i class="fas fa-door-open"></i>',
-        condition: (li: JQuery<HTMLLIElement>) => {
-            const id = li.data('entity-id') as string;
-            const scene = game.scenes.get(id);
-
-            return game.user.viewedScene != scene.id;
-        },
-        callback: (li: JQuery<HTMLLIElement>) => {
-            const id = li.data('entity-id') as string;
-            const scene = game.scenes.get(id);
-
-            // @ts-ignore
-            scene.view();
         },
     });
 }

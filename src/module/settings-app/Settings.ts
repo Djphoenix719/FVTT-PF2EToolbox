@@ -25,7 +25,6 @@ const Features = {
     NPC_SCALER: 'ENABLE_NPC_SCALER',
     QUANTITIES: 'ENABLE_QUANTITIES',
     QUICK_MYSTIFY: 'ENABLE_QUICK_MYSTIFY',
-    QUICK_VIEW_SCENE: 'ENABLE_QUICK_VIEW_SCENE',
     REMOVE_DEFAULT_ART: 'REMOVE_DEFAULT_ART',
     ROLL_APP: 'ENABLE_ROLL_APP',
     TOKEN_SETUP: 'ENABLE_TOKEN_SETUP',
@@ -142,26 +141,6 @@ export const FEATURES: IFeatureDefinition[] = [
                 name: Features.QUICK_MYSTIFY,
                 type: Boolean,
                 default: false,
-            },
-        ],
-    },
-    {
-        name: 'Quick View Scene',
-        attributes: [ATTR_RELOAD_REQUIRED],
-        description: `Adds a "View Scene" context menu option to scenes in the scene directory.`,
-        inputs: [
-            {
-                name: Features.QUICK_VIEW_SCENE,
-                label: 'Enable',
-                type: 'checkbox',
-                value: true,
-            },
-        ],
-        register: [
-            {
-                name: Features.QUICK_VIEW_SCENE,
-                type: Boolean,
-                default: true,
             },
         ],
     },
