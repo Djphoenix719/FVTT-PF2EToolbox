@@ -24,16 +24,22 @@ Sir Blackmane#5955 - for creating the original group save macro the one in Toolb
 - Flatten NPC feature to using the variant rules from the GMG for *Proficiency without Level*
 
 ### Macro Helpers
-A growing collection of macro helpers.
+A growing collection of macro helpers. Examples of their use are included in a compendium.
 
 `game.PF2EToolbox.rollSecretSkill(skill_id)` can roll an always-secret skill check for the selected token, or if none is selected for the user's configured character. If no skill id is passed in it will show a prompt to determine the skill. You can use `game.PF2EToolbox.rollSecretSkill('give me the ids!')` to get a list of skill ids for the selected token.
 
 `game.PF2EToolbox.distributeXp(amount)` can distribute an amount of XP to selected tokens. If no amount is provided, shows a prompt for the amount.
 
+`game.PF2EToolbox.distributeHeroPoints(amount)` can distribute 1+ hero points to selected tokens. If no amount is provided, shows a prompt for the amount.
+
+`game.PF2EToolbox.groupSave(saveType)` will roll a saving throw for all selected tokens and optionally display the success level and if you entered the damage, display buttons next to each result for full/half/double damage.
+
 ### NPC Scaler
 Right clicking an NPC in the sidebar shows a new "Scale to Level" option. You can quickly scale any NPC to any level, up or down.
 
 It's pretty darn accurate, as PF2E has pretty tight math - however, you should validate the NPC yourself. Sometimes creatures deviate from the guidelines presented in the GMG, in these cases it attempts to make a best-guess while keeping the spirit of the monster intact. For example, a creature that is below the specified HP guidelines will still be below the specified HP guidelines at the new level by the same percentage amount.
+
+The only time it begins to "break down" is if you scale a creature multiple times, say from level 1 to 3, then from 3 to 5, and so on.
 
 It does the following
 - Armor Class, Saving Throws, Hit Points
@@ -77,12 +83,12 @@ For the example "Ghost, Commoner" the name mapper will try
 2. `Ghost_01.png`
 
 ### Loot Generator
-This is a work in progress, but right now it can quickly roll treasure items including updating their values correctly. Works with the quick mystification feature if you want the items to need appraisal (hold alt as usual). It's a separate loot sheet, as noted in the preview image (click on Settings in the header and use the `pf2e-toolbox.LootApp` sheet).
+This is a work in progress, but right now it can quickly roll treasure items (including updating their values correctly), roll consumables, and roll magic items. Works with the quick mystification feature if you want the items to need appraisal (hold alt as usual). It's a separate loot sheet, as noted in the preview image (click on Settings in the header and use the `pf2e-toolbox.LootApp` sheet).
 
 ![image](https://github.com/Djphoenix719/FVTT-PF2EToolbox/blob/master/.github/treasure-generator-v1.png?raw=true)
 
 ### Features to Come
-- Loot Roller w/ automation support for Forien's Unidentified Items
+- Spell Scroll creator
 
 ## License
 

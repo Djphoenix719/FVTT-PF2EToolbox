@@ -497,12 +497,9 @@ export default function extendLootSheet() {
                 const tableId = button.data('entity-id') as string;
                 const drawCount = Number(button.data('count'));
 
-                console.log(tableId);
-
                 const table = (await GetItemFromCollection('pf2e.rollable-tables', tableId)) as RollTable;
 
                 let rolls = await table.drawMany(drawCount);
-
                 const promises = rolls.results.map((r) => {
                     return GetItemFromCollection(r.collection, r.resultId);
                 });
