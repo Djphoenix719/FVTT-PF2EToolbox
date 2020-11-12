@@ -13,7 +13,8 @@ A selection of enhancements and tools made to help run PF2E games in Foundry VTT
 
 All features can be enabled or disabled on a feature-by-feature basis in the settings.
 
-
+### Thanks To
+Sir Blackmane#5955 - for creating the original group save macro the one in Toolbox is based on
 
 ### Small Features
 - Hold control or shift to quickly increase/decrease item quantities by configurable amounts
