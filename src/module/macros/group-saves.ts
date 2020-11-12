@@ -27,7 +27,9 @@ export async function groupSave(saveType?: SaveType) {
         message += '</div>';
 
         await ChatMessage.create({
+            user: game.user._id,
             content: message,
+            whisper: [game.user._id],
         });
     };
 
