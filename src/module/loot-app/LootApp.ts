@@ -171,8 +171,8 @@ export default function extendLootSheet() {
 
                 renderData['treasureTables'] = await GetTreasureTables();
                 // Quick Mystification breaks when these are enabled, investigate.
-                // renderData['magicItemTables'] = await GetMagicItemTables('Permanent Items');
-                // renderData['consumablesTables'] = await GetMagicItemTables('Consumables Items');
+                renderData['magicItemTables'] = await GetMagicItemTables('Permanent Items');
+                renderData['consumablesTables'] = await GetMagicItemTables('Consumables Items');
 
                 renderData['flags'] = this.actor.data.flags;
 
@@ -432,7 +432,8 @@ export default function extendLootSheet() {
 
             if (event.altKey && Settings.get(Settings.FEATURES.QUICK_MYSTIFY)) {
                 await window['ForienIdentification'].mystify(`Actor.${this.actor.id}.OwnedItem.${newItem['_id']}`, { replace: true });
-                // this.render();
+
+                setTimeout(() => this.render, 250);
             }
         }
 
@@ -487,6 +488,47 @@ export default function extendLootSheet() {
                     for (const item of newItems) {
                         window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
                     }
+                }
+            });
+            html.find('button.roll-magic-item').on('click', async (event) => {
+                event.preventDefault();
+
+                const button = $(event.currentTarget) as JQuery<HTMLButtonElement>;
+                const tableId = button.data('entity-id') as string;
+                const drawCount = Number(button.data('count'));
+
+                console.log(tableId);
+
+                const table = (await GetItemFromCollection('pf2e.rollable-tables', tableId)) as RollTable;
+
+                let rolls = await table.drawMany(drawCount);
+
+                const promises = rolls.results.map((r) => {
+                    return GetItemFromCollection(r.collection, r.resultId);
+                });
+
+                let entities: (Entity | null)[] = await Promise.all(promises);
+
+                let filtered = entities.filter((i) => i !== null && i !== undefined) as Entity[];
+
+                if (filtered.length !== drawCount) {
+                    ui.notifications.warn('Found one or more items in the rollable table that do not exist in the compendium, skipping these.');
+                }
+
+                let results = filtered.map((i) => i.data);
+
+                const existingItems = actor.items.map((i) => i.id) as string[];
+                await actor.createEmbeddedEntity('OwnedItem', results);
+
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+
+                if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY) && event.altKey) {
+                    const newItems = actor.items.filter((i: Item) => !existingItems.includes(i.id)) as Item[];
+                    for (const item of newItems) {
+                        await window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
+                    }
+
+                    setTimeout(() => this.render, 250);
                 }
             });
 

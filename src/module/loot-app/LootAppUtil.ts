@@ -5,7 +5,7 @@ export async function GetRollableTables() {
 }
 
 export async function GetItemFromCollection(collectionId: string, itemId: string) {
-    const pack = game.packs.get(collectionId) as Compendium;
+    const pack = (await game.packs.get(collectionId)) as Compendium;
     return await pack.getEntity(itemId);
 }
 
