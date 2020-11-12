@@ -24,6 +24,7 @@ import { registerHandlebarsHelpers, registerHandlebarsTemplates } from './Handle
 import secretSkillRoll from './macros/secret-skill-roll';
 import distributeXp from './macros/distribute-xp';
 import { distributeHeroPoints } from './macros/distribute-hero-points';
+import { groupSave, registerGroupSaveHooks } from './macros/group-saves';
 
 Hooks.on('init', Settings.registerAllSettings);
 
@@ -76,8 +77,10 @@ Hooks.on('setup', () => {
             secretSkillRoll: secretSkillRoll,
             distributeXp: distributeXp,
             distributeHeroPoints: distributeHeroPoints,
+            groupSave: groupSave,
         };
     });
+    registerGroupSaveHooks();
 });
 
 function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
