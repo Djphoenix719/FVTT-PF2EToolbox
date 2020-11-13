@@ -32,7 +32,7 @@ A growing collection of macro helpers. Examples of their use are included in a c
 
 `game.PF2EToolbox.distributeHeroPoints(amount)` can distribute 1+ hero points to selected tokens. If no amount is provided, shows a prompt for the amount.
 
-`game.PF2EToolbox.groupSave(saveType)` will roll a saving throw for all selected tokens and optionally display the success level and if you entered the damage, display buttons next to each result for full/half/double damage.
+`game.PF2EToolbox.groupSave()` will roll a saving throw for all selected tokens and optionally display the success level and if you entered the damage, display buttons next to each result for full/half/double damage.
 
 ### NPC Scaler
 Right clicking an NPC in the sidebar shows a new "Scale to Level" option. You can quickly scale any NPC to any level, up or down.
