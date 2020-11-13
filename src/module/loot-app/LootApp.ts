@@ -475,6 +475,10 @@ export default function extendLootSheet() {
                 let results = filtered.map((i) => i.data);
 
                 results = results.map((i) => {
+                    if (!i.data.value?.value) {
+                        return i;
+                    }
+
                     const roll = new Roll('1d4').roll();
                     i.data.value.value = roll.total * i.data.value.value;
                     return i;
@@ -501,6 +505,9 @@ export default function extendLootSheet() {
 
                 let rolls = await table.drawMany(drawCount);
                 const promises = rolls.results.map((r) => {
+                    if (!r.hasOwnProperty('collection')) {
+                        return Promise.resolve(null);
+                    }
                     return GetItemFromCollection(r.collection, r.resultId);
                 });
 
@@ -509,7 +516,9 @@ export default function extendLootSheet() {
                 let filtered = entities.filter((i) => i !== null && i !== undefined) as Entity[];
 
                 if (filtered.length !== drawCount) {
-                    ui.notifications.warn('Found one or more items in the rollable table that do not exist in the compendium, skipping these.');
+                    ui.notifications.warn(
+                        'PF2EToolbox drew a custom weapon, custom armor, or typed potion, but these are not supported. One or more rolls has been skipped.',
+                    );
                 }
 
                 let results = filtered.map((i) => i.data);
