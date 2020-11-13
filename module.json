@@ -18,8 +18,8 @@
     "styles": ["./bundle.css"],
     "socket": true,
     "systems": ["pf2e"],
-    "compatibleCoreVersion": "0.6.6",
-    "minimumCoreVersion": "0.6.0",
+    "compatibleCoreVersion": "0.7.6",
+    "minimumCoreVersion": "0.6.6",
     "manifest": "https://raw.githubusercontent.com/Djphoenix719/FVTT-PF2EToolbox/master/module.json",
     "download": "https://github.com/Djphoenix719/FVTT-PF2EToolbox/releases/download/v1.5.6/pf2e-toolbox-v1.5.6.zip",
     "url": "https://github.com/Djphoenix719/FVTT-PF2EToolbox"
