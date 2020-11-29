@@ -60,11 +60,11 @@ Right clicking will roll 2x the value, even for the d20 rolls. If you have a tok
 Found in the journals tab. 
 
 ### Token Setup
-If you name all your token images in the below manner, it can smartly map token names for a specified folder automatically.
+If you name all your token images in the below manner, it can smartly map token names for a specified folder automatically. Supported file formats are jpg, jpeg, png, gif, webp and svg - the token setup tool will detect any of these formats, but you must use the same format for all your tokens of a specific creature because of limitations with Foundry.
 
 Token names should be as follows, and will be checked for in a configurable path of your choice.
 
-> `Creature_Name_No_Spaces_##.png`
+> `Creature_Name_No_Spaces_##`
 
 Creatures that are NOT set to "Link Actor Data" (meaning they are NOT unique) will use the correct wildcard syntax. Otherwise, they MUST end with `01`.
 
