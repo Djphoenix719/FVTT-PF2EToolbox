@@ -13,16 +13,9 @@
  * limitations under the License.
  */
 
-import Settings from './settings-app/Settings';
-
 export function GetRollMode(): string {
     return game.settings.get('core', 'rollMode');
 }
-
-// export function GetPlayerActors(): Actor[] {
-//     const folderName = Settings.get(Settings.KEY_PARTY_FOLDER);
-//     return game.actors.filter((a: Actor) => a.folder && a.folder.name === folderName);
-// }
 
 export function getFolder(name: string): Folder | null {
     return game.folders.getName(name);
@@ -43,8 +36,7 @@ export function GetFolderPath(name: string) {
 
     while (folder) {
         path.push(folder);
-        // @ts-ignore
-        folder = folder.parent;
+        folder = (folder as any).parent;
     }
 
     path = path.reverse();
