@@ -45,10 +45,13 @@ function getValidName(name: string, basePath: string, files: string[], reverse: 
     let path: string;
     while (parts.length > 0) {
         path = `${basePath}/${parts.join('_')}_01.png`;
-        const regex = `${basePath}/(${parts.join('_')})_01\\.(jpg|jpeg|png|gif|webp|svg)`;
+        path = decodeURIComponent(path);
+        let regex = `${basePath}/(${parts.join('_')})_01\\.(jpg|jpeg|png|gif|webp|svg)`;
+        regex = decodeURIComponent(regex);
 
         for (const file of files) {
-            const match = file.match(regex);
+            const name = decodeURIComponent(file);
+            const match = name.match(regex);
 
             if (match) {
                 return `${basePath}/${match[1]}_??.${match[2]}`;
