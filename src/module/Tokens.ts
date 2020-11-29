@@ -15,8 +15,6 @@
 
 import Settings from './settings-app/Settings';
 
-declare function srcExists(path: string): Promise<boolean>;
-
 export function onSetupTokensContextHook(html: JQuery, buttons: any[]) {
     buttons.unshift({
         name: 'Setup Token',
@@ -36,18 +34,6 @@ export function onSetupTokensContextHook(html: JQuery, buttons: any[]) {
     });
 }
 
-function normalizeTokenName(actorName: string, num: number) {
-    return `${actorName.replace(/\s/g, '_')}_${pad(num)}`;
-}
-
-function pad(n: number, count: number = 2) {
-    let result = n.toString();
-    while (result.length < count) {
-        result = `0${result}`;
-    }
-    return result;
-}
-
 function getNameParts(name: string) {
     return name.replace(/,/g, '').split(' ');
 }
@@ -59,9 +45,14 @@ function getValidName(name: string, basePath: string, files: string[], reverse: 
     let path: string;
     while (parts.length > 0) {
         path = `${basePath}/${parts.join('_')}_01.png`;
+        const regex = `${basePath}/(${parts.join('_')})_01\\.(jpg|jpeg|png|gif|webp|svg)`;
 
-        if (files.includes(path)) {
-            return `${basePath}/${parts.join('_')}_??.png`;
+        for (const file of files) {
+            const match = file.match(regex);
+
+            if (match) {
+                return `${basePath}/${match[1]}_??.${match[2]}`;
+            }
         }
 
         pop.call(parts);
