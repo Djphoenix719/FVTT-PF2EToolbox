@@ -335,25 +335,6 @@ function onFlattenProficiencyContextHook(html: JQuery, buttons: any[]) {
 
             const level = parseInt(actor.data.data.details.level.value);
             (actor as any).addCustomModifier('all', modifierName, -level, 'untyped');
-
-            let itemUpdates: IDataUpdates[] = [];
-            for (let i = 0; i < actor.data['items'].length; i++) {
-                const item = actor.data['items'][i];
-
-                if ((item.type as IHandledItemType) === 'melee') {
-                    const oldAttack = parseInt(item.data.bonus.value);
-                    const newAttack = oldAttack - level;
-
-                    const attackUpdate: IDataUpdates = {
-                        _id: item._id,
-                        ['data.bonus.value']: newAttack,
-                        ['data.bonus.total']: newAttack,
-                    };
-
-                    itemUpdates.push(attackUpdate);
-                }
-            }
-            await actor.updateEmbeddedEntity('OwnedItem', itemUpdates);
         },
     });
 
@@ -372,25 +353,6 @@ function onFlattenProficiencyContextHook(html: JQuery, buttons: any[]) {
 
             const level = parseInt(actor.data.data.details.level.value);
             (actor as any).removeCustomModifier('all', modifierName);
-
-            let itemUpdates: IDataUpdates[] = [];
-            for (let i = 0; i < actor.data['items'].length; i++) {
-                const item = actor.data['items'][i];
-
-                if ((item.type as IHandledItemType) === 'melee') {
-                    const oldAttack = parseInt(item.data.bonus.value);
-                    const newAttack = oldAttack + level;
-
-                    const attackUpdate: IDataUpdates = {
-                        _id: item._id,
-                        ['data.bonus.value']: newAttack,
-                        ['data.bonus.total']: newAttack,
-                    };
-
-                    itemUpdates.push(attackUpdate);
-                }
-            }
-            await actor.updateEmbeddedEntity('OwnedItem', itemUpdates);
         },
     });
 }
