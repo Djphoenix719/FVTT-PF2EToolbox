@@ -394,6 +394,7 @@ export default function extendLootSheet() {
             itemPrice += propertyRune1.price;
             itemPrice += propertyRune2.price;
             itemPrice += propertyRune3.price;
+            itemPrice += fundamentalRune.price;
 
             itemLevel = Math.max(itemLevel, propertyRune1.level);
             itemLevel = Math.max(itemLevel, propertyRune1.level);
