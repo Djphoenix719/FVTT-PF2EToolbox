@@ -62,12 +62,6 @@ Hooks.on('setup', () => {
 
     Hooks.on('ready', () => {
         if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY)) {
-            if (!window['ForienIdentification']) {
-                ui.notifications.error("PF2E Toolbox quick mystify enabled but Forien's Unidentified Items was not detected.", { permanent: true });
-                Settings.set(Settings.FEATURES.QUICK_MYSTIFY, false);
-                return;
-            }
-
             enableQuickMystify();
         }
     });
@@ -218,39 +212,45 @@ function enableHeroPoints(app: Application, html: JQuery, renderData: any) {
 }
 
 function enableQuickMystify() {
-    const lootSheet = CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'];
-    lootSheet.cls = class ActorSheetPF2ELoot extends lootSheet.cls {
-        async _onDrop(event: DragEvent) {
-            // @ts-ignore
-            const actor: Actor = this.actor;
-            const existing = actor.items.map((i: Item) => i.id) as string[];
-            await super._onDrop(event);
+    const decorate = (cls) => {
+        return class extends cls {
+            async _onDrop(event: DragEvent) {
+                // @ts-ignore
+                const actor: Actor = this.actor;
+                const existing = actor.items.map((i: Item) => i.id) as string[];
+                await super._onDrop(event);
 
-            if (event.altKey && game.user.isGM) {
-                const newItems = actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
-                for (const item of newItems) {
-                    window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
+                if (event.altKey && game.user.isGM) {
+                    const newItems = actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
+                    const updates: any[] = [];
+                    for (const item of newItems) {
+                        updates.push({
+                            _id: item._id,
+                            data: {
+                                ['identification']: {
+                                    status: 'unidentified',
+                                    identified: {
+                                        name: item.name,
+                                    },
+                                },
+                            },
+                        });
+                    }
+                    await actor.updateOwnedItem(updates);
                 }
             }
-        }
+        };
     };
 
-    const characterSheet = CONFIG.Actor.sheetClasses['character']['pf2e.CRBStyleCharacterActorSheetPF2E'];
-    characterSheet.cls = class CRBStyleCharacterActorSheetPF2E extends characterSheet.cls {
-        async _onDrop(event: DragEvent) {
-            // @ts-ignore
-            const actor: Actor = this.actor;
-            const existing = actor.items.map((i: Item) => i.id) as string[];
-            await super._onDrop(event);
+    CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'].cls = decorate(CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'].cls);
 
-            if (event.altKey && game.user.isGM) {
-                const newItems = actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
-                for (const item of newItems) {
-                    window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
-                }
-            }
-        }
-    };
+    CONFIG.Actor.sheetClasses['character']['pf2e.CRBStyleCharacterActorSheetPF2E'].cls = decorate(
+        CONFIG.Actor.sheetClasses['character']['pf2e.CRBStyleCharacterActorSheetPF2E'].cls,
+    );
+
+    if (Settings.get(Settings.FEATURES.LOOT_APP)) {
+        CONFIG.Actor.sheetClasses['loot']['pf2e-toolbox.LootApp'].cls = decorate(CONFIG.Actor.sheetClasses['loot']['pf2e-toolbox.LootApp'].cls);
+    }
 }
 
 function disablePFSTab(app: Application, html: JQuery) {

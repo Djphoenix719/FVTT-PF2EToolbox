@@ -429,13 +429,21 @@ export default function extendLootSheet() {
 
             newItemData.name = itemName;
 
-            const newItem = await this.actor.createOwnedItem(newItemData);
-
             if (event.altKey && Settings.get(Settings.FEATURES.QUICK_MYSTIFY)) {
-                await window['ForienIdentification'].mystify(`Actor.${this.actor.id}.OwnedItem.${newItem['_id']}`, { replace: true });
+                newItemData.data.identification = {
+                    status: 'unidentified',
+                    identified: {
+                        name: newItemData.name,
+                    },
+                };
 
-                setTimeout(() => this.render, 250);
+                let newName: string = newItemData.type === 'weapon' ? newItemData.data.group.value : newItemData.data.armorType.value;
+                newName = newName.capitalize();
+
+                newItemData.name = `Unidentified ${newName}`;
             }
+
+            await this.actor.createOwnedItem(newItemData);
         }
 
         activateListeners(html: JQuery) {
@@ -485,15 +493,20 @@ export default function extendLootSheet() {
                     return i;
                 });
 
-                const existingItems = actor.items.map((i) => i.id) as string[];
-                await actor.createEmbeddedEntity('OwnedItem', results);
-
                 if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY) && event.altKey) {
-                    const newItems = actor.items.filter((i: Item) => !existingItems.includes(i.id)) as Item[];
-                    for (const item of newItems) {
-                        window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
+                    for (const item of results) {
+                        item.data.identification = {
+                            status: 'unidentified',
+                            identified: {
+                                name: item.name,
+                            },
+                        };
+                        let newName = item.type.capitalize();
+                        item.name = `Unidentified ${newName}`;
                     }
                 }
+
+                await actor.createEmbeddedEntity('OwnedItem', results);
             });
             html.find('button.roll-magic-item').on('click', async (event) => {
                 event.preventDefault();
@@ -524,19 +537,22 @@ export default function extendLootSheet() {
 
                 let results = filtered.map((i) => i.data);
 
-                const existingItems = actor.items.map((i) => i.id) as string[];
+                if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY) && event.altKey) {
+                    for (const item of results) {
+                        item.data.identification = {
+                            status: 'unidentified',
+                            identified: {
+                                name: item.name,
+                            },
+                        };
+                        let newName = item.type.capitalize();
+                        item.name = `Unidentified ${newName}`;
+                    }
+                }
+
                 await actor.createEmbeddedEntity('OwnedItem', results);
 
                 await new Promise((resolve) => setTimeout(resolve, 1000));
-
-                if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY) && event.altKey) {
-                    const newItems = actor.items.filter((i: Item) => !existingItems.includes(i.id)) as Item[];
-                    for (const item of newItems) {
-                        await window['ForienIdentification'].mystify(`Actor.${actor.id}.OwnedItem.${item.id}`, { replace: true });
-                    }
-
-                    setTimeout(() => this.render, 250);
-                }
             });
 
             html.find('button.clear-inventory').on('click', async (event) => {
@@ -544,23 +560,6 @@ export default function extendLootSheet() {
                     items: [],
                 });
             });
-        }
-
-        async _onDrop(event: DragEvent) {
-            if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY)) {
-                const existing = this.actor.items.map((i: Item) => i.id) as string[];
-                await super._onDrop(event);
-
-                if (event.altKey && game.user.isGM) {
-                    const newItems = this.actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
-                    for (const item of newItems) {
-                        await window['ForienIdentification'].mystify(`Actor.${this.actor.id}.OwnedItem.${item.id}`, { replace: true });
-                    }
-                    setTimeout(() => this.render(true), 1);
-                }
-            } else {
-                return super._onDrop(event);
-            }
         }
     };
 }
