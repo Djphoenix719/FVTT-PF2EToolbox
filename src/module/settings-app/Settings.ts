@@ -125,9 +125,11 @@ export const FEATURES: IFeatureDefinition[] = [
         ],
     },
     {
-        name: 'Quick Mystification',
+        name: 'Quick Unidentification',
         attributes: [ATTR_RELOAD_REQUIRED],
-        description: `Holding alt when dragging an item onto a sheet immediately mystifies it.`,
+        description:
+            `Holding alt when dragging an item onto a sheet immediately unidentifies it. Also works with the Loot App,` +
+            ` where holding alt will unidentify the items created/rolled.`,
         inputs: [
             {
                 name: Features.QUICK_MYSTIFY,
