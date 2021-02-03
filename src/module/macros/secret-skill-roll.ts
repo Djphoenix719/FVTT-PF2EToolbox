@@ -31,13 +31,14 @@ export default async function secretSkillRoll(skillName?: string) {
     const rollSkill = async (skillName: string) => {
         // @ts-ignore
         const opts = actor.getRollOptions(['all', 'skill-check', SKILL_DICTIONARY[skillName] ?? skillName]);
-        actor.data.data.skills[skillName].roll(new Event('click'), [...opts, 'secret']);
+        actor.data.data.skills[skillName].roll({ event: new Event('click'), options: [...opts, 'secret'] });
     };
 
     const rollAttr = async (attrName: string) => {
         // @ts-ignore
         const opts = actor.getRollOptions(['all', attrName]);
-        actor.data.data.attributes[attrName].roll(new Event('click'), [...opts, 'secret']);
+        // @ts-ignore
+        actor.data.data.attributes[attrName].roll({ event: new Event('click'), options: [...opts, 'secret'] });
     };
 
     if (typeof skillName !== 'string') {
