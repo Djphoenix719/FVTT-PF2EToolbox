@@ -187,6 +187,10 @@ function enableRollAppButton(app: Application, html: JQuery) {
 }
 
 function enableHeroPoints(app: Application, html: JQuery, renderData: any) {
+    console.warn(app);
+    console.warn(html);
+    console.warn(renderData);
+
     renderData.data.attributes.heroPoints.max = Settings.get<number>(Settings.MAX_HERO_POINTS);
 
     const { rank, max }: { rank: number; max: number } = renderData.data.attributes.heroPoints;
@@ -213,7 +217,7 @@ function enableHeroPoints(app: Application, html: JQuery, renderData: any) {
 
 function enableQuickMystify() {
     const decorate = (cls) => {
-        return class extends cls {
+        const newCls = class extends cls {
             async _onDrop(event: DragEvent) {
                 // @ts-ignore
                 const actor: Actor = this.actor;
@@ -240,6 +244,8 @@ function enableQuickMystify() {
                 }
             }
         };
+        Object.defineProperty(newCls, 'name', { value: cls.constructor.name });
+        return newCls;
     };
 
     CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'].cls = decorate(CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'].cls);
