@@ -112,7 +112,8 @@ function formatRowOutput(token: Token, mod: number, breakdown: string, dc?: numb
     const totalValue: number = d20Value + mod;
     const successLevel = getSuccessLevel(totalValue, dc);
 
-    const sceneId = game.scenes.active.id;
+    // @ts-ignore
+    const sceneId: number = game.scenes.viewed.id;
 
     const flexStyle = `
         display: flex;
