@@ -1,0 +1,30 @@
+<form class="creature-builder" autocomplete="off" onsubmit="event.preventDefault();">
+    <label>{{ localize "PF2E.ScrollWandPopup.label" }}</label>
+    <div class="sheet-header">
+        <h1 class="charname">
+            <input
+                name="name"
+                type="text"
+                value="{{object.name}}"
+                placeholder="{{localize 'PF2E.loot.LootNamePlaceholder'}}"
+            />
+        </h1>
+    </div>
+    <div class='sheet-body'>
+        <div>
+            <label for="level">Level</label>
+            <input name='data.details.level.value' id='level' type='number' value='{{object.data.details.level.value}}'>
+        </div>
+        <div>
+            <label for="perception-group">Perception</label>
+            <div id='perception-group'>
+                <input type="radio" name="perception" value='extreme' checked> Extreme
+                <input type="radio" name="perception" value='high'> High
+                <input type="radio" name="perception" value='moderate'> Moderate
+                <input type="radio" name="perception" value='low'> Low
+                <input type="radio" name="perception" value='terrible'> Terrible
+            </div>
+        </div>
+    </div>
+    <button type="submit" name="submit" value="1"><i class="far fa-save"></i>Build</button>
+</form>
