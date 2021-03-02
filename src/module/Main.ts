@@ -204,7 +204,7 @@ function enableNpcBuilderButton(sheet: ActorSheet, html: JQuery) {
 
     let button = $(`<a class="popout" style><i class="fas fa-book"></i>Creature Builder</a>`);
     button.on('click', () => {
-        new CreatureBuilder(actor).render(true);
+        new CreatureBuilder(actor, {}).render(true);
     });
 
     element.after(button);

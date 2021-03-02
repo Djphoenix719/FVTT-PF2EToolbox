@@ -15,16 +15,16 @@
             <label for="level">Level</label>
             <input name='data.details.level.value' id='level' type='number' value='{{object.data.details.level.value}}'>
         </div>
+        {{#each valueEntries as |valueEntry|}}
         <div>
-            <label for="perception-group">Perception</label>
-            <div id='perception-group'>
-                <input type="radio" name="perception" value='extreme' checked> Extreme
-                <input type="radio" name="perception" value='high'> High
-                <input type="radio" name="perception" value='moderate'> Moderate
-                <input type="radio" name="perception" value='low'> Low
-                <input type="radio" name="perception" value='terrible'> Terrible
+            <label for='{{valueEntry.descriptor}}-group'>{{valueEntry.descriptor}}</label>
+            <div id='{{valueEntry.descriptor}}-group'>
+                {{#each valueEntry.availableValues as |value|}}
+                <input type="radio" name='{{valueEntry.descriptor}}' value='{{value}}' {{#ifeq value valueEntry.defaultValue}} Checked {{/ifeq}}> {{value}}
+                {{/each}}
             </div>
         </div>
+        {{/each}}
     </div>
     <button type="submit" name="submit" value="1"><i class="far fa-save"></i>Build</button>
 </form>
