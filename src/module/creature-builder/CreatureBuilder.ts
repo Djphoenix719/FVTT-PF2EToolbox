@@ -1,41 +1,9 @@
 import { MODULE_NAME } from '../Constants';
 import { ROLL_APP_DATA } from '../roll-app/RollAppData';
-
-enum ValueCategory {
-    extreme = 'extreme',
-    high = 'high',
-    moderate = 'moderate',
-    low = 'low',
-    terrible = 'terrible',
-    abysmal = 'abysmal',
-}
-
-class CreatureValueEntry {
-    descriptor: string;
-    actorField: string;
-    availableValues: ValueCategory[];
-    defaultValue: ValueCategory;
-
-    constructor(descriptor: string, actorField: string, availableValues: ValueCategory[], defaultValue: ValueCategory) {
-        this.descriptor = descriptor;
-        this.actorField = actorField;
-        this.availableValues = availableValues;
-        this.defaultValue = defaultValue;
-    }
-}
+import { CreatureValueEntry, DefaultCreatureValues } from './CreatureBuilderData';
 
 export default class CreatureBuilder extends FormApplication {
-    valueEntries: CreatureValueEntry[];
-
-    constructor(object: any, options: FormApplicationOptions) {
-        super(object, options);
-
-        this.valueEntries = [
-            new CreatureValueEntry('perception', 'data.attributes.perception.value',
-                [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible],
-                ValueCategory.extreme),
-        ];
-    }
+    valueEntries: CreatureValueEntry[] = DefaultCreatureValues;
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -60,10 +28,13 @@ export default class CreatureBuilder extends FormApplication {
     protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
         const level = formData['data.details.level.value'];
 
+        const newFormData = {};
+        newFormData['data.details.level.value'] = level;
+
         for (const valueEntry of this.valueEntries) {
-            formData[valueEntry.actorField] = ROLL_APP_DATA[valueEntry.descriptor][level + 1][formData[valueEntry.descriptor]];
+            newFormData[valueEntry.actorField] = ROLL_APP_DATA[valueEntry.descriptor][level + 1][formData[valueEntry.name]];
         }
 
-        return this.object.update(formData);
+        return this.object.update(newFormData);
     }
 }

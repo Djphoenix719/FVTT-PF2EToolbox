@@ -17,10 +17,10 @@
         </div>
         {{#each valueEntries as |valueEntry|}}
         <div>
-            <label for='{{valueEntry.descriptor}}-group'>{{valueEntry.descriptor}}</label>
+            <label for='{{valueEntry.descriptor}}-group'>{{valueEntry.name}}</label>
             <div id='{{valueEntry.descriptor}}-group'>
                 {{#each valueEntry.availableValues as |value|}}
-                <input type="radio" name='{{valueEntry.descriptor}}' value='{{value}}' {{#ifeq value valueEntry.defaultValue}} Checked {{/ifeq}}> {{value}}
+                <input type="radio" name='{{valueEntry.name}}' value='{{value}}' {{#ifeq value valueEntry.defaultValue}} Checked {{/ifeq}}> {{value}}
                 {{/each}}
             </div>
         </div>
