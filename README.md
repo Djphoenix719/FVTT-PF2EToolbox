@@ -57,7 +57,17 @@ A very basic quick roller. Has all the NPC data available in tables with clickab
 
 Right clicking will roll 2x the value, even for the d20 rolls. If you have a token selected the chat card will display its name.
 
-Found in the journals tab. 
+Found in the journals tab.
+
+### Creature Builder
+A tool to create creatures from scratch, using the recommended values from the Game Mastery Guide.
+
+To use the Creature Builder you have to create a blank NPC. When you open its Character Sheet, you can find a button at the top. Clicking this button will open the creature builder.
+
+You will find various values you can choose from. per default, all values are at moderate. 
+Please take a look at the GMG to find out how to balance your creature.
+When you are happy with your values for a creature click the save button.
+This will override the current values of the npc.
 
 ### Token Setup
 If you name all your token images in the below manner, it can smartly map token names for a specified folder automatically. Supported file formats are jpg, jpeg, png, gif, webp and svg - the token setup tool will detect any of these formats, but you must use the same format for all your tokens of a specific creature because of limitations with Foundry.
