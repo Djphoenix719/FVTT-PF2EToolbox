@@ -45,8 +45,8 @@ Hooks.on('setup', () => {
     if (Settings.get(Settings.FEATURES.QUANTITIES)) {
         Hooks.on('renderActorSheet', onQuantitiesHook);
     }
-    if (Settings.get(Settings.FEATURES.ROLL_APP)) {
-        Hooks.on('renderActorSheet', enableNpcBuilderButton);
+    if (Settings.get(Settings.FEATURES.CREATURE_BUILDER)) {
+        Hooks.on('renderActorSheet', enableCreatureBuilderButton);
     }
     if (Settings.get(Settings.FEATURES.ROLL_APP)) {
         Hooks.on('renderJournalDirectory', enableRollAppButton);
@@ -190,7 +190,7 @@ function enableRollAppButton(app: Application, html: JQuery) {
     footer.append(button);
 }
 
-function enableNpcBuilderButton(sheet: ActorSheet, html: JQuery) {
+function enableCreatureBuilderButton(sheet: ActorSheet, html: JQuery) {
     // Only inject the link if the actor is of type "character" and the user has permission to update it
     const actor = sheet.actor;
     if (!(actor.data.type === "npc" && actor.can(game.user, "update"))) {

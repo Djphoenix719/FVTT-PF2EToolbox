@@ -18,6 +18,7 @@ import '../../external/settings-extender.js';
 import SettingsApp from './SettingsApp';
 
 const Features = {
+    CREATURE_BUILDER: 'CREATURE_BUILDER',
     DISABLE_PFS_TAB: 'DISABLE_PFS_TAB',
     FLATTEN_PROFICIENCY: 'FLATTEN_PROFICIENCY',
     HERO_POINTS: 'ENABLE_HERO_POINTS',
@@ -119,6 +120,26 @@ export const FEATURES: IFeatureDefinition[] = [
         register: [
             {
                 name: Features.ROLL_APP,
+                type: Boolean,
+                default: true,
+            },
+        ],
+    },
+    {
+        name: 'Creature Builder',
+        attributes: [ATTR_RELOAD_REQUIRED],
+        description: `A tool to build creatures from scratch using the recommended values from the GMG.`,
+        inputs: [
+            {
+                name: Features.CREATURE_BUILDER,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true,
+            },
+        ],
+        register: [
+            {
+                name: Features.CREATURE_BUILDER,
                 type: Boolean,
                 default: true,
             },
