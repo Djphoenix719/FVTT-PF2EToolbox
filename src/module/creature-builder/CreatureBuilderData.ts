@@ -22,7 +22,7 @@ export class CreatureValueCategory {
 
 export const DefaultCreatureValues: CreatureValueCategory[] = [
     {
-        name: 'Ability',
+        name: 'Abilities',
         descriptor: 'abilityScore',
         associatedValues: [
             {
@@ -86,7 +86,7 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
         ]
     },
     {
-        name: 'Saves',
+        name: 'Saving Throws',
         descriptor: 'savingThrow',
         associatedValues: [
             {

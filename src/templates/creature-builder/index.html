@@ -1,26 +1,26 @@
 <form class="creature-builder" autocomplete="off" onsubmit="event.preventDefault();">
-    <label>{{ localize "PF2E.ScrollWandPopup.label" }}</label>
+    <label>Create the values of a creature from the values of the Game Mastery Guide</label>
     <div class="sheet-header">
         <h1 class="charname">
             <input
                 name="name"
                 type="text"
                 value="{{object.name}}"
-                placeholder="{{localize 'PF2E.loot.LootNamePlaceholder'}}"
+                placeholder="Character Name"
             />
         </h1>
     </div>
     <div class='sheet-body'>
         <div>
-            <label for="level">Level</label>
+            <label for="level"><h2>Level</h2></label>
             <input name='data.details.level.value' id='level' type='number' value='{{object.data.details.level.value}}'>
         </div>
         {{#each valueCategories as |category|}}
         <div class='category'>
-            <h3>{{category.name}}</h3>
+            <h2>{{category.name}}</h2>
             {{#each category.associatedValues as |value|}}
             <div class='value'>
-                <label for='{{value.name}}-group'>{{value.name}}</label>
+                <label for='{{value.name}}-group'><h3>{{value.name}}</h3></label>
                 <div id='{{value.name}}-group'>
                     {{#each value.availableValues as |valueOption|}}
                     <input type="radio"
