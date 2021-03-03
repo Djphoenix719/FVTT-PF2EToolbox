@@ -1,9 +1,9 @@
 import { MODULE_NAME } from '../Constants';
 import { ROLL_APP_DATA } from '../roll-app/RollAppData';
-import { CreatureValueEntry, DefaultCreatureValues } from './CreatureBuilderData';
+import { CreatureValueCategory, CreatureValueEntry, DefaultCreatureValues } from './CreatureBuilderData';
 
 export default class CreatureBuilder extends FormApplication {
-    valueEntries: CreatureValueEntry[] = DefaultCreatureValues;
+    valueCategories: CreatureValueCategory[] = DefaultCreatureValues;
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -20,7 +20,7 @@ export default class CreatureBuilder extends FormApplication {
     getData(options?: any): any {
         const renderData = super.getData(options);
 
-        renderData['valueEntries'] = this.valueEntries;
+        renderData['valueCategories'] = this.valueCategories;
 
         return renderData;
     }
@@ -31,8 +31,12 @@ export default class CreatureBuilder extends FormApplication {
         const newFormData = {};
         newFormData['data.details.level.value'] = level;
 
-        for (const valueEntry of this.valueEntries) {
-            newFormData[valueEntry.actorField] = ROLL_APP_DATA[valueEntry.descriptor][level + 1][formData[valueEntry.name]];
+        for (const category of this.valueCategories) {
+            for (const value of category.associatedValues) {
+                const buttonFieldName = value.name === undefined ? category.name : value.name;
+
+                newFormData[value.actorField] = ROLL_APP_DATA[category.descriptor][level + 1][formData[buttonFieldName]];
+            }
         }
 
         return this.object.update(newFormData);

@@ -15,14 +15,21 @@
             <label for="level">Level</label>
             <input name='data.details.level.value' id='level' type='number' value='{{object.data.details.level.value}}'>
         </div>
-        {{#each valueEntries as |valueEntry|}}
-        <div>
-            <label for='{{valueEntry.descriptor}}-group'>{{valueEntry.name}}</label>
-            <div id='{{valueEntry.descriptor}}-group'>
-                {{#each valueEntry.availableValues as |value|}}
-                <input type="radio" name='{{valueEntry.name}}' value='{{value}}' {{#ifeq value valueEntry.defaultValue}} Checked {{/ifeq}}> {{value}}
-                {{/each}}
+        {{#each valueCategories as |category|}}
+        <div class='category'>
+            <h3>{{category.name}}</h3>
+            {{#each category.associatedValues as |value|}}
+            <div class='value'>
+                <label for='{{value.name}}-group'>{{value.name}}</label>
+                <div id='{{value.name}}-group'>
+                    {{#each value.availableValues as |valueOption|}}
+                    <input type="radio"
+                           name='{{#if value.name}}{{value.name}}{{else}}{{category.name}}{{/if}}'
+                           value='{{valueOption}}' {{#ifeq valueOption value.defaultValue}} Checked {{/ifeq}}> {{valueOption}}
+                    {{/each}}
+                </div>
             </div>
+            {{/each}}
         </div>
         {{/each}}
     </div>
