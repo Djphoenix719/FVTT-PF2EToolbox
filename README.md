@@ -69,6 +69,10 @@ Please take a look at the GMG to find out how to balance your creature.
 When you are happy with your values for a creature click the save button.
 This will override the current values of the npc.
 
+The GMG suggest various Road Maps.
+Those can be selected in the road map section.
+Select the desired road map from the options and click the Apply road map button.
+
 ### Token Setup
 If you name all your token images in the below manner, it can smartly map token names for a specified folder automatically. Supported file formats are jpg, jpeg, png, gif, webp and svg - the token setup tool will detect any of these formats, but you must use the same format for all your tokens of a specific creature because of limitations with Foundry.
 
