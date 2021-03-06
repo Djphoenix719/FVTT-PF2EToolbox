@@ -19,7 +19,7 @@
             <label for="road-map"><h2>Road Map</h2></label>
             <select id="road-map" >
                 {{#each roadMaps as |roadMap|}}
-                <option>{{roadMap.name}}</option>
+                <option title='{{roadMap.tooltip}}'>{{roadMap.name}}</option>
                 {{/each}}
             </select>
             <div class="btn apply-road-map"><a><i class="fas fa-plus"></i>Apply Road Map</a></div>

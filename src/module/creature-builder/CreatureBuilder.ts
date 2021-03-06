@@ -14,6 +14,7 @@ export default class CreatureBuilder extends FormApplication {
     valueCategories: CreatureValueCategory[] = JSON.parse(JSON.stringify(DefaultCreatureValues));
     selectedRoadmap: Roadmap = {
         name: 'Default',
+        tooltip: 'None',
         defaultValues: new Map(),
     };
 

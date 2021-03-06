@@ -57,6 +57,7 @@ export class CreatureValueCategory {
 
 export class Roadmap {
     name: string;
+    tooltip: string;
     defaultValues: Map<string, StatisticScale>;
 }
 
@@ -261,11 +262,13 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
 export const ROADMAPS: Roadmap[] = [
     {
         name: 'Average Joe',
+        tooltip: 'Set all values to moderate',
         defaultValues: new Map([
         ])
     },
     {
         name: 'Brute',
+        tooltip: 'low Perception; high or extreme Str modifier, high to moderate Con modifier, low or lower Dex and mental modifiers; moderate or low AC; high Fortitude, low Reflex or Will or both; high HP; high attack bonus and high damage or moderate attack bonus and extreme damage',
         defaultValues: new Map([
                 [AdjustableStatistics.per, StatisticScale.low],
                 [AdjustableStatistics.str, StatisticScale.high],
@@ -285,6 +288,7 @@ export const ROADMAPS: Roadmap[] = [
     },
     {
         name: 'Skirmisher',
+        tooltip: 'high Dex modifier; low Fortitude, high Reflex; higher Speed than typical',
         defaultValues: new Map([
             [AdjustableStatistics.dex, StatisticScale.high],
             [AdjustableStatistics.fort, StatisticScale.low],
@@ -293,6 +297,7 @@ export const ROADMAPS: Roadmap[] = [
     },
     {
         name: 'Sniper',
+        tooltip: 'high Perception; high Dex modifier; low Fortitude, high Reflex; moderate to low HP; ranged Strikes have high attack bonus and damage or moderate attack bonus and extreme damage (melee Strikes are weaker)',
         defaultValues: new Map([
             [AdjustableStatistics.per, StatisticScale.high],
             [AdjustableStatistics.dex, StatisticScale.high],
@@ -306,6 +311,7 @@ export const ROADMAPS: Roadmap[] = [
     },
     {
         name: 'Soldier',
+        tooltip: 'high Str modifier; high to extreme AC; high Fortitude; high attack bonus and high damage; Attack of Opportunity or other tactical abilities',
         defaultValues: new Map([
             [AdjustableStatistics.str, StatisticScale.high],
             [AdjustableStatistics.ac, StatisticScale.high],
