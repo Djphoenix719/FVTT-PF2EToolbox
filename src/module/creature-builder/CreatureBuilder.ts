@@ -41,6 +41,8 @@ export default class CreatureBuilder extends FormApplication {
 
                     if (category.descriptor === 'skill') {
                         await this.updateSkill(formData, buttonFieldName, valueToBeInsertedIntoNpc);
+                    } else if (category.descriptor === 'hitPoints') {
+                        this.updateHitPoints(valueToBeInsertedIntoNpc, value, newFormData);
                     } else {
                         newFormData[value.actorField] = valueToBeInsertedIntoNpc;
                     }
@@ -51,11 +53,19 @@ export default class CreatureBuilder extends FormApplication {
         return this.object.update(newFormData);
     }
 
+    private updateHitPoints(valueToBeInsertedIntoNpc, value: CreatureValueEntry, newFormData: {}) {
+        const hitPointsValue = valueToBeInsertedIntoNpc.maximum;
+        const hitPointFieldsToUpdate = value.actorField.split(',');
+        for (const field of hitPointFieldsToUpdate) {
+            newFormData[field] = hitPointsValue;
+        }
+    }
+
     private static getButtonFieldName(value: CreatureValueEntry, category: CreatureValueCategory) : string {
         return value.name === undefined ? category.name : value.name;
     }
 
-    private static getValueToBeInsertedIntoNpc(descriptor: string, level, formData: any, buttonFieldName: string) : number | string {
+    private static getValueToBeInsertedIntoNpc(descriptor: string, level, formData: any, buttonFieldName: string) : number | string | any {
         return ROLL_APP_DATA[descriptor][level + 1][formData[buttonFieldName]];
     }
 

@@ -88,6 +88,17 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
         ]
     },
     {
+        name: 'Hit Points',
+        descriptor: 'hitPoints',
+        associatedValues: [
+            {
+                actorField: 'data.attributes.hp.value,data.attributes.hp.max',
+                availableValues: [ValueCategory.high, ValueCategory.moderate, ValueCategory.low],
+                defaultValue: ValueCategory.moderate
+            }
+        ]
+    },
+    {
         name: 'Saving Throws',
         descriptor: 'savingThrow',
         associatedValues: [
