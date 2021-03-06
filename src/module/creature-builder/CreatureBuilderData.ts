@@ -178,7 +178,7 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
                 defaultValue: StatisticScale.none
             },
             {
-                name: AdjustableStatistics.crafting,
+                name: AdjustableStatistics.deception,
                 actorField: 'none',
                 defaultValue: StatisticScale.none
             },
@@ -198,7 +198,7 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
                 defaultValue: StatisticScale.none
             },
             {
-                name: AdjustableStatistics.medicine,
+                name: AdjustableStatistics.nature,
                 actorField: 'none',
                 defaultValue: StatisticScale.none
             },
@@ -260,16 +260,59 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
 
 export const ROADMAPS: Roadmap[] = [
     {
-        name: 'Brute',
+        name: 'Average Joe',
         defaultValues: new Map([
-                [AdjustableStatistics.per, StatisticScale.low]
         ])
     },
     {
-        name: 'Brute2',
+        name: 'Brute',
         defaultValues: new Map([
-            [AdjustableStatistics.per, StatisticScale.high]
+                [AdjustableStatistics.per, StatisticScale.low],
+                [AdjustableStatistics.str, StatisticScale.high],
+                [AdjustableStatistics.con, StatisticScale.high],
+                [AdjustableStatistics.dex, StatisticScale.low],
+                [AdjustableStatistics.int, StatisticScale.low],
+                [AdjustableStatistics.wis, StatisticScale.low],
+                [AdjustableStatistics.cha, StatisticScale.low],
+                [AdjustableStatistics.ac, StatisticScale.moderate],
+                [AdjustableStatistics.fort, StatisticScale.high],
+                [AdjustableStatistics.wil, StatisticScale.low],
+                [AdjustableStatistics.ref, StatisticScale.low],
+                [AdjustableStatistics.hp, StatisticScale.high],
+                [AdjustableStatistics.strikeBonus, StatisticScale.high],
+                [AdjustableStatistics.strikeDamage, StatisticScale.high],
         ])
-    }
+    },
+    {
+        name: 'Skirmisher',
+        defaultValues: new Map([
+            [AdjustableStatistics.dex, StatisticScale.high],
+            [AdjustableStatistics.fort, StatisticScale.low],
+            [AdjustableStatistics.ref, StatisticScale.high],
+        ])
+    },
+    {
+        name: 'Sniper',
+        defaultValues: new Map([
+            [AdjustableStatistics.per, StatisticScale.high],
+            [AdjustableStatistics.dex, StatisticScale.high],
+            [AdjustableStatistics.ac, StatisticScale.moderate],
+            [AdjustableStatistics.fort, StatisticScale.low],
+            [AdjustableStatistics.ref, StatisticScale.high],
+            [AdjustableStatistics.hp, StatisticScale.moderate],
+            [AdjustableStatistics.strikeBonus, StatisticScale.high],
+            [AdjustableStatistics.strikeDamage, StatisticScale.high],
+        ])
+    },
+    {
+        name: 'Soldier',
+        defaultValues: new Map([
+            [AdjustableStatistics.str, StatisticScale.high],
+            [AdjustableStatistics.ac, StatisticScale.high],
+            [AdjustableStatistics.fort, StatisticScale.high],
+            [AdjustableStatistics.strikeBonus, StatisticScale.high],
+            [AdjustableStatistics.strikeDamage, StatisticScale.high],
+        ])
+    },
 ]
 

@@ -3,13 +3,15 @@ import { ROLL_APP_DATA } from '../roll-app/RollAppData';
 import {
     CreatureValueCategory,
     CreatureValueEntry,
-    DefaultCreatureValues, Roadmap,
+    DefaultCreatureValues,
+    Roadmap,
     ROADMAPS,
     StatisticScale,
 } from './CreatureBuilderData';
 
 export default class CreatureBuilder extends FormApplication {
-    valueCategories: CreatureValueCategory[] = DefaultCreatureValues;
+    // Create copy of the default values
+    valueCategories: CreatureValueCategory[] = JSON.parse(JSON.stringify(DefaultCreatureValues));
     selectedRoadmap: Roadmap = {
         name: 'Default',
         defaultValues: new Map(),
@@ -41,6 +43,8 @@ export default class CreatureBuilder extends FormApplication {
 
                 if (this.selectedRoadmap.defaultValues.has(name)) {
                     valueCategories[i].associatedValues[j].defaultValue = this.selectedRoadmap.defaultValues.get(name) ?? StatisticScale.moderate;
+                } else {
+                    valueCategories[i].associatedValues[j].defaultValue = DefaultCreatureValues[i].associatedValues[j].defaultValue;
                 }
             }
         }
