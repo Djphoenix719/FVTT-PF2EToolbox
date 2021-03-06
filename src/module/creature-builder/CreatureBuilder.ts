@@ -61,18 +61,23 @@ export default class CreatureBuilder extends FormApplication {
 
     private async updateSkill(formData: any, buttonFieldName: string, valueToBeInsertedIntoNpc) {
         if (formData[buttonFieldName] !== ValueCategory.none) {
-            const data: any = {
-                name: buttonFieldName,
-                type: 'lore',
-                data: {
-                    mod: {
-                        value: valueToBeInsertedIntoNpc,
-                    },
-                },
-            };
+            const data = this.createNewSkillData(buttonFieldName, valueToBeInsertedIntoNpc);
 
             await this.object.createOwnedItem(data);
         }
+    }
+
+    private createNewSkillData(buttonFieldName: string, valueToBeInsertedIntoNpc) {
+        const data: any = {
+            name: buttonFieldName,
+            type: 'lore',
+            data: {
+                mod: {
+                    value: valueToBeInsertedIntoNpc,
+                },
+            },
+        };
+        return data;
     }
 
     private async updateAttack(formData: any, strikeInfo: CreatureValueCategory, level: number) {
@@ -91,6 +96,12 @@ export default class CreatureBuilder extends FormApplication {
             }
         }
 
+        const data = this.createNewStrikeData(strikeDamage, strikeBonus);
+
+        await this.object.createOwnedItem(data);
+    }
+
+    private createNewStrikeData(strikeDamage: string, strikeBonus: number) {
         const data: any = {
             name: 'New Melee',
             type: 'melee',
@@ -98,14 +109,13 @@ export default class CreatureBuilder extends FormApplication {
                 damageRolls: [
                     {
                         damage: strikeDamage,
-                    }
+                    },
                 ],
                 bonus: {
                     value: strikeBonus,
-                }
-            }
-        }
-
-        await this.object.createOwnedItem(data);
+                },
+            },
+        };
+        return data;
     }
 }
