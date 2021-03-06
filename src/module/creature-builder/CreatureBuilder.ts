@@ -1,6 +1,12 @@
 import { MODULE_NAME } from '../Constants';
 import { ROLL_APP_DATA } from '../roll-app/RollAppData';
-import { CreatureValueCategory, CreatureValueEntry, DefaultCreatureValues, ValueCategory } from './CreatureBuilderData';
+import {
+    CreatureValueCategory,
+    CreatureValueEntry,
+    DefaultCreatureValues,
+    ROADMAPS,
+    StatisticScale,
+} from './CreatureBuilderData';
 
 export default class CreatureBuilder extends FormApplication {
     valueCategories: CreatureValueCategory[] = DefaultCreatureValues;
@@ -20,9 +26,30 @@ export default class CreatureBuilder extends FormApplication {
     getData(options?: any): any {
         const renderData = super.getData(options);
 
-        renderData['valueCategories'] = this.valueCategories;
+        const valueCategories = this.valueCategories;
+
+        const roadmap = ROADMAPS[0];
+
+        for (let i = 0; i < valueCategories.length; i++) {
+            const category = valueCategories[i];
+            for (let j = 0; j < category.associatedValues.length; j++) {
+                const value = category.associatedValues[j];
+
+                const name = CreatureBuilder.getName(category, value);
+
+                if (roadmap.defaultValues.has(name)) {
+                    valueCategories[i].associatedValues[j].defaultValue = roadmap.defaultValues.get(name) ?? StatisticScale.moderate;
+                }
+            }
+        }
+
+        renderData['valueCategories'] = valueCategories;
 
         return renderData;
+    }
+
+    private static getName(parentCategory: CreatureValueCategory, value: CreatureValueEntry) : string {
+        return value.name !== undefined ? value.name : parentCategory.name;
     }
 
     protected async _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
@@ -70,7 +97,7 @@ export default class CreatureBuilder extends FormApplication {
     }
 
     private async updateSkill(formData: any, buttonFieldName: string, valueToBeInsertedIntoNpc) {
-        if (formData[buttonFieldName] !== ValueCategory.none) {
+        if (formData[buttonFieldName] !== StatisticScale.none) {
             const data = this.createNewSkillData(buttonFieldName, valueToBeInsertedIntoNpc);
 
             await this.object.createOwnedItem(data);
