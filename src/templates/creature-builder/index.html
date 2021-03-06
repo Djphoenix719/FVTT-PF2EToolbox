@@ -22,7 +22,7 @@
             <div class='value'>
                 <label for='{{value.name}}-group'><h3>{{value.name}}</h3></label>
                 <div id='{{value.name}}-group'>
-                    {{#each value.availableValues as |valueOption|}}
+                    {{#each category.availableValues as |valueOption|}}
                     <input type="radio"
                            name='{{#if value.name}}{{value.name}}{{else}}{{category.name}}{{/if}}'
                            value='{{valueOption}}' {{#ifeq valueOption value.defaultValue}} Checked {{/ifeq}}> {{valueOption}}

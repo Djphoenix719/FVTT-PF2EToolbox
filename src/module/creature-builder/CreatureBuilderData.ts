@@ -8,92 +8,128 @@ export enum ValueCategory {
     none = 'none', // Required for values that would allow for a null option
 }
 
+export enum AdjustableStatistics {
+    str = 'Strength',
+    dex = 'Dexterity',
+    con = 'Constitution',
+    int = 'Intelligence',
+    wis = 'Wisdom',
+    cha = 'Charisma',
+    per = 'Perception',
+    ac = 'Armor Class',
+    hp = 'Hit Points',
+    fort = 'Fortitude',
+    ref = 'Reflex',
+    wil = 'Will',
+    acrobatics = 'Acrobatics',
+    arcana = 'Arcana',
+    athletics = 'Athletics',
+    crafting = 'Crafting',
+    deception = 'Deception',
+    diplomacy = 'Diplomacy',
+    intimidation = 'Intimidation',
+    medicine = 'Medicine',
+    nature = 'Nature',
+    occultism = 'Occultism',
+    performance = 'Performance',
+    religion = 'Religion',
+    society = 'Society',
+    stealth = 'Stealth',
+    survival = 'Survival',
+    thievery = 'Thievery',
+    strikeBonus = 'Strike Attack Bonus',
+    strikeDamage = 'Strike Damage',
+}
+
 export class CreatureValueEntry {
     name?: string; // Overrides values from the parent category
     descriptor?: string; // Overrides values from the parent category
     actorField: string;
-    availableValues: ValueCategory[];
     defaultValue: ValueCategory;
 }
 
 export class CreatureValueCategory {
     name: string;
     descriptor: string;
+    availableValues: ValueCategory[];
     associatedValues: CreatureValueEntry[];
 }
+
+/* export class RoadmapDefaultValue {
+    category: name
+}
+
+export class Roadmap {
+    defaultValues
+} */
 
 export const DefaultCreatureValues: CreatureValueCategory[] = [
     {
         name: 'Abilities',
         descriptor: 'abilityScore',
+        availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible, ValueCategory.abysmal],
         associatedValues: [
             {
-                name: 'Strength',
+                name: AdjustableStatistics.str,
                 actorField: 'data.abilities.str.mod',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible, ValueCategory.abysmal],
                 defaultValue: ValueCategory.moderate
             },
             {
-                name: 'Dexterity',
+                name: AdjustableStatistics.dex,
                 actorField: 'data.abilities.dex.mod',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible, ValueCategory.abysmal],
                 defaultValue: ValueCategory.moderate
             },
             {
-                name: 'Constitution',
+                name: AdjustableStatistics.con,
                 actorField: 'data.abilities.con.mod',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible, ValueCategory.abysmal],
                 defaultValue: ValueCategory.moderate
             },
             {
-                name: 'Intelligence',
+                name: AdjustableStatistics.int,
                 actorField: 'data.abilities.int.mod',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible, ValueCategory.abysmal],
                 defaultValue: ValueCategory.moderate
             },
             {
-                name: 'Wisdom',
+                name: AdjustableStatistics.wis,
                 actorField: 'data.abilities.wis.mod',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible, ValueCategory.abysmal],
                 defaultValue: ValueCategory.moderate
             },
             {
-                name: 'Charisma',
+                name: AdjustableStatistics.cha,
                 actorField: 'data.abilities.cha.mod',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible, ValueCategory.abysmal],
                 defaultValue: ValueCategory.moderate
             }
         ]
     },
     {
-        name: 'Perception',
+        name: AdjustableStatistics.per,
         descriptor: 'perception',
+        availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible],
         associatedValues: [
             {
                 actorField: 'data.attributes.perception.value',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible],
                 defaultValue: ValueCategory.moderate
             }
         ]
     },
     {
-        name: 'Armor Class',
+        name: AdjustableStatistics.ac,
         descriptor: 'armorClass',
+        availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low],
         associatedValues: [
             {
                 actorField: 'data.attributes.ac.value',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low],
                 defaultValue: ValueCategory.moderate
             }
         ]
     },
     {
-        name: 'Hit Points',
+        name: AdjustableStatistics.hp,
         descriptor: 'hitPoints',
+        availableValues: [ValueCategory.high, ValueCategory.moderate, ValueCategory.low],
         associatedValues: [
             {
                 actorField: 'data.attributes.hp.value,data.attributes.hp.max',
-                availableValues: [ValueCategory.high, ValueCategory.moderate, ValueCategory.low],
                 defaultValue: ValueCategory.moderate
             }
         ]
@@ -101,143 +137,125 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
     {
         name: 'Saving Throws',
         descriptor: 'savingThrow',
+        availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible],
         associatedValues: [
             {
-                name: 'Fortitude',
+                name: AdjustableStatistics.fort,
                 actorField: 'data.saves.fortitude.value',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible],
                 defaultValue: ValueCategory.moderate
             },
             {
-                name: 'Reflex',
+                name: AdjustableStatistics.ref,
                 actorField: 'data.saves.reflex.value',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible],
                 defaultValue: ValueCategory.moderate
             },
             {
-                name: 'Will',
+                name: AdjustableStatistics.wil,
                 actorField: 'data.saves.will.value',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible],
                 defaultValue: ValueCategory.moderate
             }]
     },
     {
         name: 'Skills',
         descriptor: 'skill',
+        availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
         associatedValues: [
             {
-                name: 'Acrobatics',
+                name: AdjustableStatistics.acrobatics,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Arcana',
+                name: AdjustableStatistics.arcana,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Athletics',
+                name: AdjustableStatistics.athletics,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Crafting',
+                name: AdjustableStatistics.crafting,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Deception',
+                name: AdjustableStatistics.crafting,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Diplomacy',
+                name: AdjustableStatistics.diplomacy,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Intimidation',
+                name: AdjustableStatistics.intimidation,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Medicine',
+                name: AdjustableStatistics.medicine,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Nature',
+                name: AdjustableStatistics.medicine,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Occultism',
+                name: AdjustableStatistics.occultism,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Performance',
+                name: AdjustableStatistics.performance,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Religion',
+                name: AdjustableStatistics.religion,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Society',
+                name: AdjustableStatistics.society,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Stealth',
+                name: AdjustableStatistics.stealth,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Survival',
+                name: AdjustableStatistics.survival,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             },
             {
-                name: 'Thievery',
+                name: AdjustableStatistics.thievery,
                 actorField: 'none',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
             }]
     },
     {
         name: 'Strike',
         descriptor: 'strike',
+        availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low],
         associatedValues: [
             {
-                name: 'Strike Attack Bonus',
+                name: AdjustableStatistics.strikeBonus,
                 actorField: 'none',
                 descriptor: 'strikeAttack',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low],
                 defaultValue: ValueCategory.moderate
             },
             {
-                name: 'Strike Damage',
+                name: AdjustableStatistics.strikeDamage,
                 actorField: 'none',
                 descriptor: 'strikeDamage',
-                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low],
                 defaultValue: ValueCategory.moderate
             }]
     }
