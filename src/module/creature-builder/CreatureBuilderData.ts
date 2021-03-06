@@ -9,7 +9,8 @@ export enum ValueCategory {
 }
 
 export class CreatureValueEntry {
-    name?: string;
+    name?: string; // Overrides values from the parent category
+    descriptor?: string; // Overrides values from the parent category
     actorField: string;
     availableValues: ValueCategory[];
     defaultValue: ValueCategory;
@@ -208,6 +209,25 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
                 actorField: 'none',
                 availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
+            }]
+    },
+    {
+        name: 'Strike',
+        descriptor: 'strike',
+        associatedValues: [
+            {
+                name: 'Strike Attack Bonus',
+                actorField: 'none',
+                descriptor: 'strikeAttack',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low],
+                defaultValue: ValueCategory.moderate
+            },
+            {
+                name: 'Strike Damage',
+                actorField: 'none',
+                descriptor: 'strikeDamage',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low],
+                defaultValue: ValueCategory.moderate
             }]
     }
 ]

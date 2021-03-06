@@ -1,6 +1,6 @@
 import { MODULE_NAME } from '../Constants';
 import { ROLL_APP_DATA } from '../roll-app/RollAppData';
-import { CreatureValueCategory, DefaultCreatureValues, ValueCategory } from './CreatureBuilderData';
+import { CreatureValueCategory, CreatureValueEntry, DefaultCreatureValues, ValueCategory } from './CreatureBuilderData';
 
 export default class CreatureBuilder extends FormApplication {
     valueCategories: CreatureValueCategory[] = DefaultCreatureValues;
@@ -32,19 +32,31 @@ export default class CreatureBuilder extends FormApplication {
         newFormData['data.details.level.value'] = level;
 
         for (const category of this.valueCategories) {
-            for (const value of category.associatedValues) {
-                const buttonFieldName = value.name === undefined ? category.name : value.name;
-                const valueToBeInsertedIntoNpc = ROLL_APP_DATA[category.descriptor][level + 1][formData[buttonFieldName]];
+            if (category.descriptor === 'strike') {
+                await this.updateAttack(formData, category, level);
+            } else {
+                for (const value of category.associatedValues) {
+                    const buttonFieldName = CreatureBuilder.getButtonFieldName(value, category);
+                    const valueToBeInsertedIntoNpc = CreatureBuilder.getValueToBeInsertedIntoNpc(category.descriptor, level, formData, buttonFieldName);
 
-                if (category.descriptor === 'skill') {
-                    await this.updateSkill(formData, buttonFieldName, valueToBeInsertedIntoNpc);
-                } else {
-                    newFormData[value.actorField] = valueToBeInsertedIntoNpc;
+                    if (category.descriptor === 'skill') {
+                        await this.updateSkill(formData, buttonFieldName, valueToBeInsertedIntoNpc);
+                    } else {
+                        newFormData[value.actorField] = valueToBeInsertedIntoNpc;
+                    }
                 }
             }
         }
 
         return this.object.update(newFormData);
+    }
+
+    private static getButtonFieldName(value: CreatureValueEntry, category: CreatureValueCategory) : string {
+        return value.name === undefined ? category.name : value.name;
+    }
+
+    private static getValueToBeInsertedIntoNpc(descriptor: string, level, formData: any, buttonFieldName: string) : number | string {
+        return ROLL_APP_DATA[descriptor][level + 1][formData[buttonFieldName]];
     }
 
     private async updateSkill(formData: any, buttonFieldName: string, valueToBeInsertedIntoNpc) {
@@ -61,5 +73,39 @@ export default class CreatureBuilder extends FormApplication {
 
             await this.object.createOwnedItem(data);
         }
+    }
+
+    private async updateAttack(formData: any, strikeInfo: CreatureValueCategory, level: number) {
+        let strikeBonus: number = 0;
+        let strikeDamage: string = "1d4";
+
+        for (const part of strikeInfo.associatedValues) {
+            const descriptor = part.descriptor ?? 'undefined';
+            const name = CreatureBuilder.getButtonFieldName(part, strikeInfo);
+            const value: any = CreatureBuilder.getValueToBeInsertedIntoNpc(descriptor, level, formData, name);
+
+            if (part.descriptor === 'strikeAttack' && typeof value === 'number') {
+                strikeBonus = value;
+            } else if (part.descriptor === 'strikeDamage' && typeof value === 'string') {
+                strikeDamage = value;
+            }
+        }
+
+        const data: any = {
+            name: 'New Melee',
+            type: 'melee',
+            data: {
+                damageRolls: [
+                    {
+                        damage: strikeDamage,
+                    }
+                ],
+                bonus: {
+                    value: strikeBonus,
+                }
+            }
+        }
+
+        await this.object.createOwnedItem(data);
     }
 }
