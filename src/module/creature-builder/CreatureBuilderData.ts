@@ -118,7 +118,96 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
                 actorField: 'none',
                 availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
                 defaultValue: ValueCategory.none
-            }
-            ]
+            },
+            {
+                name: 'Arcana',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Athletics',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Crafting',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Deception',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Diplomacy',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Intimidation',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Medicine',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Nature',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Occultism',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Performance',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Religion',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Society',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Stealth',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Survival',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            },
+            {
+                name: 'Thievery',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            }]
     }
 ]
