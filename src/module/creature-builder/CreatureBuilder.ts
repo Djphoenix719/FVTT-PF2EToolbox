@@ -3,13 +3,17 @@ import { ROLL_APP_DATA } from '../roll-app/RollAppData';
 import {
     CreatureValueCategory,
     CreatureValueEntry,
-    DefaultCreatureValues,
+    DefaultCreatureValues, Roadmap,
     ROADMAPS,
     StatisticScale,
 } from './CreatureBuilderData';
 
 export default class CreatureBuilder extends FormApplication {
     valueCategories: CreatureValueCategory[] = DefaultCreatureValues;
+    selectedRoadmap: Roadmap = {
+        name: 'Default',
+        defaultValues: new Map(),
+    };
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -28,8 +32,6 @@ export default class CreatureBuilder extends FormApplication {
 
         const valueCategories = this.valueCategories;
 
-        const roadmap = ROADMAPS[0];
-
         for (let i = 0; i < valueCategories.length; i++) {
             const category = valueCategories[i];
             for (let j = 0; j < category.associatedValues.length; j++) {
@@ -37,12 +39,13 @@ export default class CreatureBuilder extends FormApplication {
 
                 const name = CreatureBuilder.getName(category, value);
 
-                if (roadmap.defaultValues.has(name)) {
-                    valueCategories[i].associatedValues[j].defaultValue = roadmap.defaultValues.get(name) ?? StatisticScale.moderate;
+                if (this.selectedRoadmap.defaultValues.has(name)) {
+                    valueCategories[i].associatedValues[j].defaultValue = this.selectedRoadmap.defaultValues.get(name) ?? StatisticScale.moderate;
                 }
             }
         }
 
+        renderData['roadMaps'] = ROADMAPS;
         renderData['valueCategories'] = valueCategories;
 
         return renderData;
@@ -69,7 +72,7 @@ export default class CreatureBuilder extends FormApplication {
                     if (category.descriptor === 'skill') {
                         await this.updateSkill(formData, buttonFieldName, valueToBeInsertedIntoNpc);
                     } else if (category.descriptor === 'hitPoints') {
-                        this.updateHitPoints(valueToBeInsertedIntoNpc, value, newFormData);
+                        CreatureBuilder.updateHitPoints(valueToBeInsertedIntoNpc, value, newFormData);
                     } else {
                         newFormData[value.actorField] = valueToBeInsertedIntoNpc;
                     }
@@ -80,7 +83,7 @@ export default class CreatureBuilder extends FormApplication {
         return this.object.update(newFormData);
     }
 
-    private updateHitPoints(valueToBeInsertedIntoNpc, value: CreatureValueEntry, newFormData: {}) {
+    private static updateHitPoints(valueToBeInsertedIntoNpc, value: CreatureValueEntry, newFormData: {}) {
         const hitPointsValue = valueToBeInsertedIntoNpc.maximum;
         const hitPointFieldsToUpdate = value.actorField.split(',');
         for (const field of hitPointFieldsToUpdate) {
@@ -98,13 +101,13 @@ export default class CreatureBuilder extends FormApplication {
 
     private async updateSkill(formData: any, buttonFieldName: string, valueToBeInsertedIntoNpc) {
         if (formData[buttonFieldName] !== StatisticScale.none) {
-            const data = this.createNewSkillData(buttonFieldName, valueToBeInsertedIntoNpc);
+            const data = CreatureBuilder.createNewSkillData(buttonFieldName, valueToBeInsertedIntoNpc);
 
             await this.object.createOwnedItem(data);
         }
     }
 
-    private createNewSkillData(buttonFieldName: string, valueToBeInsertedIntoNpc) {
+    private static createNewSkillData(buttonFieldName: string, valueToBeInsertedIntoNpc) {
         const data: any = {
             name: buttonFieldName,
             type: 'lore',
@@ -133,12 +136,12 @@ export default class CreatureBuilder extends FormApplication {
             }
         }
 
-        const data = this.createNewStrikeData(strikeDamage, strikeBonus);
+        const data = CreatureBuilder.createNewStrikeData(strikeDamage, strikeBonus);
 
         await this.object.createOwnedItem(data);
     }
 
-    private createNewStrikeData(strikeDamage: string, strikeBonus: number) {
+    private static createNewStrikeData(strikeDamage: string, strikeBonus: number) {
         const data: any = {
             name: 'New Melee',
             type: 'melee',
@@ -154,5 +157,18 @@ export default class CreatureBuilder extends FormApplication {
             },
         };
         return data;
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+
+        html.find('.apply-road-map').click((ev) => {
+            const skillSelector = $(ev.currentTarget).parents('#road-map-selector').find('select');
+            const roadMapIndex: number = skillSelector.prop('selectedIndex') as number;
+
+            this.selectedRoadmap = ROADMAPS[roadMapIndex];
+
+            this.render(true);
+        });
     }
 }

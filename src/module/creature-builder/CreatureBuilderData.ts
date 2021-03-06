@@ -264,6 +264,12 @@ export const ROADMAPS: Roadmap[] = [
         defaultValues: new Map([
                 [AdjustableStatistics.per, StatisticScale.low]
         ])
+    },
+    {
+        name: 'Brute2',
+        defaultValues: new Map([
+            [AdjustableStatistics.per, StatisticScale.high]
+        ])
     }
 ]
 

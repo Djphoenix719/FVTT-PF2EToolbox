@@ -15,6 +15,15 @@
             <label for="level"><h2>Level</h2></label>
             <input name='data.details.level.value' id='level' type='number' value='{{object.data.details.level.value}}'>
         </div>
+        <div id='road-map-selector'>
+            <label for="road-map"><h2>Road Map</h2></label>
+            <select id="road-map" >
+                {{#each roadMaps as |roadMap|}}
+                <option>{{roadMap.name}}</option>
+                {{/each}}
+            </select>
+            <div class="btn apply-road-map"><a><i class="fas fa-plus"></i>Apply Road Map</a></div>
+        </div>
         {{#each valueCategories as |category|}}
         <div class='category'>
             <h2>{{category.name}}</h2>
