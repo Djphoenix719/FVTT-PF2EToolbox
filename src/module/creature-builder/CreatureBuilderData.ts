@@ -5,6 +5,7 @@ export enum ValueCategory {
     low = 'low',
     terrible = 'terrible',
     abysmal = 'abysmal',
+    none = 'none', // Required for values that would allow for a null option
 }
 
 export class CreatureValueEntry {
@@ -107,5 +108,17 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
                 availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.terrible],
                 defaultValue: ValueCategory.moderate
             }]
+    },
+    {
+        name: 'Skills',
+        descriptor: 'skill',
+        associatedValues: [
+            {
+                name: 'Acrobatics',
+                actorField: 'none',
+                availableValues: [ValueCategory.extreme, ValueCategory.high, ValueCategory.moderate, ValueCategory.low, ValueCategory.none],
+                defaultValue: ValueCategory.none
+            }
+            ]
     }
 ]
