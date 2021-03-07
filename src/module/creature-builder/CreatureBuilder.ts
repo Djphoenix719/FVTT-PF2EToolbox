@@ -1,9 +1,9 @@
 import { MODULE_NAME } from '../Constants';
 import { ROLL_APP_DATA } from '../roll-app/RollAppData';
 import {
-    CreatureValueCategory,
-    CreatureValueEntry,
-    DefaultCreatureValues,
+    CreatureStatisticCategory,
+    CreatureStatisticEntry,
+    DefaultCreatureStatistics,
     Roadmap,
     ROADMAPS,
     StatisticOptions,
@@ -11,7 +11,7 @@ import {
 
 export default class CreatureBuilder extends FormApplication {
     // Create copy of the default values
-    valueCategories: CreatureValueCategory[] = JSON.parse(JSON.stringify(DefaultCreatureValues));
+    statisticCategories: CreatureStatisticCategory[] = JSON.parse(JSON.stringify(DefaultCreatureStatistics));
     selectedRoadmap: Roadmap = {
         name: 'Default',
         tooltip: 'None',
@@ -33,31 +33,35 @@ export default class CreatureBuilder extends FormApplication {
     getData(options?: any): any {
         const renderData = super.getData(options);
 
-        const valueCategories = this.valueCategories;
+        const statisticCategories = this.statisticCategories;
 
-        for (let i = 0; i < valueCategories.length; i++) {
-            const category = valueCategories[i];
-            for (let j = 0; j < category.associatedValues.length; j++) {
-                const value = category.associatedValues[j];
-
-                const name = CreatureBuilder.getName(category, value);
-
-                if (this.selectedRoadmap.defaultValues.has(name)) {
-                    valueCategories[i].associatedValues[j].defaultValue = this.selectedRoadmap.defaultValues.get(name) ?? StatisticOptions.moderate;
-                } else {
-                    valueCategories[i].associatedValues[j].defaultValue = DefaultCreatureValues[i].associatedValues[j].defaultValue;
-                }
-            }
-        }
+        this.applyRoadmapDefaultValues(statisticCategories);
 
         renderData['roadMaps'] = ROADMAPS;
-        renderData['valueCategories'] = valueCategories;
+        renderData['statisticCategories'] = statisticCategories;
 
         return renderData;
     }
 
-    private static getName(parentCategory: CreatureValueCategory, value: CreatureValueEntry) : string {
-        return value.name !== undefined ? value.name : parentCategory.name;
+    private applyRoadmapDefaultValues(statisticCategories: CreatureStatisticCategory[]) {
+        for (let i = 0; i < statisticCategories.length; i++) {
+            const category = statisticCategories[i];
+            for (let j = 0; j < category.statisticEntries.length; j++) {
+                const value = category.statisticEntries[j];
+
+                const name = CreatureBuilder.getName(category, value);
+
+                if (this.selectedRoadmap.defaultValues.has(name)) {
+                    statisticCategories[i].statisticEntries[j].defaultValue = this.selectedRoadmap.defaultValues.get(name) ?? StatisticOptions.moderate;
+                } else {
+                    statisticCategories[i].statisticEntries[j].defaultValue = DefaultCreatureStatistics[i].statisticEntries[j].defaultValue;
+                }
+            }
+        }
+    }
+
+    private static getName(parentCategory: CreatureStatisticCategory, entry: CreatureStatisticEntry) : string {
+        return entry.name !== undefined ? entry.name : parentCategory.name;
     }
 
     protected async _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
@@ -66,22 +70,22 @@ export default class CreatureBuilder extends FormApplication {
         const newFormData = {};
         newFormData['data.details.level.value'] = level;
 
-        for (const category of this.valueCategories) {
+        for (const category of this.statisticCategories) {
             if (category.descriptor === 'strike') {
-                await this.updateAttack(formData, category, level);
+                await this.updateStrike(formData, category, level);
             } else if (category.descriptor === 'spellcasting') {
                 await this.updateSpellcasting(formData, category, level);
             } else {
-                for (const value of category.associatedValues) {
-                    const buttonFieldName = CreatureBuilder.getButtonFieldName(value, category);
+                for (const entry of category.statisticEntries) {
+                    const buttonFieldName = CreatureBuilder.getButtonFieldName(entry, category);
                     const valueToBeInsertedIntoNpc = CreatureBuilder.getValueToBeInsertedIntoNpc(category.descriptor, level, formData, buttonFieldName);
 
                     if (category.descriptor === 'skill') {
                         await this.updateSkill(formData, buttonFieldName, valueToBeInsertedIntoNpc);
                     } else if (category.descriptor === 'hitPoints') {
-                        CreatureBuilder.updateHitPoints(valueToBeInsertedIntoNpc, value, newFormData);
+                        CreatureBuilder.updateHitPoints(valueToBeInsertedIntoNpc, entry, newFormData);
                     } else {
-                        newFormData[value.actorField] = valueToBeInsertedIntoNpc;
+                        newFormData[entry.actorField] = valueToBeInsertedIntoNpc;
                     }
                 }
             }
@@ -90,16 +94,16 @@ export default class CreatureBuilder extends FormApplication {
         return this.object.update(newFormData);
     }
 
-    private static updateHitPoints(valueToBeInsertedIntoNpc, value: CreatureValueEntry, newFormData: {}) {
+    private static updateHitPoints(valueToBeInsertedIntoNpc, entry: CreatureStatisticEntry, newFormData: {}) {
         const hitPointsValue = valueToBeInsertedIntoNpc.maximum;
-        const hitPointFieldsToUpdate = value.actorField.split(',');
+        const hitPointFieldsToUpdate = entry.actorField.split(',');
         for (const field of hitPointFieldsToUpdate) {
             newFormData[field] = hitPointsValue;
         }
     }
 
-    private static getButtonFieldName(value: CreatureValueEntry, category: CreatureValueCategory) : string {
-        return value.name === undefined ? category.name : value.name;
+    private static getButtonFieldName(entry: CreatureStatisticEntry, category: CreatureStatisticCategory) : string {
+        return entry.name === undefined ? category.name : entry.name;
     }
 
     private static getValueToBeInsertedIntoNpc(descriptor: string, level, formData: any, buttonFieldName: string) : number | string | any {
@@ -127,11 +131,11 @@ export default class CreatureBuilder extends FormApplication {
         return data;
     }
 
-    private async updateAttack(formData: any, strikeInfo: CreatureValueCategory, level: number) {
+    private async updateStrike(formData: any, strikeInfo: CreatureStatisticCategory, level: number) {
         let strikeBonus: number = 0;
         let strikeDamage: string = "1d4";
 
-        for (const part of strikeInfo.associatedValues) {
+        for (const part of strikeInfo.statisticEntries) {
             const descriptor = part.descriptor ?? 'undefined';
             const name = CreatureBuilder.getButtonFieldName(part, strikeInfo);
             const value: any = CreatureBuilder.getValueToBeInsertedIntoNpc(descriptor, level, formData, name);
@@ -166,20 +170,7 @@ export default class CreatureBuilder extends FormApplication {
         return data;
     }
 
-    activateListeners(html) {
-        super.activateListeners(html);
-
-        html.find('.apply-road-map').click((ev) => {
-            const skillSelector = $(ev.currentTarget).parents('#road-map-selector').find('select');
-            const roadMapIndex: number = skillSelector.prop('selectedIndex') as number;
-
-            this.selectedRoadmap = ROADMAPS[roadMapIndex];
-
-            this.render(true);
-        });
-    }
-
-    private async updateSpellcasting(formData: any, spellcastingInfo: CreatureValueCategory, level: any) {
+    private async updateSpellcasting(formData: any, spellcastingInfo: CreatureStatisticCategory, level: any) {
         const spellcastingActive = formData['spellcastingProficiency'] !== StatisticOptions.none;
 
         if (!spellcastingActive) {
@@ -191,7 +182,7 @@ export default class CreatureBuilder extends FormApplication {
         let spellDc: number = 10;
         let spellAttack: number = 0;
 
-        const name = CreatureBuilder.getButtonFieldName(spellcastingInfo.associatedValues[0], spellcastingInfo);
+        const name = CreatureBuilder.getButtonFieldName(spellcastingInfo.statisticEntries[0], spellcastingInfo);
 
         const descriptorAttack = 'spell';
         let value: any = CreatureBuilder.getValueToBeInsertedIntoNpc(descriptorAttack, level, formData, name);
@@ -239,5 +230,18 @@ export default class CreatureBuilder extends FormApplication {
             type: 'spellcastingEntry',
             data: spellcastingEntity,
         };
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+
+        html.find('.apply-road-map').click((ev) => {
+            const skillSelector = $(ev.currentTarget).parents('#road-map-selector').find('select');
+            const roadMapIndex: number = skillSelector.prop('selectedIndex') as number;
+
+            this.selectedRoadmap = ROADMAPS[roadMapIndex];
+
+            this.render(true);
+        });
     }
 }

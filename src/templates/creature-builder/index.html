@@ -24,17 +24,17 @@
             </select>
             <div class="btn apply-road-map"><a><i class="fas fa-plus"></i>Apply Road Map</a></div>
         </div>
-        {{#each valueCategories as |category|}}
+        {{#each statisticCategories as |category|}}
         <div class='category'>
             <h2>{{category.name}}</h2>
-            {{#each category.associatedValues as |value|}}
-            <div class='value'>
-                <label for='{{value.name}}-group'><h3>{{value.name}}</h3></label>
-                <div id='{{value.name}}-group'>
-                    {{#each category.availableValues as |valueOption|}}
+            {{#each category.statisticEntries as |entry|}}
+            <div class='entry'>
+                <label for='{{entry.name}}-group'><h3>{{entry.name}}</h3></label>
+                <div id='{{entry.name}}-group'>
+                    {{#each category.availableOptions as |option|}}
                     <input type="radio"
-                           name='{{#if value.name}}{{value.name}}{{else}}{{category.name}}{{/if}}'
-                           value='{{valueOption}}' {{#ifeq valueOption value.defaultValue}} Checked {{/ifeq}}> {{valueOption}}
+                           name='{{#if entry.name}}{{entry.name}}{{else}}{{category.name}}{{/if}}'
+                           value='{{option}}' {{#ifeq option entry.defaultValue}} Checked {{/ifeq}}> {{option}}
                     {{/each}}
                 </div>
             </div>

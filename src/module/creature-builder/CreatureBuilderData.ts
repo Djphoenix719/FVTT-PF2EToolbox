@@ -42,32 +42,33 @@ export enum StatisticOptions {
     none = 'none', // Required for values that would allow for a null option
 }
 
-export class CreatureValueEntry {
+export class CreatureStatisticEntry {
     name?: string; // Overrides values from the parent category
     descriptor?: string; // Overrides values from the parent category
     actorField: string;
     defaultValue: StatisticOptions;
 }
 
-export class CreatureValueCategory {
+export class CreatureStatisticCategory {
     name: string;
     descriptor: string;
-    availableValues: StatisticOptions[];
-    associatedValues: CreatureValueEntry[];
+    availableOptions: StatisticOptions[];
+    statisticEntries: CreatureStatisticEntry[];
 }
 
+// See [aon](http://2e.aonprd.com/Rules.aspx?ID=995)
 export class Roadmap {
     name: string;
     tooltip: string;
     defaultValues: Map<string, StatisticOptions>;
 }
 
-export const DefaultCreatureValues: CreatureValueCategory[] = [
+export const DefaultCreatureStatistics: CreatureStatisticCategory[] = [
     {
         name: 'Abilities',
         descriptor: 'abilityScore',
-        availableValues: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low, StatisticOptions.terrible, StatisticOptions.abysmal],
-        associatedValues: [
+        availableOptions: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low, StatisticOptions.terrible, StatisticOptions.abysmal],
+        statisticEntries: [
             {
                 name: AdjustableStatistics.str,
                 actorField: 'data.abilities.str.mod',
@@ -103,8 +104,8 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
     {
         name: AdjustableStatistics.per,
         descriptor: 'perception',
-        availableValues: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low, StatisticOptions.terrible],
-        associatedValues: [
+        availableOptions: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low, StatisticOptions.terrible],
+        statisticEntries: [
             {
                 actorField: 'data.attributes.perception.value',
                 defaultValue: StatisticOptions.moderate
@@ -114,8 +115,8 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
     {
         name: AdjustableStatistics.ac,
         descriptor: 'armorClass',
-        availableValues: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low],
-        associatedValues: [
+        availableOptions: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low],
+        statisticEntries: [
             {
                 actorField: 'data.attributes.ac.value',
                 defaultValue: StatisticOptions.moderate
@@ -125,8 +126,8 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
     {
         name: AdjustableStatistics.hp,
         descriptor: 'hitPoints',
-        availableValues: [StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low],
-        associatedValues: [
+        availableOptions: [StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low],
+        statisticEntries: [
             {
                 actorField: 'data.attributes.hp.value,data.attributes.hp.max',
                 defaultValue: StatisticOptions.moderate
@@ -136,8 +137,8 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
     {
         name: 'Saving Throws',
         descriptor: 'savingThrow',
-        availableValues: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low, StatisticOptions.terrible],
-        associatedValues: [
+        availableOptions: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low, StatisticOptions.terrible],
+        statisticEntries: [
             {
                 name: AdjustableStatistics.fort,
                 actorField: 'data.saves.fortitude.value',
@@ -157,8 +158,8 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
     {
         name: 'Skills',
         descriptor: 'skill',
-        availableValues: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low, StatisticOptions.none],
-        associatedValues: [
+        availableOptions: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low, StatisticOptions.none],
+        statisticEntries: [
             {
                 name: AdjustableStatistics.acrobatics,
                 actorField: 'none',
@@ -243,8 +244,8 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
     {
         name: 'Strike',
         descriptor: 'strike',
-        availableValues: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low],
-        associatedValues: [
+        availableOptions: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.low],
+        statisticEntries: [
             {
                 name: AdjustableStatistics.strikeBonus,
                 actorField: 'none',
@@ -261,8 +262,8 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
     {
         name: AdjustableStatistics.spellcasting,
         descriptor: 'spellcasting',
-        availableValues: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.none],
-        associatedValues: [
+        availableOptions: [StatisticOptions.extreme, StatisticOptions.high, StatisticOptions.moderate, StatisticOptions.none],
+        statisticEntries: [
             {
                 actorField: 'none',
                 defaultValue: StatisticOptions.none
@@ -274,7 +275,7 @@ export const DefaultCreatureValues: CreatureValueCategory[] = [
 export const ROADMAPS: Roadmap[] = [
     {
         name: 'Average Joe',
-        tooltip: 'Set all values to moderate',
+        tooltip: 'Set all values to moderate, no spellcasting, no skills',
         defaultValues: new Map([
         ])
     },
