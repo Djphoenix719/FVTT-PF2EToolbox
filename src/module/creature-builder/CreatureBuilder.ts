@@ -6,7 +6,7 @@ import {
     DefaultCreatureValues,
     Roadmap,
     ROADMAPS,
-    StatisticScale,
+    StatisticOptions,
 } from './CreatureBuilderData';
 
 export default class CreatureBuilder extends FormApplication {
@@ -43,7 +43,7 @@ export default class CreatureBuilder extends FormApplication {
                 const name = CreatureBuilder.getName(category, value);
 
                 if (this.selectedRoadmap.defaultValues.has(name)) {
-                    valueCategories[i].associatedValues[j].defaultValue = this.selectedRoadmap.defaultValues.get(name) ?? StatisticScale.moderate;
+                    valueCategories[i].associatedValues[j].defaultValue = this.selectedRoadmap.defaultValues.get(name) ?? StatisticOptions.moderate;
                 } else {
                     valueCategories[i].associatedValues[j].defaultValue = DefaultCreatureValues[i].associatedValues[j].defaultValue;
                 }
@@ -69,6 +69,8 @@ export default class CreatureBuilder extends FormApplication {
         for (const category of this.valueCategories) {
             if (category.descriptor === 'strike') {
                 await this.updateAttack(formData, category, level);
+            } else if (category.descriptor === 'spellcasting') {
+                await this.updateSpellcasting(formData, category, level);
             } else {
                 for (const value of category.associatedValues) {
                     const buttonFieldName = CreatureBuilder.getButtonFieldName(value, category);
@@ -105,7 +107,7 @@ export default class CreatureBuilder extends FormApplication {
     }
 
     private async updateSkill(formData: any, buttonFieldName: string, valueToBeInsertedIntoNpc) {
-        if (formData[buttonFieldName] !== StatisticScale.none) {
+        if (formData[buttonFieldName] !== StatisticOptions.none) {
             const data = CreatureBuilder.createNewSkillData(buttonFieldName, valueToBeInsertedIntoNpc);
 
             await this.object.createOwnedItem(data);
@@ -175,5 +177,67 @@ export default class CreatureBuilder extends FormApplication {
 
             this.render(true);
         });
+    }
+
+    private async updateSpellcasting(formData: any, spellcastingInfo: CreatureValueCategory, level: any) {
+        const spellcastingActive = formData['spellcastingProficiency'] !== StatisticOptions.none;
+
+        if (!spellcastingActive) {
+            return;
+        }
+
+        let spellcastingTradition: string = 'arcane';
+        let spellcastingType: string = 'innate';
+        let spellDc: number = 10;
+        let spellAttack: number = 0;
+
+        const name = CreatureBuilder.getButtonFieldName(spellcastingInfo.associatedValues[0], spellcastingInfo);
+
+        const descriptorAttack = 'spell';
+        let value: any = CreatureBuilder.getValueToBeInsertedIntoNpc(descriptorAttack, level, formData, name);
+        if (typeof value === 'number') {
+            spellAttack = value;
+        }
+
+        const descriptorDc = 'difficultyClass';
+        value = CreatureBuilder.getValueToBeInsertedIntoNpc(descriptorDc, level, formData, name);
+        if (typeof value === 'number') {
+            spellDc = value;
+        }
+
+        const data = CreatureBuilder.createNewSpellcastingEntryData(spellcastingTradition, spellcastingType, spellDc, spellAttack);
+
+        await this.object.createEmbeddedEntity('OwnedItem', data);
+    }
+
+    private static createNewSpellcastingEntryData(tradition: string, type: string, dc: number, attack: number) {
+        const name = 'Creature Spellcasting';
+
+        const spellcastingEntity = {
+            spelldc: {
+                value: attack,
+                dc: dc,
+            },
+            tradition: {
+                type: 'String',
+                label: 'Magic Tradition',
+                value: tradition,
+            },
+            prepared: {
+                type: 'String',
+                label: 'Spellcasting Type',
+                value: type,
+            },
+            attack: {
+                value: attack,
+            },
+            showUnpreparedSpells: { value: true },
+        };
+
+        return {
+            name,
+            type: 'spellcastingEntry',
+            data: spellcastingEntity,
+        };
     }
 }
