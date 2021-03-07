@@ -299,6 +299,15 @@ export const ROADMAPS: Roadmap[] = [
         ])
     },
     {
+        name: 'Magical Striker',
+        tooltip: 'high attack and high damage; moderate to high spell DCs; either a scattering of innate spells or prepared or spontaneous spells up to half the creature’s level (rounded up) minus 1',
+        defaultValues: new Map([
+                [AdjustableStatistics.spellcasting, StatisticOptions.moderate],
+                [AdjustableStatistics.strikeBonus, StatisticOptions.high],
+                [AdjustableStatistics.strikeDamage, StatisticOptions.high],
+        ])
+    },
+    {
         name: 'Skirmisher',
         tooltip: 'high Dex modifier; low Fortitude, high Reflex; higher Speed than typical',
         defaultValues: new Map([
@@ -330,6 +339,19 @@ export const ROADMAPS: Roadmap[] = [
             [AdjustableStatistics.fort, StatisticOptions.high],
             [AdjustableStatistics.strikeBonus, StatisticOptions.high],
             [AdjustableStatistics.strikeDamage, StatisticOptions.high],
+        ])
+    },
+    {
+        name: 'Spellcaster',
+        tooltip: 'high or extreme modifier for the corresponding mental ability; low Fortitude, high Will; low HP; low attack bonus and moderate or low damage; high or extreme spell DCs; prepared or spontaneous spells up to half the creature’s level (rounded up)',
+        defaultValues: new Map([
+            [AdjustableStatistics.int, StatisticOptions.high],
+            [AdjustableStatistics.fort, StatisticOptions.low],
+            [AdjustableStatistics.wil, StatisticOptions.high],
+            [AdjustableStatistics.hp, StatisticOptions.low],
+            [AdjustableStatistics.strikeBonus, StatisticOptions.low],
+            [AdjustableStatistics.strikeDamage, StatisticOptions.low],
+            [AdjustableStatistics.spellcasting, StatisticOptions.high],
         ])
     },
 ]
