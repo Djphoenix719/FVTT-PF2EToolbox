@@ -48,10 +48,10 @@ Hooks.on('setup', () => {
         Hooks.on('renderJournalDirectory', enableRollAppButton);
     }
     if (Settings.get(Settings.FEATURES.HERO_POINTS)) {
-        Hooks.on('renderCRBStyleCharacterActorSheetPF2E', enableHeroPoints);
+        Hooks.on('renderCharacterSheetPF2e', enableHeroPoints);
     }
     if (Settings.get(Settings.FEATURES.DISABLE_PFS_TAB)) {
-        Hooks.on('renderCRBStyleCharacterActorSheetPF2E', disablePFSTab);
+        Hooks.on('renderCharacterSheetPF2e', disablePFSTab);
     }
     if (Settings.get(Settings.FEATURES.REMOVE_DEFAULT_ART)) {
         Hooks.on('ready', removeDefaultArt);
@@ -250,8 +250,8 @@ function enableQuickMystify() {
 
     CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'].cls = decorate(CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'].cls);
 
-    CONFIG.Actor.sheetClasses['character']['pf2e.CRBStyleCharacterActorSheetPF2E'].cls = decorate(
-        CONFIG.Actor.sheetClasses['character']['pf2e.CRBStyleCharacterActorSheetPF2E'].cls,
+    CONFIG.Actor.sheetClasses['character']['pf2e.CharacterSheetPF2e'].cls = decorate(
+        CONFIG.Actor.sheetClasses['character']['pf2e.CharacterSheetPF2e'].cls,
     );
 
     if (Settings.get(Settings.FEATURES.LOOT_APP)) {
