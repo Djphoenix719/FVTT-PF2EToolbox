@@ -25,6 +25,7 @@ import secretSkillRoll from './macros/secret-skill-roll';
 import distributeXp from './macros/distribute-xp';
 import { distributeHeroPoints } from './macros/distribute-hero-points';
 import { groupSave, registerGroupSaveHooks } from './macros/group-saves';
+import CreatureBuilder from './creature-builder/CreatureBuilder';
 
 Hooks.on('init', Settings.registerAllSettings);
 
@@ -43,6 +44,9 @@ Hooks.on('setup', () => {
     }
     if (Settings.get(Settings.FEATURES.QUANTITIES)) {
         Hooks.on('renderActorSheet', onQuantitiesHook);
+    }
+    if (Settings.get(Settings.FEATURES.CREATURE_BUILDER)) {
+        Hooks.on('renderActorSheet', enableCreatureBuilderButton);
     }
     if (Settings.get(Settings.FEATURES.ROLL_APP)) {
         Hooks.on('renderJournalDirectory', enableRollAppButton);
@@ -184,6 +188,26 @@ function enableRollAppButton(app: Application, html: JQuery) {
         html.append(footer);
     }
     footer.append(button);
+}
+
+function enableCreatureBuilderButton(sheet: ActorSheet, html: JQuery) {
+    // Only inject the link if the actor is of type "character" and the user has permission to update it
+    const actor = sheet.actor;
+    if (!(actor.data.type === "npc" && actor.can(game.user, "update"))) {
+        return;
+    }
+
+    let element = html.find(".window-header .window-title");
+    if (element.length != 1) {
+        return;
+    }
+
+    let button = $(`<a class="popout" style><i class="fas fa-book"></i>Creature Builder</a>`);
+    button.on('click', () => {
+        new CreatureBuilder(actor, {}).render(true);
+    });
+
+    element.after(button);
 }
 
 function enableHeroPoints(app: Application, html: JQuery, renderData: any) {
