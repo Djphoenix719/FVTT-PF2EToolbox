@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import { MODULE_NAME } from '../Constants';
+import { MODULE_NAME, PF2E_LOOT_SHEET_NAME } from '../Constants';
 import Settings from '../settings-app/Settings';
 import { GetItemFromCollection, GetMagicItemTables, GetTreasureTables } from './LootAppUtil';
 import { CREATE_KEY_NONE, CREATE_MODES, CreateMode, IGradeStats, ITEM_GRADES, ITEM_MATERIALS, ITEM_RUNES } from './LootAppData';
@@ -73,7 +73,7 @@ const getMaterialPrice = (bulkString: string, pricePerBulk: number): number => {
 
 export default function extendLootSheet() {
     type ActorSheetConstructor = new (...args: any[]) => ActorSheet;
-    const extendMe: ActorSheetConstructor = CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'].cls;
+    const extendMe: ActorSheetConstructor = CONFIG.Actor.sheetClasses['loot'][`pf2e.${PF2E_LOOT_SHEET_NAME}`].cls;
     return class LootApp extends extendMe {
         static get defaultOptions() {
             // @ts-ignore
@@ -145,6 +145,8 @@ export default function extendLootSheet() {
             return equipmentContent
                 .filter((i) => {
                     if (i.data.type !== 'armor') return false;
+                    // 3 exceptions to the 0 level rule
+                    if (['Full Plate', 'Half Plate', 'Splint Mail'].includes(i.data.name)) return true;
                     if (i.data.data.level.value > 0) return false;
                     return true;
                 })
