@@ -19,7 +19,6 @@ import Settings from './settings-app/Settings';
 import { scaleNPCToLevel } from './cr-scaler/NPCScaler';
 import { onSetupTokensContextHook } from './Tokens';
 import extendLootSheet from './loot-app/LootApp';
-import { IDataUpdates, IHandledItemType } from './cr-scaler/NPCScalerTypes';
 import { registerHandlebarsHelpers, registerHandlebarsTemplates } from './Handlebars';
 import secretSkillRoll from './macros/secret-skill-roll';
 import distributeXp from './macros/distribute-xp';
@@ -277,10 +276,6 @@ function enableQuickMystify() {
     CONFIG.Actor.sheetClasses['character'][`pf2e.${PF2E_PC_SHEET_NAME}`].cls = decorate(
         CONFIG.Actor.sheetClasses['character'][`pf2e.${PF2E_PC_SHEET_NAME}`].cls,
     );
-
-    if (Settings.get(Settings.FEATURES.LOOT_APP)) {
-        CONFIG.Actor.sheetClasses['loot']['pf2e-toolbox.LootApp'].cls = decorate(CONFIG.Actor.sheetClasses['loot']['pf2e-toolbox.LootApp'].cls);
-    }
 }
 
 function disablePFSTab(app: Application, html: JQuery) {
