@@ -14,7 +14,7 @@
  */
 
 import RollApp from './roll-app/RollApp';
-import { MODULE_NAME } from './Constants';
+import { MODULE_NAME, PF2E_LOOT_SHEET_NAME, PF2E_PC_SHEET_NAME } from './Constants';
 import Settings from './settings-app/Settings';
 import { scaleNPCToLevel } from './cr-scaler/NPCScaler';
 import { onSetupTokensContextHook } from './Tokens';
@@ -52,10 +52,10 @@ Hooks.on('setup', () => {
         Hooks.on('renderJournalDirectory', enableRollAppButton);
     }
     if (Settings.get(Settings.FEATURES.HERO_POINTS)) {
-        Hooks.on('renderCharacterSheetPF2e', enableHeroPoints);
+        Hooks.on(`render${PF2E_PC_SHEET_NAME}`, enableHeroPoints);
     }
     if (Settings.get(Settings.FEATURES.DISABLE_PFS_TAB)) {
-        Hooks.on('renderCharacterSheetPF2e', disablePFSTab);
+        Hooks.on(`render${PF2E_PC_SHEET_NAME}`, disablePFSTab);
     }
     if (Settings.get(Settings.FEATURES.REMOVE_DEFAULT_ART)) {
         Hooks.on('ready', removeDefaultArt);
@@ -193,11 +193,11 @@ function enableRollAppButton(app: Application, html: JQuery) {
 function enableCreatureBuilderButton(sheet: ActorSheet, html: JQuery) {
     // Only inject the link if the actor is of type "character" and the user has permission to update it
     const actor = sheet.actor;
-    if (!(actor.data.type === "npc" && actor.can(game.user, "update"))) {
+    if (!(actor.data.type === 'npc' && actor.can(game.user, 'update'))) {
         return;
     }
 
-    let element = html.find(".window-header .window-title");
+    let element = html.find('.window-header .window-title');
     if (element.length != 1) {
         return;
     }
@@ -272,10 +272,10 @@ function enableQuickMystify() {
         return newCls;
     };
 
-    CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'].cls = decorate(CONFIG.Actor.sheetClasses['loot']['pf2e.ActorSheetPF2eLoot'].cls);
+    CONFIG.Actor.sheetClasses['loot'][`pf2e.${PF2E_LOOT_SHEET_NAME}`].cls = decorate(CONFIG.Actor.sheetClasses['loot'][`pf2e.${PF2E_LOOT_SHEET_NAME}`].cls);
 
-    CONFIG.Actor.sheetClasses['character']['pf2e.CharacterSheetPF2e'].cls = decorate(
-        CONFIG.Actor.sheetClasses['character']['pf2e.CharacterSheetPF2e'].cls,
+    CONFIG.Actor.sheetClasses['character'][`pf2e.${PF2E_PC_SHEET_NAME}`].cls = decorate(
+        CONFIG.Actor.sheetClasses['character'][`pf2e.${PF2E_PC_SHEET_NAME}`].cls,
     );
 
     if (Settings.get(Settings.FEATURES.LOOT_APP)) {
