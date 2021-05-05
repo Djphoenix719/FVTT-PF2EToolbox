@@ -91,11 +91,11 @@ export default function extendLootSheet() {
 
         get template() {
             const editableSheetPath = `modules/${MODULE_NAME}/templates/loot-app/LootApp.html`;
-            const nonEditableSheetPath = 'systems/pf2e/templates/actors/loot-sheet-no-edit.html';
+            const nonEditableSheetPath = 'systems/pf2e/templates/actors/loot/sheet.html';
 
             const isEditable = this.actor.getFlag('pf2e', 'editLoot.value');
 
-            if (isEditable && game.user.isGM) {
+            if (isEditable || game.user.isGM) {
                 return editableSheetPath;
             }
 
