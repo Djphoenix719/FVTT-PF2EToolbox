@@ -175,7 +175,7 @@ export default function extendLootSheet() {
                 renderData['treasureTables'] = await GetTreasureTables();
                 // Quick Mystification breaks when these are enabled, investigate.
                 renderData['magicItemTables'] = await GetMagicItemTables('Permanent Items');
-                renderData['consumablesTables'] = await GetMagicItemTables('Consumables Items');
+                renderData['consumablesTables'] = await GetMagicItemTables('Consumables');
 
                 renderData['flags'] = this.actor.data.flags;
 
