@@ -561,9 +561,11 @@ export default function extendLootSheet() {
             });
 
             html.find('button.clear-inventory').on('click', async (event) => {
-                await actor.update({
-                    items: [],
-                });
+                // @ts-ignore
+                await actor.deleteEmbeddedDocuments(
+                    'Item',
+                    actor.items.map((i) => i.id),
+                );
             });
         }
     };
