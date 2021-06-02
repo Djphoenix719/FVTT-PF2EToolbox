@@ -1,0 +1,65 @@
+/*
+ * Copyright 2021 Andrew Cuccinello
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import Settings from '../settings-app/Settings';
+import { scaleNPCToLevel } from '../cr-scaler/NPCScaler';
+
+export const setupNPCScaler = () => Hooks.on('getActorDirectoryEntryContext', onScaleNPCContextHook);
+
+function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
+    buttons.unshift({
+        name: 'Scale to Level',
+        icon: '<i class="fas fa-level-up-alt"></i>',
+        condition: (li: JQuery<HTMLLIElement>) => {
+            const id = li.data('entity-id') as string;
+            const actor = game.actors.get(id);
+
+            return actor.data.type === 'npc';
+        },
+        callback: async (li: JQuery<HTMLLIElement>) => {
+            const id = li.data('entity-id') as string;
+            const actor = game.actors.get(id);
+
+            // const oldLevel = actor.data.data.details.level.value;
+            const oldLevel = 24;
+
+            let d = new Dialog({
+                title: 'Scale NPC',
+                content:
+                    `<div class="form-group"><label>Start Level</label><input id="startLevel" type="number" value="${oldLevel}" min="-1" max="24"></div>` +
+                    `<div class="form-group"><label>End Level</label><input id="endLevel" type="number" value="${oldLevel}" min="-1" max="24"></div>`,
+                buttons: {
+                    scale: {
+                        icon: '<i class="fas fa-level-up-alt"></i>',
+                        label: 'Scale',
+                        callback: async (html: JQuery) => {
+                            ui.notifications.info(`Scaling NPC... please wait.`);
+                            const startLevel = parseInt(<string>html.find('#startLevel').val());
+                            const endLevel = parseInt(<string>html.find('#endLevel').val());
+
+                            for (let i = startLevel; i <= endLevel; i++) {
+                                await scaleNPCToLevel(actor, i);
+                            }
+                            ui.notifications.info(`Scaled ${actor.name} to levels ${startLevel} - ${endLevel}.`);
+                        },
+                    },
+                },
+                default: 'scale',
+            });
+            d.render(true);
+        },
+    });
+}

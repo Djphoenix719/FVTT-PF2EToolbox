@@ -1,15 +1,46 @@
+/*
+ * Copyright 2021 Andrew Cuccinello
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { MODULE_NAME } from '../Constants';
 import { ROLL_APP_DATA } from '../roll-app/RollAppData';
-import {
-    CreatureStatisticCategory,
-    CreatureStatisticEntry,
-    DefaultCreatureStatistics,
-    Roadmap,
-    ROADMAPS,
-    StatisticOptions,
-} from './CreatureBuilderData';
+import { CreatureStatisticCategory, CreatureStatisticEntry, DefaultCreatureStatistics, Roadmap, ROADMAPS, StatisticOptions } from './CreatureBuilderData';
 
-export default class CreatureBuilder extends FormApplication {
+export const setupCreatureBuilder = () => Hooks.on('renderActorSheet', enableCreatureBuilderButton);
+
+function enableCreatureBuilderButton(sheet: ActorSheet, html: JQuery) {
+    // Only inject the link if the actor is of type "character" and the user has permission to update it
+    const actor = sheet.actor;
+    if (!(actor.type === 'npc' && actor.canUserModify(game.user, 'update'))) {
+        return;
+    }
+
+    let element = html.find('.window-header .window-title');
+    if (element.length != 1) {
+        return;
+    }
+
+    let button = $(`<a class="popout" style><i class="fas fa-book"></i>Creature Builder</a>`);
+    button.on('click', () => {
+        new CreatureBuilder(actor, {}).render(true);
+    });
+
+    element.after(button);
+}
+
+class CreatureBuilder extends FormApplication {
     // Create copy of the default values
     statisticCategories: CreatureStatisticCategory[] = JSON.parse(JSON.stringify(DefaultCreatureStatistics));
     selectedRoadmap: Roadmap = {
@@ -60,7 +91,7 @@ export default class CreatureBuilder extends FormApplication {
         }
     }
 
-    private static getName(parentCategory: CreatureStatisticCategory, entry: CreatureStatisticEntry) : string {
+    private static getName(parentCategory: CreatureStatisticCategory, entry: CreatureStatisticEntry): string {
         return entry.name !== undefined ? entry.name : parentCategory.name;
     }
 
@@ -102,11 +133,11 @@ export default class CreatureBuilder extends FormApplication {
         }
     }
 
-    private static getButtonFieldName(entry: CreatureStatisticEntry, category: CreatureStatisticCategory) : string {
+    private static getButtonFieldName(entry: CreatureStatisticEntry, category: CreatureStatisticCategory): string {
         return entry.name === undefined ? category.name : entry.name;
     }
 
-    private static getValueToBeInsertedIntoNpc(descriptor: string, level, formData: any, buttonFieldName: string) : number | string | any {
+    private static getValueToBeInsertedIntoNpc(descriptor: string, level, formData: any, buttonFieldName: string): number | string | any {
         return ROLL_APP_DATA[descriptor][level + 1][formData[buttonFieldName]];
     }
 
@@ -133,7 +164,7 @@ export default class CreatureBuilder extends FormApplication {
 
     private async updateStrike(formData: any, strikeInfo: CreatureStatisticCategory, level: number) {
         let strikeBonus: number = 0;
-        let strikeDamage: string = "1d4";
+        let strikeDamage: string = '1d4';
 
         for (const part of strikeInfo.statisticEntries) {
             const descriptor = part.descriptor ?? 'undefined';

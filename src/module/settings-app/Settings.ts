@@ -18,6 +18,15 @@ import { MODULE_NAME } from '../Constants';
 import '../../external/settings-extender.js';
 import SettingsApp from './SettingsApp';
 import { setupHeroPoints } from '../features/HeroPoints';
+import { setupQuantities } from '../features/QuickQuantities';
+import { setupRollApp } from '../features/RollApp';
+import { setupNPCScaler } from '../features/NPCScaler';
+import { readyDefaultArt } from '../features/DefaultArt';
+import { readyQuickUnidentify } from '../features/QuickUnidentify';
+import { setupFlattenProficiency } from '../features/FlattenProficiency';
+import { setupTokens } from '../features/Tokens';
+import { setupCreatureBuilder } from '../creature-builder/CreatureBuilder';
+import { readyLootApp } from '../features/LootApp';
 
 // TODO: Localization of strings in this file.
 
@@ -99,6 +108,7 @@ export const FEATURES: IFeatureDefinition[] = [
         description: `An app with all the data available for monsters in convenient tables that can be clicked to roll.`,
         inputs: [],
         register: [],
+        onSetup: setupRollApp,
     },
     {
         id: Features.CREATURE_BUILDER,
@@ -107,6 +117,7 @@ export const FEATURES: IFeatureDefinition[] = [
         description: `A tool to build creatures from scratch using the recommended values from the GMG.`,
         inputs: [],
         register: [],
+        onSetup: setupCreatureBuilder,
     },
     {
         id: Features.QUICK_MYSTIFY,
@@ -117,22 +128,22 @@ export const FEATURES: IFeatureDefinition[] = [
             ` where holding alt will unidentify the items created/rolled.`,
         inputs: [],
         register: [],
+        onReady: readyQuickUnidentify,
     },
     {
         id: Features.REMOVE_DEFAULT_ART,
         title: 'Remove Default Art',
         attributes: [ATTR_RELOAD_REQUIRED],
         description: `Each new version of PF2E, will remove default art from all bestiary compendiums.`,
-
         inputs: [],
         register: [],
+        onReady: readyDefaultArt,
     },
     {
         id: Features.QUANTITIES,
         title: 'Quick Quantities',
         attributes: [ATTR_RELOAD_REQUIRED],
         description: `Allows you to hold shift or control when increasing/decreasing an item quantity on the player sheet to quickly increase/decrease quantities.`,
-
         inputs: [
             {
                 name: SHIFT_QUANTITY,
@@ -159,6 +170,7 @@ export const FEATURES: IFeatureDefinition[] = [
                 default: 10,
             },
         ],
+        onSetup: setupQuantities,
     },
     {
         id: Features.FLATTEN_PROFICIENCY,
@@ -168,6 +180,7 @@ export const FEATURES: IFeatureDefinition[] = [
         remove the creatures level from all relevant stats.`,
         inputs: [],
         register: [],
+        onSetup: setupFlattenProficiency,
     },
     {
         id: Features.NPC_SCALER,
@@ -190,6 +203,7 @@ export const FEATURES: IFeatureDefinition[] = [
                 default: '',
             },
         ],
+        onSetup: setupNPCScaler,
     },
     {
         id: Features.LOOT_APP,
@@ -200,6 +214,7 @@ export const FEATURES: IFeatureDefinition[] = [
         it is disabled.`,
         inputs: [],
         register: [],
+        onReady: readyLootApp,
     },
     {
         id: Features.HERO_POINTS,
@@ -298,6 +313,7 @@ export const FEATURES: IFeatureDefinition[] = [
                 default: '',
             },
         ],
+        onSetup: setupTokens,
     },
 ];
 
@@ -350,7 +366,7 @@ export default class Settings {
      */
     public static onInit() {
         for (const feature of FEATURES) {
-            if (feature.onInit) {
+            if (feature.onInit && Settings.get(feature.id)) {
                 feature.onInit();
             }
         }
@@ -361,7 +377,7 @@ export default class Settings {
      */
     public static onSetup() {
         for (const feature of FEATURES) {
-            if (feature.onSetup) {
+            if (feature.onSetup && Settings.get(feature.id)) {
                 feature.onSetup();
             }
         }
@@ -372,7 +388,7 @@ export default class Settings {
      */
     public static onReady() {
         for (const feature of FEATURES) {
-            if (feature.onReady) {
+            if (feature.onReady && Settings.get(feature.id)) {
                 feature.onReady();
             }
         }

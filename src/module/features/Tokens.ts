@@ -1,7 +1,8 @@
-/* Copyright 2020 Andrew Cuccinello
- *
+/*
+ * Copyright 2021 Andrew Cuccinello
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ *
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
@@ -13,9 +14,11 @@
  * limitations under the License.
  */
 
-import Settings from './settings-app/Settings';
+import Settings from '../settings-app/Settings';
 
-export function onSetupTokensContextHook(html: JQuery, buttons: any[]) {
+export const setupTokens = () => Hooks.on('getActorDirectoryEntryContext', onSetupTokensContextHook);
+
+function onSetupTokensContextHook(html: JQuery, buttons: any[]) {
     buttons.unshift({
         name: 'Setup Token',
         icon: '<i class="fas fa-wrench"></i>',
