@@ -1,7 +1,8 @@
-/* Copyright 2020 Andrew Cuccinello
- *
+/*
+ * Copyright 2021 Andrew Cuccinello
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ *
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
@@ -16,3 +17,4 @@
 export const MODULE_NAME = `pf2e-toolbox`;
 export const PF2E_PC_SHEET_NAME = `CharacterSheetPF2e`;
 export const PF2E_LOOT_SHEET_NAME = `LootSheetPF2e`;
+export const PF2E_NPC_SHEET_NAME = `NPCSheetPF2e`;
