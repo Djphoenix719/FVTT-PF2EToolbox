@@ -15,7 +15,7 @@
  */
 
 import { MODULE_NAME } from '../Constants';
-import Settings, { FEATURES } from './Settings';
+import Settings, { ATTR_RELOAD_REQUIRED, FEATURES } from './Settings';
 
 export default class SettingsApp extends FormApplication {
     static get defaultOptions() {
@@ -65,8 +65,21 @@ export default class SettingsApp extends FormApplication {
     }
 
     protected async _updateObject(event: JQuery.Event, formData: any): Promise<void> {
-        for (const [key, value] of Object.entries(formData)) {
-            await Settings.set(key, value);
+        let shouldReload = false;
+        for (const [key, newValue] of Object.entries(formData)) {
+            const oldValue = Settings.get(key);
+            await Settings.set(key, newValue);
+
+            if (oldValue !== newValue) {
+                const reloadRequired = FEATURES.find((feature) => feature.id === key)?.attributes?.includes(ATTR_RELOAD_REQUIRED) ?? false;
+                shouldReload = shouldReload || reloadRequired;
+            }
+        }
+
+        if (shouldReload) {
+            if (confirm('PF2E Toolbox requires the Foundry page to be refreshed before new settings are applied. Refresh now?')) {
+                window.location = window.location;
+            }
         }
     }
 }

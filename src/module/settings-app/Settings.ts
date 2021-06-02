@@ -91,11 +91,11 @@ interface IFeatureDefinition {
     onSetup?: HookCallback;
 }
 
-const ATTR_RELOAD_REQUIRED: IFeatureAttribute = {
+export const ATTR_RELOAD_REQUIRED: IFeatureAttribute = {
     icon: 'fas fa-sync',
     title: 'Reload Required',
 };
-const ATTR_REOPEN_SHEET_REQUIRED: IFeatureAttribute = {
+export const ATTR_REOPEN_SHEET_REQUIRED: IFeatureAttribute = {
     icon: 'fas fa-sticky-note',
     title: 'Sheets must be closed and re-opened.',
 };
@@ -260,12 +260,6 @@ export const FEATURES: IFeatureDefinition[] = [
         description: `Adds a context menu option to setup a token using a pre-defined naming scheme. See the
         <a href="https://github.com/Djphoenix719/FVTT-PF2EToolbox" target="_blank">GitHub</a> for details.`,
         inputs: [
-            {
-                name: Features.TOKEN_SETUP,
-                label: 'Enable',
-                type: 'checkbox',
-                value: false,
-            },
             {
                 name: `${TOKEN_PATH}_CLIENT_FACING`,
                 label: 'Token Path',
