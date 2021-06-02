@@ -1,7 +1,8 @@
-/* Copyright 2020 Andrew Cuccinello
- *
+/*
+ * Copyright 2021 Andrew Cuccinello
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ *
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
@@ -82,7 +83,7 @@ export default function extendLootSheet() {
             options.classes = [...options.classes, 'pf2e-toolbox', 'loot-app'];
 
             options.tabs = options.tabs ?? [];
-            options.tabs = [...options.tabs, { navSelector: '.loot-app-nav', contentSelector: '.loot-app-content', initial: 'create' }];
+            options.tabs = [...options.tabs, { navSelector: '.loot-app-nav', contentSelector: '.loot-app-content', initial: 'loot-config' }];
             return options;
         }
 
@@ -472,7 +473,7 @@ export default function extendLootSheet() {
                 let rolls = await table.drawMany(drawCount);
 
                 const promises = rolls.results.map((r) => {
-                    return GetItemFromCollection(r.collection, r.resultId);
+                    return GetItemFromCollection(r.data.collection, r.data.resultId);
                 });
 
                 let entities: (Entity | null)[] = await Promise.all(promises);
@@ -508,7 +509,8 @@ export default function extendLootSheet() {
                     }
                 }
 
-                await actor.createEmbeddedEntity('OwnedItem', results);
+                // @ts-ignore
+                await actor.createEmbeddedDocuments('Item', results);
             });
             html.find('button.roll-magic-item').on('click', async (event) => {
                 event.preventDefault();
@@ -521,10 +523,10 @@ export default function extendLootSheet() {
 
                 let rolls = await table.drawMany(drawCount);
                 const promises = rolls.results.map((r) => {
-                    if (!r.hasOwnProperty('collection')) {
+                    if (!r.data.hasOwnProperty('collection')) {
                         return Promise.resolve(null);
                     }
-                    return GetItemFromCollection(r.collection, r.resultId);
+                    return GetItemFromCollection(r.data.collection, r.data.resultId);
                 });
 
                 let entities: (Entity | null)[] = await Promise.all(promises);
@@ -552,7 +554,8 @@ export default function extendLootSheet() {
                     }
                 }
 
-                await actor.createEmbeddedEntity('OwnedItem', results);
+                // @ts-ignore
+                await actor.createEmbeddedDocuments('Item', results);
 
                 await new Promise((resolve) => setTimeout(resolve, 1000));
             });
