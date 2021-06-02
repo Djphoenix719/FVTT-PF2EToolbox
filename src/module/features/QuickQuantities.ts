@@ -35,35 +35,30 @@ function onQuantitiesHook(app: ActorSheet, html: JQuery) {
     };
 
     increaseQuantity.on('click', (event) => {
-        const itemId = $(event.currentTarget).parents('.item').attr('data-item-id');
+        const itemId = $(event.currentTarget).parents('.item').attr('data-item-id') ?? '';
+        const item = actor.items.get(itemId);
 
-        if (!itemId) return;
-        const item = actor.getOwnedItem(itemId);
-        if (!item) return;
-
-        const itemData = item.data.data;
-        if (!hasProperty(itemData, 'quantity')) {
-            throw new Error('Tried to update quantity on item that does not have quantity');
-        }
-
-        actor.updateEmbeddedEntity('OwnedItem', { '_id': itemId, 'data.quantity.value': Number(itemData.quantity.value) + getAmount(event) });
+        // @ts-ignore
+        actor.updateEmbeddedDocuments('Item', [
+            {
+                '_id': itemId,
+                'data.quantity.value': Number(item.data.data.quantity.value) + getAmount(event),
+            },
+        ]);
     });
 
     decreaseQuantity.on('click', (event) => {
-        const li = $(event.currentTarget).parents('.item');
-        const itemId = li.attr('data-item-id');
+        const itemId = $(event.currentTarget).parents('.item').attr('data-item-id') ?? '';
+        const item = actor.items.get(itemId);
 
-        if (!itemId) return;
-        const item = actor.getOwnedItem(itemId);
-        if (!item) return;
-
-        const itemData = item.data.data;
-        if (!hasProperty(itemData, 'quantity')) {
-            throw new Error('Tried to update quantity on item that does not have quantity');
-        }
-
-        if (Number(itemData['quantity'].value) > 0) {
-            actor.updateEmbeddedEntity('OwnedItem', { '_id': itemId, 'data.quantity.value': Number(itemData.quantity.value) - getAmount(event) });
+        if (Number(item.data.data.quantity.value) > 0) {
+            // @ts-ignore
+            actor.updateEmbeddedDocuments('Item', [
+                {
+                    '_id': itemId,
+                    'data.quantity.value': Number(item.data.data.quantity.value) - getAmount(event),
+                },
+            ]);
         }
     });
 }
