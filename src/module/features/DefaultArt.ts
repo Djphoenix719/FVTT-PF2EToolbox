@@ -52,7 +52,7 @@ export async function readyDefaultArt() {
         }
     }
 
-    // await Settings.set(Settings.LAST_SEEN_SYSTEM, game.system.data.version);
+    await Settings.set(Settings.LAST_SEEN_SYSTEM, game.system.data.version);
 
     ui.notifications.info('All bestiary artwork has been updated!');
 }
