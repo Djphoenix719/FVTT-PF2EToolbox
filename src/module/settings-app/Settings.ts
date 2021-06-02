@@ -1,21 +1,18 @@
-/* Copyright 2020 Andrew Cuccinello
+/*
+ * Copyright 2021 Andrew Cuccinello
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 import { MODULE_NAME } from '../Constants';
 import '../../external/settings-extender.js';
 import SettingsApp from './SettingsApp';
+
+// TODO: Localization of strings in this file.
 
 const Features = {
     CREATURE_BUILDER: 'CREATURE_BUILDER',
@@ -64,13 +61,18 @@ interface IFeatureRegistration {
     default: any;
     onChange?: (value: any) => void;
 }
+type HookCallback = () => void;
 interface IFeatureDefinition {
-    name: string;
+    id: string;
+    title: string;
     attributes?: IFeatureAttribute[];
     description: string;
     inputs: IFeatureInput[];
     register: IFeatureRegistration[];
     help?: string;
+    onReady?: HookCallback;
+    onInit?: HookCallback;
+    onSetup?: HookCallback;
 }
 
 const ATTR_RELOAD_REQUIRED: IFeatureAttribute = {
@@ -84,100 +86,47 @@ const ATTR_REOPEN_SHEET_REQUIRED: IFeatureAttribute = {
 
 export const FEATURES: IFeatureDefinition[] = [
     {
-        name: 'Quick Roll App',
+        id: Features.ROLL_APP,
+        title: 'Quick Roll App',
         attributes: [ATTR_RELOAD_REQUIRED],
         description: `An app with all the data available for monsters in convenient tables that can be clicked to roll.`,
-        inputs: [
-            {
-                name: Features.ROLL_APP,
-                label: 'Enable',
-                type: 'checkbox',
-                value: true,
-            },
-        ],
-        register: [
-            {
-                name: Features.ROLL_APP,
-                type: Boolean,
-                default: true,
-            },
-        ],
+        inputs: [],
+        register: [],
     },
     {
-        name: 'Creature Builder',
+        id: Features.CREATURE_BUILDER,
+        title: 'Creature Builder',
         attributes: [ATTR_RELOAD_REQUIRED],
         description: `A tool to build creatures from scratch using the recommended values from the GMG.`,
-        inputs: [
-            {
-                name: Features.CREATURE_BUILDER,
-                label: 'Enable',
-                type: 'checkbox',
-                value: true,
-            },
-        ],
-        register: [
-            {
-                name: Features.CREATURE_BUILDER,
-                type: Boolean,
-                default: true,
-            },
-        ],
+        inputs: [],
+        register: [],
     },
     {
-        name: 'Quick Unidentification',
+        id: Features.QUICK_MYSTIFY,
+        title: 'Quick Unidentification',
         attributes: [ATTR_RELOAD_REQUIRED],
         description:
             `Holding alt when dragging an item onto a sheet immediately unidentifies it. Also works with the Loot App,` +
             ` where holding alt will unidentify the items created/rolled.`,
-        inputs: [
-            {
-                name: Features.QUICK_MYSTIFY,
-                label: 'Enable',
-                type: 'checkbox',
-                value: false,
-            },
-        ],
-        register: [
-            {
-                name: Features.QUICK_MYSTIFY,
-                type: Boolean,
-                default: false,
-            },
-        ],
+        inputs: [],
+        register: [],
     },
     {
-        name: 'Remove Default Art',
+        id: Features.REMOVE_DEFAULT_ART,
+        title: 'Remove Default Art',
         attributes: [ATTR_RELOAD_REQUIRED],
         description: `Each new version of PF2E, will remove default art from all bestiary compendiums.`,
 
-        inputs: [
-            {
-                name: Features.REMOVE_DEFAULT_ART,
-                label: 'Enable',
-                type: 'checkbox',
-                value: false,
-            },
-        ],
-        register: [
-            {
-                name: Features.REMOVE_DEFAULT_ART,
-                type: Boolean,
-                default: false,
-            },
-        ],
+        inputs: [],
+        register: [],
     },
     {
-        name: 'Quick Quantities',
+        id: Features.QUANTITIES,
+        title: 'Quick Quantities',
         attributes: [ATTR_RELOAD_REQUIRED],
         description: `Allows you to hold shift or control when increasing/decreasing an item quantity on the player sheet to quickly increase/decrease quantities.`,
 
         inputs: [
-            {
-                name: Features.QUANTITIES,
-                label: 'Enable',
-                type: 'checkbox',
-                value: true,
-            },
             {
                 name: SHIFT_QUANTITY,
                 label: 'Shift Quantity',
@@ -193,11 +142,6 @@ export const FEATURES: IFeatureDefinition[] = [
         ],
         register: [
             {
-                name: Features.QUANTITIES,
-                type: Boolean,
-                default: true,
-            },
-            {
                 name: SHIFT_QUANTITY,
                 type: Number,
                 default: 5,
@@ -210,38 +154,21 @@ export const FEATURES: IFeatureDefinition[] = [
         ],
     },
     {
-        name: 'Flatten Proficiency',
+        id: Features.FLATTEN_PROFICIENCY,
+        title: 'Flatten Proficiency',
         attributes: [ATTR_RELOAD_REQUIRED],
         description: `A helper for the "Proficiency without Level" variant rule (GMG 198) will be added to the context menu of NPCs to 
         remove the creatures level from all relevant stats.`,
-        inputs: [
-            {
-                name: Features.FLATTEN_PROFICIENCY,
-                label: 'Enable',
-                type: 'checkbox',
-                value: false,
-            },
-        ],
-        register: [
-            {
-                name: Features.FLATTEN_PROFICIENCY,
-                type: Boolean,
-                default: false,
-            },
-        ],
+        inputs: [],
+        register: [],
     },
     {
-        name: 'NPC Scaler',
+        id: Features.NPC_SCALER,
+        title: 'NPC Scaler',
         attributes: [ATTR_RELOAD_REQUIRED],
         description: `Adds the ability to scale NPCs to any range of levels to the context menu. Will scale all relevant statistics 
         of the creature, including DCs and damage displayed in ability descriptions.`,
         inputs: [
-            {
-                name: Features.NPC_SCALER,
-                label: 'Enable',
-                type: 'checkbox',
-                value: true,
-            },
             {
                 name: SCALED_FOLDER,
                 label: 'Output Folder',
@@ -251,11 +178,6 @@ export const FEATURES: IFeatureDefinition[] = [
         ],
         register: [
             {
-                name: Features.NPC_SCALER,
-                type: Boolean,
-                default: true,
-            },
-            {
                 name: SCALED_FOLDER,
                 type: String,
                 default: '',
@@ -263,38 +185,21 @@ export const FEATURES: IFeatureDefinition[] = [
         ],
     },
     {
-        name: 'Loot Enhancements',
+        id: Features.LOOT_APP,
+        title: 'Loot Enhancements',
         attributes: [ATTR_RELOAD_REQUIRED],
         description: `Adds a new loot actor sheet with many enhancements such as a treasure roller, magic item creator, and more.`,
         help: `You must set all loot actors back to the default sheet before disabling this option or the actor will not function after
         it is disabled.`,
-        inputs: [
-            {
-                name: Features.LOOT_APP,
-                label: 'Enable',
-                type: 'checkbox',
-                value: true,
-            },
-        ],
-        register: [
-            {
-                name: Features.LOOT_APP,
-                type: Boolean,
-                default: true,
-            },
-        ],
+        inputs: [],
+        register: [],
     },
     {
-        name: 'Maximum Hero Points',
+        id: Features.HERO_POINTS,
+        title: 'Maximum Hero Points',
         attributes: [ATTR_REOPEN_SHEET_REQUIRED],
         description: `Changes the maximum number of hero points a player can have.`,
         inputs: [
-            {
-                name: Features.HERO_POINTS,
-                label: 'Enable',
-                type: 'checkbox',
-                value: true,
-            },
             {
                 name: MAX_HERO_POINTS,
                 label: 'Max Hero Points',
@@ -326,7 +231,8 @@ export const FEATURES: IFeatureDefinition[] = [
         ],
     },
     {
-        name: 'Token Setup Helper',
+        id: Features.TOKEN_SETUP,
+        title: 'Token Setup Helper',
         attributes: [ATTR_RELOAD_REQUIRED],
         description: `Adds a context menu option to setup a token using a pre-defined naming scheme. See the
         <a href="https://github.com/Djphoenix719/FVTT-PF2EToolbox" target="_blank">GitHub</a> for details.`,
@@ -347,11 +253,6 @@ export const FEATURES: IFeatureDefinition[] = [
         ],
         register: [
             {
-                name: Features.TOKEN_SETUP,
-                type: Boolean,
-                default: false,
-            },
-            {
                 name: `${TOKEN_PATH}_CLIENT_FACING`,
                 type: String,
                 default: '',
@@ -364,12 +265,12 @@ export const FEATURES: IFeatureDefinition[] = [
                     const parsedS3URL = FilePicker.parseS3URL(value);
 
                     if (parsedS3URL.bucket !== null) {
-                        Settings.set(Settings.TOKEN_TARGET_BUCKET, parsedS3URL.bucket);
-                        Settings.set(Settings.TOKEN_TARGET, 's3');
-                        Settings.set(Settings.TOKEN_PATH, value);
+                        await Settings.set(Settings.TOKEN_TARGET_BUCKET, parsedS3URL.bucket);
+                        await Settings.set(Settings.TOKEN_TARGET, 's3');
+                        await Settings.set(Settings.TOKEN_PATH, value);
                     } else {
-                        Settings.set(Settings.TOKEN_TARGET, 'data');
-                        Settings.set(Settings.TOKEN_PATH, value);
+                        await Settings.set(Settings.TOKEN_TARGET, 'data');
+                        await Settings.set(Settings.TOKEN_PATH, value);
                     }
                 },
             },
@@ -395,6 +296,9 @@ export const FEATURES: IFeatureDefinition[] = [
 export default class Settings {
     public static readonly FEATURES = Features;
 
+    // TODO: Move these to a helper class? Is this already the settings class?
+    //  Should they simply be collapsed into a field of the settings class?
+
     public static readonly MAX_HERO_POINTS = MAX_HERO_POINTS;
     public static readonly SHIFT_QUANTITY = SHIFT_QUANTITY;
     public static readonly CONTROL_QUANTITY = CONTROL_QUANTITY;
@@ -407,20 +311,82 @@ export default class Settings {
 
     public static readonly LAST_SEEN_SYSTEM = LAST_SEEN_SYSTEM;
 
+    /**
+     * Retrieve a setting from the store.
+     * @param key They key the setting resides at.
+     */
     public static get<T = any>(key: string): T {
         return game.settings.get(MODULE_NAME, key) as T;
     }
 
+    /**
+     * Set the value of a setting in the store.
+     * @param key The key the setting resides at.
+     * @param value The value the setting should be set to.
+     */
     public static async set(key: string, value: any) {
         return game.settings.set(MODULE_NAME, key, value);
     }
 
+    /**
+     * Register a setting with the store.
+     * @param key The key the setting should reside at.
+     * @param value The default value of the setting.
+     */
     public static reg(key: string, value: any) {
         game.settings.register(MODULE_NAME, key, value);
     }
 
+    /**
+     * Binds on init hooks for each feature that has them.
+     */
+    public static onInit() {
+        for (const feature of FEATURES) {
+            if (feature.onInit) {
+                feature.onInit();
+            }
+        }
+    }
+
+    /**
+     * Binds on setup hooks for each feature that has them.
+     */
+    public static onSetup() {
+        for (const feature of FEATURES) {
+            if (feature.onSetup) {
+                feature.onSetup();
+            }
+        }
+    }
+
+    /**
+     * Binds on ready hooks for each feature that has them.
+     */
+    public static onReady() {
+        for (const feature of FEATURES) {
+            if (feature.onReady) {
+                feature.onReady();
+            }
+        }
+    }
+
+    /**
+     * Registers all game settings for the application.
+     */
     public static registerAllSettings() {
         for (const feature of FEATURES) {
+            // Register the feature toggle
+            const enabled = {
+                name: feature.id,
+                scope: 'world',
+                type: Boolean,
+                default: false,
+                config: false,
+                restricted: true,
+            };
+            Settings.reg(feature.id, enabled);
+
+            // Register any other settings values for a feature.
             for (const registration of feature.register) {
                 const setting = {
                     name: registration.name,
@@ -444,7 +410,7 @@ export default class Settings {
             restricted: true,
         });
 
-        Settings.reg(`${Settings.LAST_SEEN_SYSTEM}`, {
+        Settings.reg(Settings.LAST_SEEN_SYSTEM, {
             name: 'Last Seen System Version',
             scope: 'world',
             type: String,

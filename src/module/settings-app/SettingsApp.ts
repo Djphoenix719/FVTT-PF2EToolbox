@@ -1,16 +1,11 @@
-/* Copyright 2020 Andrew Cuccinello
+/*
+ * Copyright 2021 Andrew Cuccinello
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 import { MODULE_NAME } from '../Constants';
@@ -35,11 +30,10 @@ export default class SettingsApp extends FormApplication {
         return options;
     }
 
-    constructor(object: object | undefined, options?: FormApplicationOptions) {
+    constructor(object?: object, options?: FormApplicationOptions) {
         if (object === undefined) {
             object = {};
         }
-
         super(object, options);
     }
 
@@ -48,6 +42,13 @@ export default class SettingsApp extends FormApplication {
 
         let features = duplicate(FEATURES);
         for (const setting of features) {
+            setting.inputs.unshift({
+                name: setting.id,
+                label: 'Enable',
+                type: 'checkbox',
+                value: true, // remember will be overridden below
+            });
+
             for (const input of setting.inputs) {
                 input['value'] = Settings.get(input.name);
             }
