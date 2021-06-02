@@ -23,28 +23,36 @@ export async function readyDefaultArt() {
 
     ui.notifications.info('PF2E Toolbox is removing default artwork... please wait.');
 
+    const pathMap = {
+        npc: 'systems/pf2e/icons/default-icons/npc.svg',
+        hazard: 'systems/pf2e/icons/default-icons/hazard.svg',
+    };
+
     for (const entry of game.packs.values()) {
-        const pack = entry as Compendium;
+        const pack = entry as any;
 
-        if (pack.metadata.system === 'pf2e' && pack.metadata.module === 'pf2e' && pack.metadata.entity === 'Actor') {
-            pack.locked = false;
+        if (pack.metadata.system === 'pf2e' && pack.metadata.package === 'pf2e' && pack.metadata.entity === 'Actor') {
+            pack.configure({
+                locked: false,
+            });
 
-            const content = (await pack.getContent()) as Actor[];
-            for (const actor of content) {
-                if (actor.data.img.startsWith('systems/pf2e/icons')) {
-                    await pack.updateEntity({
-                        _id: actor._id,
-                        img: 'icons/svg/mystery-man.svg',
+            const documents = (await pack.getDocuments()) as Actor[];
+            for (const actor of documents) {
+                let path: string = actor.data.img;
+                if (!path.includes('default-icons')) {
+                    await actor.update({
+                        img: pathMap[actor.data['type']],
                     });
-                    console.log(`Updated ${actor.name}, was ${actor.img}`);
                 }
             }
 
-            pack.locked = true;
+            pack.configure({
+                locked: true,
+            });
         }
     }
 
-    await Settings.set(Settings.LAST_SEEN_SYSTEM, game.system.data.version);
+    // await Settings.set(Settings.LAST_SEEN_SYSTEM, game.system.data.version);
 
     ui.notifications.info('All bestiary artwork has been updated!');
 }
