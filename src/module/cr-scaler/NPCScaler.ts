@@ -1,7 +1,8 @@
-/* Copyright 2020 Andrew Cuccinello
- *
+/*
+ * Copyright 2021 Andrew Cuccinello
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ *
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
@@ -18,7 +19,7 @@ import { IDataUpdates, IHandledItemType } from './NPCScalerTypes';
 import { getActor, getFolder, getFolderInFolder } from '../Utilities';
 import { getAreaDamageData, getDamageData, getHPData, getLeveledData, getMinMaxData } from './NPCScalerUtil';
 
-const EMBEDDED_ENTITY_TYPE = 'OwnedItem';
+const EMBEDDED_ENTITY_TYPE = 'Item';
 
 export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
     const rootFolder = getFolder(Settings.get(Settings.SCALED_FOLDER));
@@ -86,40 +87,44 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
     data['data.attributes.hp.max'] = hp;
     data['data.attributes.hp.value'] = hp;
 
+    console.warn(actor.data);
+
     let itemUpdates: IDataUpdates[] = [];
-    for (let i = 0; i < actor.data['items'].length; i++) {
-        const item = actor.data['items'][i];
+    for (const itemId of actor.items.keys()) {
+        const item: any = actor.items.get(itemId);
+
+        console.warn(item);
 
         if ((item.type as IHandledItemType) === 'lore') {
-            const oldValue = parseInt(item.data.mod.value);
+            const oldValue = parseInt(item.data.data.mod.value);
             const newValue = getLeveledData('skill', oldValue, oldLevel, newLevel).total;
             itemUpdates.push({
-                _id: item._id,
+                _id: item.id,
                 ['data.mod.value']: newValue,
             });
         } else if ((item.type as IHandledItemType) === 'spellcastingEntry') {
-            const oldAttack = parseInt(item.data.spelldc.value);
+            const oldAttack = parseInt(item.data.data.spelldc.value);
             const newAttack = getLeveledData('spell', oldAttack, oldLevel, newLevel).total;
 
-            const oldDC = parseInt(item.data.spelldc.dc);
+            const oldDC = parseInt(item.data.data.spelldc.dc);
             const newDC = getLeveledData('difficultyClass', oldDC, oldLevel, newLevel).total;
 
             itemUpdates.push({
-                _id: item._id,
+                _id: item.id,
                 ['data.spelldc.value']: newAttack,
                 ['data.spelldc.dc']: newDC,
             });
         } else if ((item.type as IHandledItemType) === 'melee') {
-            const oldAttack = parseInt(item.data.bonus.value);
+            const oldAttack = parseInt(item.data.data.bonus.value);
             const newAttack = getLeveledData('spell', oldAttack, oldLevel, newLevel).total;
 
             const attackUpdate: IDataUpdates = {
-                _id: item._id,
+                _id: item.id,
                 ['data.bonus.value']: newAttack,
                 ['data.bonus.total']: newAttack,
             };
 
-            const damage = item.data.damageRolls as any[] | object;
+            const damage = item.data.data.damageRolls as any[] | object;
 
             if (Array.isArray(damage)) {
                 for (let i = 0; i < damage.length; i++) {
@@ -137,28 +142,32 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
             itemUpdates.push(attackUpdate);
         }
     }
+    console.warn(itemUpdates);
 
-    let newActor: Actor | null = getActor(actor.name, folder.name);
-    if (newActor !== null) {
+    let newActor: Actor | undefined = getActor(actor.name, folder.name);
+    if (newActor !== undefined) {
         await newActor.update(data);
     } else {
         newActor = await actor.clone(data);
+        newActor = (await Actor.create(newActor.data)) as Actor;
     }
 
-    await newActor.updateEmbeddedEntity(EMBEDDED_ENTITY_TYPE, itemUpdates);
+    // @ts-ignore
+    await newActor.updateEmbeddedDocuments(EMBEDDED_ENTITY_TYPE, itemUpdates);
 
     itemUpdates = [];
     for (const item of actor.items.filter((i) => i.data.data.description.value.includes('DC'))) {
-        const DC_REGEX = /(DC)\s([0-9]+)/g;
+        const DC_REGEX = /(data-pf2-dc=")([0-9]+)(")/g;
         const description = item.data.data.description.value as string;
         let newDescription = description;
         let match: RegExpExecArray | null = DC_REGEX.exec(description);
+
         let indexOffset = 0;
         while (match !== null) {
-            const [fullMatch, dcPart, valuePart] = match;
+            const [fullMatch, attribute, value, suffix] = match;
             const index = match.index + indexOffset;
-            const newDCValue = getLeveledData('difficultyClass', parseInt(valuePart), oldLevel, newLevel).total;
-            const newDCString = `${dcPart} ${newDCValue}`;
+            const newDCValue = getLeveledData('difficultyClass', parseInt(value), oldLevel, newLevel).total;
+            const newDCString = `data-pf2-dc="${newDCValue}"`;
 
             newDescription = newDescription.substr(0, index) + newDCString + newDescription.substr(index + fullMatch.length);
 
@@ -173,7 +182,8 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
         });
     }
 
-    await newActor.updateEmbeddedEntity(EMBEDDED_ENTITY_TYPE, itemUpdates);
+    // @ts-ignore
+    await newActor.updateEmbeddedDocuments(EMBEDDED_ENTITY_TYPE, itemUpdates);
 
     itemUpdates = [];
     for (const item of newActor.items.values()) {
@@ -200,5 +210,6 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
         });
     }
 
-    await newActor.updateEmbeddedEntity(EMBEDDED_ENTITY_TYPE, itemUpdates);
+    // @ts-ignore
+    await newActor.updateEmbeddedDocuments(EMBEDDED_ENTITY_TYPE, itemUpdates);
 }
