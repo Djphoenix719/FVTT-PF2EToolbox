@@ -20,7 +20,6 @@ import secretSkillRoll from './macros/secret-skill-roll';
 import distributeXp from './macros/distribute-xp';
 import { distributeHeroPoints } from './macros/distribute-hero-points';
 import { groupSave, registerGroupSaveHooks } from './macros/group-saves';
-import SettingsApp from './settings-app/SettingsApp';
 
 Hooks.on('init', Settings.registerAllSettings);
 Hooks.on('init', Settings.onInit);
@@ -40,4 +39,3 @@ Hooks.on('ready', () => {
     };
     registerGroupSaveHooks();
 });
-Hooks.on('ready', () => new SettingsApp().render(true));
