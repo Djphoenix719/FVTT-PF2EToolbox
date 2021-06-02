@@ -19,7 +19,6 @@ import SettingsApp from './SettingsApp';
 
 const Features = {
     CREATURE_BUILDER: 'CREATURE_BUILDER',
-    DISABLE_PFS_TAB: 'DISABLE_PFS_TAB',
     FLATTEN_PROFICIENCY: 'FLATTEN_PROFICIENCY',
     HERO_POINTS: 'ENABLE_HERO_POINTS',
     LOOT_APP: 'ENABLE_LOOT_APP',
@@ -84,27 +83,6 @@ const ATTR_REOPEN_SHEET_REQUIRED: IFeatureAttribute = {
 };
 
 export const FEATURES: IFeatureDefinition[] = [
-    {
-        name: 'Hide PFS Tab',
-        attributes: [ATTR_RELOAD_REQUIRED],
-        description: `Hide the button to access the Pathfinder Society tab of the player character sheet.`,
-        inputs: [
-            {
-                name: Features.DISABLE_PFS_TAB,
-                label: 'Enable',
-                type: 'checkbox',
-                value: false,
-            },
-        ],
-        register: [
-            {
-                name: Features.DISABLE_PFS_TAB,
-                type: Boolean,
-                default: false,
-            },
-        ],
-        help: 'Does not disable any features of the PFS tab, only hides it. If the PFS tab imposes mechanical changes to a character they will still apply.',
-    },
     {
         name: 'Quick Roll App',
         attributes: [ATTR_RELOAD_REQUIRED],

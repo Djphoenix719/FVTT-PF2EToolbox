@@ -50,11 +50,9 @@ Hooks.on('setup', () => {
     if (Settings.get(Settings.FEATURES.ROLL_APP)) {
         Hooks.on('renderJournalDirectory', enableRollAppButton);
     }
+
     if (Settings.get(Settings.FEATURES.HERO_POINTS)) {
         Hooks.on(`render${PF2E_PC_SHEET_NAME}`, enableHeroPoints);
-    }
-    if (Settings.get(Settings.FEATURES.DISABLE_PFS_TAB)) {
-        Hooks.on(`render${PF2E_PC_SHEET_NAME}`, disablePFSTab);
     }
     if (Settings.get(Settings.FEATURES.REMOVE_DEFAULT_ART)) {
         Hooks.on('ready', removeDefaultArt);
@@ -192,7 +190,7 @@ function enableRollAppButton(app: Application, html: JQuery) {
 function enableCreatureBuilderButton(sheet: ActorSheet, html: JQuery) {
     // Only inject the link if the actor is of type "character" and the user has permission to update it
     const actor = sheet.actor;
-    if (!(actor.data.type === 'npc' && actor.can(game.user, 'update'))) {
+    if (!(actor.type === 'npc' && actor.canUserModify(game.user, 'update'))) {
         return;
     }
 
@@ -210,10 +208,6 @@ function enableCreatureBuilderButton(sheet: ActorSheet, html: JQuery) {
 }
 
 function enableHeroPoints(app: Application, html: JQuery, renderData: any) {
-    console.warn(app);
-    console.warn(html);
-    console.warn(renderData);
-
     renderData.data.attributes.heroPoints.max = Settings.get<number>(Settings.MAX_HERO_POINTS);
 
     const { rank, max }: { rank: number; max: number } = renderData.data.attributes.heroPoints;
@@ -276,16 +270,6 @@ function enableQuickMystify() {
     CONFIG.Actor.sheetClasses['character'][`pf2e.${PF2E_PC_SHEET_NAME}`].cls = decorate(
         CONFIG.Actor.sheetClasses['character'][`pf2e.${PF2E_PC_SHEET_NAME}`].cls,
     );
-}
-
-function disablePFSTab(app: Application, html: JQuery) {
-    for (const navTab of html.find('nav.sheet-navigation a.item')) {
-        let jTab = $(navTab);
-        if (jTab.data('tab') === 'pfs') {
-            jTab.css('display', 'none');
-            break;
-        }
-    }
 }
 
 async function removeDefaultArt() {
