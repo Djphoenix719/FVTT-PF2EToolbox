@@ -1,3 +1,5 @@
+export const CREATURE_LEVEL_FIELD = 'data.details.level.value';
+
 export enum AdjustableStatistics {
     str = 'Strength',
     dex = 'Dexterity',
@@ -274,7 +276,7 @@ export const DefaultCreatureStatistics: CreatureStatisticCategory[] = [
 
 export const ROADMAPS: Roadmap[] = [
     {
-        name: 'Average Joe',
+        name: 'Average Joe/Jane',
         tooltip: 'Set all values to moderate, no spellcasting, no skills',
         defaultValues: new Map([
         ])

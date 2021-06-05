@@ -11,10 +11,6 @@
         </h1>
     </div>
     <div class='sheet-body'>
-        <div>
-            <label for="level"><h2>Level</h2></label>
-            <input name='data.details.level.value' id='level' type='number' value='{{object.data.details.level.value}}'>
-        </div>
         <div id='road-map-selector'>
             <label for="road-map"><h2>Road Map</h2></label>
             <select id="road-map" >
@@ -22,7 +18,11 @@
                 <option title='{{roadMap.tooltip}}'>{{roadMap.name}}</option>
                 {{/each}}
             </select>
-            <div class="btn apply-road-map"><a><i class="fas fa-plus"></i>Apply Road Map</a></div>
+            <div class="btn apply-road-map"><a><i class="fas fa-plus"></i>Apply Road Map (Resets Level)</a></div>
+        </div>
+        <div>
+            <label for="level"><h2>Level</h2></label>
+            <input name='{{CREATURE_LEVEL_FIELD}}' id='level' type='number' value='{{object.data.data.details.level.value}}'>
         </div>
         {{#each statisticCategories as |category|}}
         <div class='category'>
