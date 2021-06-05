@@ -276,7 +276,7 @@ export const DefaultCreatureStatistics: CreatureStatisticCategory[] = [
 
 export const ROADMAPS: Roadmap[] = [
     {
-        name: 'Average Joe',
+        name: 'Average Joe/Jane',
         tooltip: 'Set all values to moderate, no spellcasting, no skills',
         defaultValues: new Map([
         ])
