@@ -1,3 +1,5 @@
+export const CREATURE_LEVEL_FIELD = 'data.details.level.value';
+
 export enum AdjustableStatistics {
     str = 'Strength',
     dex = 'Dexterity',

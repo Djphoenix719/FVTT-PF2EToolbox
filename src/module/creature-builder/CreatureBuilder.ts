@@ -16,7 +16,15 @@
 
 import { MODULE_NAME } from '../Constants';
 import { ROLL_APP_DATA } from '../roll-app/RollAppData';
-import { CreatureStatisticCategory, CreatureStatisticEntry, DefaultCreatureStatistics, Roadmap, ROADMAPS, StatisticOptions } from './CreatureBuilderData';
+import {
+    CREATURE_LEVEL_FIELD,
+    CreatureStatisticCategory,
+    CreatureStatisticEntry,
+    DefaultCreatureStatistics,
+    Roadmap,
+    ROADMAPS,
+    StatisticOptions,
+} from './CreatureBuilderData';
 
 export const setupCreatureBuilder = () => Hooks.on('renderActorSheet', enableCreatureBuilderButton);
 
@@ -70,6 +78,7 @@ class CreatureBuilder extends FormApplication {
 
         renderData['roadMaps'] = ROADMAPS;
         renderData['statisticCategories'] = statisticCategories;
+        renderData['CREATURE_LEVEL_FIELD'] = CREATURE_LEVEL_FIELD;
 
         return renderData;
     }
@@ -96,10 +105,10 @@ class CreatureBuilder extends FormApplication {
     }
 
     protected async _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
-        const level = formData['data.details.level.value'];
+        const level = formData[CREATURE_LEVEL_FIELD];
 
         const newFormData = {};
-        newFormData['data.details.level.value'] = level;
+        newFormData[CREATURE_LEVEL_FIELD] = level;
 
         for (const category of this.statisticCategories) {
             if (category.descriptor === 'strike') {
@@ -145,7 +154,7 @@ class CreatureBuilder extends FormApplication {
         if (formData[buttonFieldName] !== StatisticOptions.none) {
             const data = CreatureBuilder.createNewSkillData(buttonFieldName, valueToBeInsertedIntoNpc);
 
-            await this.object.createOwnedItem(data);
+            await this.object.createEmbeddedDocuments("Item", [data]);
         }
     }
 
@@ -180,7 +189,7 @@ class CreatureBuilder extends FormApplication {
 
         const data = CreatureBuilder.createNewStrikeData(strikeDamage, strikeBonus);
 
-        await this.object.createOwnedItem(data);
+        await this.object.createEmbeddedDocuments("Item", [data]);
     }
 
     private static createNewStrikeData(strikeDamage: string, strikeBonus: number) {
@@ -202,7 +211,7 @@ class CreatureBuilder extends FormApplication {
     }
 
     private async updateSpellcasting(formData: any, spellcastingInfo: CreatureStatisticCategory, level: any) {
-        const spellcastingActive = formData['spellcastingProficiency'] !== StatisticOptions.none;
+        const spellcastingActive = formData['Spellcasting'] !== StatisticOptions.none;
 
         if (!spellcastingActive) {
             return;
@@ -229,7 +238,7 @@ class CreatureBuilder extends FormApplication {
 
         const data = CreatureBuilder.createNewSpellcastingEntryData(spellcastingTradition, spellcastingType, spellDc, spellAttack);
 
-        await this.object.createEmbeddedEntity('OwnedItem', data);
+        await this.object.createEmbeddedDocuments('Item', [data]);
     }
 
     private static createNewSpellcastingEntryData(tradition: string, type: string, dc: number, attack: number) {
