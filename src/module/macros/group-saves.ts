@@ -177,11 +177,7 @@ export function registerGroupSaveHooks() {
                 return;
             }
 
-            console.warn(token);
-
             let actorData = token.actor.data;
-
-            console.warn(actorData);
 
             let actor = game.actors.get(token.actorId);
             if (isObjectEmpty(actorData) || token.actorLink || actorData?.data?.attributes?.hp?.value === undefined) {
