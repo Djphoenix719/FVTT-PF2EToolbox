@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Andrew Cuccinello
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 type SaveType = 'fortitude' | 'reflex' | 'will';
 enum SuccessLevel {
     'None' = 0,
@@ -27,9 +43,9 @@ export async function groupSave(saveType?: SaveType) {
         message += '</div>';
 
         await ChatMessage.create({
-            user: game.user._id,
+            user: game.user.id,
             content: message,
-            whisper: [game.user._id],
+            whisper: [game.user.id],
         });
     };
 
@@ -154,13 +170,19 @@ export function registerGroupSaveHooks() {
 
         const apply = async (tokenId: string, sceneId: string, amount: number, shieldBlock: boolean) => {
             const scene = game.scenes.get(sceneId);
-            const token = scene.getEmbeddedEntity('Token', tokenId);
+            // @ts-ignore
+            const token = scene.getEmbeddedDocument('Token', tokenId);
 
             if (token === undefined || token === null) {
                 return;
             }
 
-            let actorData = token.actorData;
+            console.warn(token);
+
+            let actorData = token.actor.data;
+
+            console.warn(actorData);
+
             let actor = game.actors.get(token.actorId);
             if (isObjectEmpty(actorData) || token.actorLink || actorData?.data?.attributes?.hp?.value === undefined) {
                 actorData = actor.data;
@@ -190,7 +212,7 @@ export function registerGroupSaveHooks() {
             }
 
             const minHp = 0;
-            const maxHp = parseInt(actor.data.data.attributes.hp.max);
+            const maxHp = parseInt(actorData.data.attributes.hp.max);
             let newHp = Math.clamped(actorData.data.attributes.hp.value - amount, minHp, maxHp);
 
             if (token.actorLink) {
@@ -213,7 +235,8 @@ export function registerGroupSaveHooks() {
                 const sceneId = jElement.data('scene-id') as string;
                 const damage = jElement.data('damage');
 
-                const token = game.scenes.get(sceneId).getEmbeddedEntity('Token', tokenId);
+                // @ts-ignore
+                const token = game.scenes.get(sceneId).getEmbeddedDocument('Token', tokenId);
 
                 if (damage !== 'undefined') {
                     const container = jElement.children('span.dmgBtn-container');
