@@ -24,7 +24,10 @@ function onSheetRender(app: Application, html: JQuery, renderData: any) {
 
     const { rank, max }: { rank: number; max: number } = renderData.data.attributes.heroPoints;
 
-    const iconFilled = '<i class="fas fa-hospital-symbol">';
+    console.warn(rank);
+    console.warn(max);
+
+    const iconFilled = '<i class="fas fa-hospital-symbol"></i>';
     const iconEmpty = '<i class="far fa-circle"></i>';
 
     let icon = '';
@@ -37,9 +40,23 @@ function onSheetRender(app: Application, html: JQuery, renderData: any) {
 
     renderData.data.attributes.heroPoints.icon = icon;
 
-    const hpInput = html.find('input[name="data.attributes.heroPoints.rank"]');
-    const hpContent = hpInput.next('span');
+    const actor: Actor = app['document'] as Actor;
+    const span = html.find('span[data-property="data.attributes.heroPoints.rank"]');
+    span.html(icon);
 
-    hpContent.html(icon);
-    hpInput.data('max', max);
+    span.off('click');
+    span.off('contextmenu');
+
+    span.on('click', async (e) => {
+        if (rank === max) return;
+        await actor.update({
+            ['data.attributes.heroPoints.rank']: rank + 1,
+        });
+    });
+    span.on('contextmenu', async (e) => {
+        if (rank === 0) return;
+        await actor.update({
+            ['data.attributes.heroPoints.rank']: rank - 1,
+        });
+    });
 }
