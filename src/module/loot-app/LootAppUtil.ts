@@ -85,9 +85,6 @@ export async function GetMagicItemTables(searchName: string) {
     let { pack, tables } = await GetRollableTables();
     tables = tables.filter((table) => table.name.includes(searchName));
 
-    console.warn(searchName);
-    console.warn(tables);
-
     const sortRegex = /[0-9]+/;
 
     tables.sort((a, b) => {
