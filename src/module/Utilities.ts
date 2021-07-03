@@ -22,7 +22,13 @@ export function getFolder(name: string): Folder | null {
     return game.folders.getName(name);
 }
 export function getFolderInFolder(name: string, parentName?: string) {
-    return game.folders.find((f) => f.name === name && f.parent?.name === parentName);
+    let parent: any;
+    if (parentName) {
+        parent = game.folders.getName(parentName);
+        return parent.getSubfolders().find((f) => f.name === name);
+    } else {
+        return getFolder(name);
+    }
 }
 export function getActor(name: string, folder: string): Actor | undefined {
     return game.actors.find((a) => a.name === name && a.folder?.name === folder);

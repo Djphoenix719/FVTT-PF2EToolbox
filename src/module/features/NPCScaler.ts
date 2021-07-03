@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import Settings from '../settings-app/Settings';
 import { scaleNPCToLevel } from '../cr-scaler/NPCScaler';
 
 export const setupNPCScaler = () => Hooks.on('getActorDirectoryEntryContext', onScaleNPCContextHook);
@@ -39,8 +38,10 @@ function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
             let d = new Dialog({
                 title: 'Scale NPC',
                 content:
-                    `<div class="form-group"><label>Start Level</label><input id="startLevel" type="number" value="${oldLevel}" min="-1" max="24"></div>` +
-                    `<div class="form-group"><label>End Level</label><input id="endLevel" type="number" value="${oldLevel}" min="-1" max="24"></div>`,
+                    `<p>Scale a creature to a range of levels, creating the creature at each level in the range. The min level must be less than or ` +
+                    `equal to the max level. To only scale to a single level, set both equal to the desired level.</p>` +
+                    `<div class="form-group"><label>Min Level</label><input id="startLevel" type="number" value="${oldLevel}" min="-1" max="24"></div>` +
+                    `<div class="form-group"><label>Max Level</label><input id="endLevel" type="number" value="${oldLevel}" min="-1" max="24"></div>`,
                 buttons: {
                     scale: {
                         icon: '<i class="fas fa-level-up-alt"></i>',

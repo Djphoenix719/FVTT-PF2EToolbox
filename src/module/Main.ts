@@ -17,7 +17,6 @@
 import Settings from './settings-app/Settings';
 import { registerHandlebarsHelpers, registerHandlebarsTemplates } from './Handlebars';
 import secretSkillRoll from './macros/secret-skill-roll';
-import distributeXp from './macros/distribute-xp';
 import { distributeHeroPoints } from './macros/distribute-hero-points';
 import { groupSave, registerGroupSaveHooks } from './macros/group-saves';
 
@@ -33,7 +32,6 @@ Hooks.on('ready', Settings.onReady);
 Hooks.on('ready', () => {
     game['PF2EToolbox'] = {
         secretSkillRoll: secretSkillRoll,
-        distributeXp: distributeXp,
         distributeHeroPoints: distributeHeroPoints,
         groupSave: groupSave,
     };
