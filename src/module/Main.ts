@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-import Settings from './settings-app/Settings';
-import { registerHandlebarsHelpers, registerHandlebarsTemplates } from './Handlebars';
 import secretSkillRoll from './macros/secret-skill-roll';
 import { distributeHeroPoints } from './macros/distribute-hero-points';
 import { groupSave, registerGroupSaveHooks } from './macros/group-saves';
+import { setup } from './Setup';
 
-Hooks.on('init', Settings.registerAllSettings);
-Hooks.on('init', Settings.onInit);
-
-Hooks.on('setup', registerHandlebarsTemplates);
-Hooks.on('setup', registerHandlebarsHelpers);
-Hooks.on('setup', Settings.onSetup);
-
-Hooks.on('ready', Settings.onReady);
+setup();
 
 Hooks.on('ready', () => {
     game['PF2EToolbox'] = {

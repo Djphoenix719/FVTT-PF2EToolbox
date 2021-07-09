@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import Settings from '../settings-app/Settings';
+import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
+import { TOKEN_PATH, TOKEN_TARGET, TOKEN_TARGET_BUCKET } from '../Setup';
 
 export const setupTokens = () => Hooks.on('getActorDirectoryEntryContext', onSetupTokensContextHook);
 
@@ -68,15 +69,15 @@ function getValidName(name: string, basePath: string, files: string[], reverse: 
 }
 
 export async function setupActorToken(actor: Actor): Promise<void> {
-    let basePath = Settings.get(Settings.TOKEN_PATH);
-    const folderTarget = Settings.get(Settings.TOKEN_TARGET);
+    let basePath = ModuleSettings.instance.get(TOKEN_PATH);
+    const folderTarget = ModuleSettings.instance.get(TOKEN_TARGET);
 
     let options: undefined | object;
     let browseUrl: string = basePath;
     if (folderTarget === 's3') {
         browseUrl = basePath.split('/')[basePath.split('/').length - 1];
         options = {
-            bucket: Settings.get(Settings.TOKEN_TARGET_BUCKET),
+            bucket: ModuleSettings.instance.get(TOKEN_TARGET_BUCKET),
         };
     }
 

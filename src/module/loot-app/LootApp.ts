@@ -15,9 +15,10 @@
  */
 
 import { MODULE_NAME, PF2E_LOOT_SHEET_NAME } from '../Constants';
-import Settings from '../settings-app/Settings';
 import { GetItemFromCollection, GetMagicItemTables, GetTreasureTables } from './LootAppUtil';
 import { CREATE_KEY_NONE, CREATE_MODES, CreateMode, IGradeStats, ITEM_GRADES, ITEM_MATERIALS, ITEM_RUNES } from './LootAppData';
+import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
+import { FEATURES, QUICK_MYSTIFY } from '../Setup';
 
 type IMaterials = typeof ITEM_MATERIALS;
 type IMaterial = IMaterials[keyof typeof ITEM_MATERIALS];
@@ -432,7 +433,7 @@ export default function extendLootSheet() {
 
             newItemData.name = itemName;
 
-            if (event.altKey && Settings.get(Settings.FEATURES.QUICK_MYSTIFY)) {
+            if (event.altKey && ModuleSettings.instance.get(QUICK_MYSTIFY)) {
                 newItemData.data.identification = {
                     status: 'unidentified',
                     identified: {
@@ -496,7 +497,7 @@ export default function extendLootSheet() {
                     return i;
                 });
 
-                if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY) && event.altKey) {
+                if (ModuleSettings.instance.get(QUICK_MYSTIFY) && event.altKey) {
                     for (const item of results) {
                         item.data.identification = {
                             status: 'unidentified',
@@ -541,7 +542,7 @@ export default function extendLootSheet() {
 
                 let results = filtered.map((i) => i.data);
 
-                if (Settings.get(Settings.FEATURES.QUICK_MYSTIFY) && event.altKey) {
+                if (ModuleSettings.instance.get(QUICK_MYSTIFY) && event.altKey) {
                     for (const item of results) {
                         item.data.identification = {
                             status: 'unidentified',

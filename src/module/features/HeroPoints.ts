@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import Settings from '../settings-app/Settings';
 import { PF2E_PC_SHEET_NAME } from '../Constants';
+import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
+import { MAX_HERO_POINTS } from '../Setup';
 
 export const setupHeroPoints = () => Hooks.on(`render${PF2E_PC_SHEET_NAME}`, onSheetRender);
 
 function onSheetRender(app: Application, html: JQuery, renderData: any) {
-    renderData.data.attributes.heroPoints.max = Settings.get<number>(Settings.MAX_HERO_POINTS);
+    renderData.data.attributes.heroPoints.max = ModuleSettings.instance.get<number>(MAX_HERO_POINTS);
 
     const { rank, max }: { rank: number; max: number } = renderData.data.attributes.heroPoints;
 

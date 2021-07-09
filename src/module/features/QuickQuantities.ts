@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import Settings from '../settings-app/Settings';
+import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
+import { CONTROL_QUANTITY, SHIFT_QUANTITY } from '../Setup';
 
 export const setupQuantities = () => Hooks.on('renderActorSheet', onQuantitiesHook);
 
@@ -29,8 +30,8 @@ function onQuantitiesHook(app: ActorSheet, html: JQuery) {
 
     const getAmount = (event: JQuery.ClickEvent): number => {
         let amount = 1;
-        if (event.shiftKey) amount *= Settings.get(Settings.SHIFT_QUANTITY);
-        if (event.ctrlKey) amount *= Settings.get(Settings.CONTROL_QUANTITY);
+        if (event.shiftKey) amount *= ModuleSettings.instance.get(SHIFT_QUANTITY);
+        if (event.ctrlKey) amount *= ModuleSettings.instance.get(CONTROL_QUANTITY);
         return amount;
     };
 

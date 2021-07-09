@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import Settings from '../settings-app/Settings';
 import { IDataUpdates, IHandledItemType } from './NPCScalerTypes';
 import { getActor, getFolder, getFolderInFolder } from '../Utilities';
 import { getAreaDamageData, getDamageData, getHPData, getLeveledData, getMinMaxData } from './NPCScalerUtil';
+import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
+import { SCALED_FOLDER } from '../Setup';
 
 const EMBEDDED_ENTITY_TYPE = 'Item';
 
 export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
-    const rootFolder = getFolder(Settings.get(Settings.SCALED_FOLDER));
+    const rootFolder = getFolder(ModuleSettings.instance.get(SCALED_FOLDER));
 
     const folderName = `Level ${newLevel}`;
     const folder =

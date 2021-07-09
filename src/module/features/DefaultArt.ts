@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import Settings from '../settings-app/Settings';
+import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
+import { LAST_SEEN_SYSTEM } from '../Setup';
 
 export async function readyDefaultArt() {
-    if (game.system.data.version === Settings.get(Settings.LAST_SEEN_SYSTEM)) {
+    if (game.system.data.version === ModuleSettings.instance.get(LAST_SEEN_SYSTEM)) {
         return;
     }
 
@@ -52,7 +53,7 @@ export async function readyDefaultArt() {
         }
     }
 
-    await Settings.set(Settings.LAST_SEEN_SYSTEM, game.system.data.version);
+    await ModuleSettings.instance.set(LAST_SEEN_SYSTEM, game.system.data.version);
 
     ui.notifications.info('All bestiary artwork has been updated!');
 }
