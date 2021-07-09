@@ -18,14 +18,14 @@ import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleS
 import { MAX_HERO_POINTS } from '../Setup';
 
 export async function distributeHeroPoints(amount: number) {
-    const selected = canvas.tokens.controlled;
+    const selected = canvas?.tokens.controlled as Token[];
     const max: number = ModuleSettings.instance.get(MAX_HERO_POINTS);
 
     const distribute = async (amount: number) => {
         for (const token of selected) {
             const actor = token.actor;
 
-            const heroPoints = actor.data.data.attributes.heroPoints;
+            const heroPoints = actor?.data.data['attributes'].heroPoints;
             if (heroPoints === undefined) {
                 continue;
             }
@@ -39,7 +39,7 @@ export async function distributeHeroPoints(amount: number) {
                 continue;
             }
 
-            await actor.update({
+            await actor?.update({
                 ['data.attributes.heroPoints.rank']: Math.min(rank + amount, max),
             });
         }

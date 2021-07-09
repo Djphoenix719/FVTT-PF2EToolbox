@@ -20,6 +20,7 @@ import { MODULE_NAME } from '../Constants';
 export function readyLootApp() {
     const LootApp = extendLootSheet();
 
+    // @ts-ignore
     Actors.registerSheet(MODULE_NAME, LootApp, {
         types: ['loot'],
         makeDefault: false,

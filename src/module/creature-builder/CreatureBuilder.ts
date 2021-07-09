@@ -31,6 +31,7 @@ export const setupCreatureBuilder = () => Hooks.on('renderActorSheet', enableCre
 function enableCreatureBuilderButton(sheet: ActorSheet, html: JQuery) {
     // Only inject the link if the actor is of type "character" and the user has permission to update it
     const actor = sheet.actor;
+    // @ts-ignore
     if (!(actor.type === 'npc' && actor.canUserModify(game.user, 'update'))) {
         return;
     }
@@ -131,6 +132,7 @@ class CreatureBuilder extends FormApplication {
             }
         }
 
+        // @ts-ignore
         return this.object.update(newFormData);
     }
 
@@ -154,7 +156,8 @@ class CreatureBuilder extends FormApplication {
         if (formData[buttonFieldName] !== StatisticOptions.none) {
             const data = CreatureBuilder.createNewSkillData(buttonFieldName, valueToBeInsertedIntoNpc);
 
-            await this.object.createEmbeddedDocuments("Item", [data]);
+            // @ts-ignore
+            await this.object.createEmbeddedDocuments('Item', [data]);
         }
     }
 
@@ -189,7 +192,8 @@ class CreatureBuilder extends FormApplication {
 
         const data = CreatureBuilder.createNewStrikeData(strikeDamage, strikeBonus);
 
-        await this.object.createEmbeddedDocuments("Item", [data]);
+        // @ts-ignore
+        await this.object.createEmbeddedDocuments('Item', [data]);
     }
 
     private static createNewStrikeData(strikeDamage: string, strikeBonus: number) {
@@ -238,6 +242,7 @@ class CreatureBuilder extends FormApplication {
 
         const data = CreatureBuilder.createNewSpellcastingEntryData(spellcastingTradition, spellcastingType, spellDc, spellAttack);
 
+        // @ts-ignore
         await this.object.createEmbeddedDocuments('Item', [data]);
     }
 

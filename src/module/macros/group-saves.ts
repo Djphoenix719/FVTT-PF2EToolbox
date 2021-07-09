@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { ActorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs';
+
 type SaveType = 'fortitude' | 'reflex' | 'will';
 enum SuccessLevel {
     'None' = 0,
@@ -24,13 +26,13 @@ enum SuccessLevel {
 }
 
 export async function groupSave(saveType?: SaveType) {
-    const selected = canvas.tokens.controlled;
+    const selected = canvas?.tokens.controlled as Token[];
 
     const roll = async (saveType: SaveType, dc?: number, damage?: number) => {
         let message = '<div class="pf2e-toolbox.group-roll">';
         for (const token of selected) {
-            const actor: Actor = token.actor;
-            const save = actor.data.data.saves[saveType];
+            const actor: Actor = token.actor as Actor;
+            const save = actor.data.data['saves'][saveType];
 
             if (save === undefined) {
                 continue;
@@ -43,9 +45,9 @@ export async function groupSave(saveType?: SaveType) {
         message += '</div>';
 
         await ChatMessage.create({
-            user: game.user.id,
+            user: game.user?.id,
             content: message,
-            whisper: [game.user.id],
+            whisper: [game.user?.id as string],
         });
     };
 
@@ -124,7 +126,7 @@ const successDescription = {
 };
 
 function formatRowOutput(token: Token, mod: number, breakdown: string, dc?: number, damage?: number) {
-    const d20Value: number = new Roll('1d20').roll()._total;
+    const d20Value: number = new Roll('1d20').roll().total as number;
     const totalValue: number = d20Value + mod;
     const successLevel = getSuccessLevel(totalValue, dc);
 
@@ -143,7 +145,7 @@ function formatRowOutput(token: Token, mod: number, breakdown: string, dc?: numb
         ${flexStyle}
     `;
 
-    let output = `<span style="font-weight: bold; ${flexStyle}">${token.actor.name}<span>${successDescription[successLevel]}</span></span>`;
+    let output = `<span style="font-weight: bold; ${flexStyle}">${token.actor?.name}<span>${successDescription[successLevel]}</span></span>`;
     output += `
         <div style="${rowStyle}" data-token-id="${token.id}" data-scene-id="${sceneId}" data-damage="${damage}">
             <span>
@@ -169,18 +171,18 @@ export function registerGroupSaveHooks() {
         const content = html.children('div.message-content').children('div');
 
         const apply = async (tokenId: string, sceneId: string, amount: number, shieldBlock: boolean) => {
-            const scene = game.scenes.get(sceneId);
+            const scene = game?.scenes?.get(sceneId);
             // @ts-ignore
-            const token = scene.getEmbeddedDocument('Token', tokenId);
+            const token = scene.getEmbeddedDocument('Token', tokenId) as Token;
 
             if (token === undefined || token === null) {
                 return;
             }
 
-            let actorData = token.actor.data;
+            let actorData = token.actor?.data as ActorData;
 
-            let actor = game.actors.get(token.actorId);
-            if (isObjectEmpty(actorData) || token.actorLink || actorData?.data?.attributes?.hp?.value === undefined) {
+            let actor = game.actors?.get(token['actorId']) as Actor;
+            if (isObjectEmpty(actorData) || token['actorLink'] || actorData?.data['attributes']['hp'].value === undefined) {
                 actorData = actor.data;
             }
 
@@ -197,8 +199,8 @@ export function registerGroupSaveHooks() {
                 const hardness = parseInt(shield.data.hardness.value);
                 amount = Math.max(amount - hardness, 0);
 
-                if (token.actorLink) {
-                    let shieldHp = Math.max(parseInt(actor.data.data.attributes.shield.value) - amount, 0);
+                if (token['actorLink']) {
+                    let shieldHp = Math.max(parseInt(actor.data.data['attributes'].shield.value) - amount, 0);
                     await actor.update({
                         'data.attributes.shield.value': shieldHp,
                     });
@@ -208,16 +210,16 @@ export function registerGroupSaveHooks() {
             }
 
             const minHp = 0;
-            const maxHp = parseInt(actorData.data.attributes.hp.max);
-            let newHp = Math.clamped(actorData.data.attributes.hp.value - amount, minHp, maxHp);
+            const maxHp = parseInt(actorData.data['attributes'].hp.max);
+            let newHp = Math.clamped(actorData.data['attributes'].hp.value - amount, minHp, maxHp);
 
-            if (token.actorLink) {
+            if (token['actorLink']) {
                 await actor.update({
                     'data.attributes.hp.value': newHp,
                 });
             } else {
-                await scene.updateEmbeddedEntity('Token', {
-                    '_id': token._id,
+                await scene?.updateEmbeddedEntity('Token', {
+                    '_id': token.id,
                     'actorData.data.attributes.hp.value': newHp,
                 });
             }
@@ -232,7 +234,7 @@ export function registerGroupSaveHooks() {
                 const damage = jElement.data('damage');
 
                 // @ts-ignore
-                const token = game.scenes.get(sceneId).getEmbeddedDocument('Token', tokenId);
+                const token = game.scenes.get(sceneId).getEmbeddedDocument('Token', tokenId) as Token;
 
                 if (damage !== 'undefined') {
                     const container = jElement.children('span.dmgBtn-container');
@@ -254,7 +256,7 @@ export function registerGroupSaveHooks() {
                     </button>`);
 
                     let shieldBlock = false;
-                    if (token.actorLink) {
+                    if (token['actorLink']) {
                         const shield = $(`<button class="dice-total-shield-btn" style="${damageButtonStyle} opacity: 0.5;">
                             <i class="fas fa-shield-alt" title="Click to toggle the shield block status of the selected token(s)."></i>
                         </button>`);

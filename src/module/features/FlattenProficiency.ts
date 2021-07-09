@@ -20,8 +20,8 @@ function onFlattenProficiencyContextHook(html: JQuery, buttons: any[]) {
     const modifierName = 'Proficiency Without Level';
     const hasModifier = (actor: Actor) => {
         const data = actor.data.data;
-        if (data.customModifiers && data.customModifiers.all) {
-            const all = data.customModifiers.all;
+        if (data['customModifiers'] && data['customModifiers'].all) {
+            const all = data['customModifiers'].all;
             for (const modifier of all) {
                 if (modifier.name === modifierName) {
                     return true;
@@ -44,7 +44,7 @@ function onFlattenProficiencyContextHook(html: JQuery, buttons: any[]) {
             const id = li.data('entity-id') as string;
             const actor = game.actors.get(id);
 
-            const level = parseInt(actor.data.data.details.level.value);
+            const level = parseInt(actor.data.data['details'].level.value);
             await (actor as any).addCustomModifier('all', modifierName, -level, 'untyped');
         },
     });

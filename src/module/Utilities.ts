@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-export function GetRollMode(): string {
+import { DiceRollMode } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/constants.mjs';
+
+export function GetRollMode(): DiceRollMode {
     return game.settings.get('core', 'rollMode');
 }
 
 export function getFolder(name: string): Folder | null {
-    return game.folders.getName(name);
+    return game?.folders?.getName(name) as Folder;
 }
 export function getFolderInFolder(name: string, parentName?: string) {
     let parent: any;
     if (parentName) {
-        parent = game.folders.getName(parentName);
+        parent = game?.folders?.getName(parentName);
         return parent.getSubfolders().find((f) => f.name === name);
     } else {
         return getFolder(name);
     }
 }
 export function getActor(name: string, folder: string): Actor | undefined {
-    return game.actors.find((a) => a.name === name && a.folder?.name === folder);
+    return game?.actors?.find((a) => a.name === name && a.folder?.name === folder) as any;
 }
 
 export function GetFolderPath(name: string) {

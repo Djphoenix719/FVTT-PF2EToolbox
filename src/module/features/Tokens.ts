@@ -25,15 +25,15 @@ function onSetupTokensContextHook(html: JQuery, buttons: any[]) {
         icon: '<i class="fas fa-wrench"></i>',
         condition: (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = game.actors.get(id);
+            const actor = game?.actors?.get(id);
 
-            return actor.data.type === 'npc';
+            return actor?.data.type === 'npc';
         },
         callback: async (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = game.actors.get(id);
+            const actor = game?.actors?.get(id);
 
-            await setupActorToken(actor);
+            await setupActorToken(actor as Actor);
         },
     });
 }
@@ -81,7 +81,7 @@ export async function setupActorToken(actor: Actor): Promise<void> {
         };
     }
 
-    let files: string[] = (await FilePicker.browse(folderTarget, browseUrl, options)).files;
+    let files: string[] = ((await FilePicker.browse(folderTarget, browseUrl, options)) as any).files;
 
     const actorLink: boolean = actor.data.token['actorLink'];
 
@@ -89,13 +89,13 @@ export async function setupActorToken(actor: Actor): Promise<void> {
         ['token.randomImg']: !actorLink,
     };
 
-    let path: string | null = getValidName(actor.name, basePath, files);
+    let path: string | null = getValidName(actor.name as string, basePath, files);
     if (path === null) {
-        path = getValidName(actor.name, basePath, files, true);
+        path = getValidName(actor.name as string, basePath, files, true);
     }
 
     if (path === null) {
-        ui.notifications.warn(`Could not find a token image for ${actor.name}.`);
+        ui.notifications?.warn(`Could not find a token image for ${actor.name}.`);
         return;
     } else {
         if (folderTarget === 's3') {
@@ -108,5 +108,5 @@ export async function setupActorToken(actor: Actor): Promise<void> {
 
     await actor.update(actorUpdate);
 
-    ui.notifications.info(`Updated ${actor.name} to use image path "${path}"`);
+    ui.notifications?.info(`Updated ${actor.name} to use image path "${path}"`);
 }

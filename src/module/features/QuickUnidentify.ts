@@ -25,8 +25,8 @@ export function readyQuickUnidentify() {
                 const existing = actor.items.map((i: Item) => i.id) as string[];
                 await super._onDrop(event);
 
-                if (event.altKey && game.user.isGM) {
-                    const newItems = actor.items.filter((i: Item) => !existing.includes(i.id)) as Item[];
+                if (event.altKey && game.user?.isGM) {
+                    const newItems = actor.items.filter((i: Item) => !existing.includes(i.id as string)) as Item[];
                     const updates: any[] = [];
                     for (const item of newItems) {
                         updates.push({
@@ -41,7 +41,7 @@ export function readyQuickUnidentify() {
                             },
                         });
                     }
-                    await actor.updateOwnedItem(updates);
+                    await actor.updateOwnedItem(updates, {});
                 }
             }
         };
@@ -49,8 +49,10 @@ export function readyQuickUnidentify() {
         return newCls;
     };
 
+    // @ts-ignore
     CONFIG.Actor.sheetClasses['loot'][`pf2e.${PF2E_LOOT_SHEET_NAME}`].cls = decorate(CONFIG.Actor.sheetClasses['loot'][`pf2e.${PF2E_LOOT_SHEET_NAME}`].cls);
 
+    // @ts-ignore
     CONFIG.Actor.sheetClasses['character'][`pf2e.${PF2E_PC_SHEET_NAME}`].cls = decorate(
         CONFIG.Actor.sheetClasses['character'][`pf2e.${PF2E_PC_SHEET_NAME}`].cls,
     );

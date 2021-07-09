@@ -4,8 +4,9 @@
       "strictNullChecks": true,
       "alwaysStrict": true,
       "types": [
-        "foundry-pc-types"
+        "@league-of-foundry-developers/foundry-vtt-types"
       ],
+      "moduleResolution": "node",
       "baseUrl": "src/pdfoundry",
       "paths": { }
     }

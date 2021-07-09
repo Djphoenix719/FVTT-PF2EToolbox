@@ -41,8 +41,8 @@ interface SelectOption {
 
 const itemToOption = (item: Item): SelectOption => {
     return {
-        id: item.id,
-        label: item.name,
+        id: item.id as string,
+        label: item.name as string,
     };
 };
 const materialToOption = (mat: IMaterial): SelectOption => {
@@ -75,6 +75,7 @@ const getMaterialPrice = (bulkString: string, pricePerBulk: number): number => {
 
 export default function extendLootSheet() {
     type ActorSheetConstructor = new (...args: any[]) => ActorSheet;
+    // @ts-ignore
     const extendMe: ActorSheetConstructor = CONFIG.Actor.sheetClasses['loot'][`pf2e.${PF2E_LOOT_SHEET_NAME}`].cls;
     return class LootApp extends extendMe {
         static get defaultOptions() {
@@ -88,7 +89,6 @@ export default function extendLootSheet() {
             return options;
         }
 
-        actor: Actor;
         cacheContent: Item[] | undefined;
 
         get template() {
@@ -97,7 +97,7 @@ export default function extendLootSheet() {
 
             const isEditable = this.actor.getFlag('pf2e', 'editLoot.value');
 
-            if (isEditable || game.user.isGM) {
+            if (isEditable || game?.user?.isGM) {
                 return editableSheetPath;
             }
 
@@ -105,23 +105,23 @@ export default function extendLootSheet() {
         }
 
         get createMode(): CreateMode {
-            return this.actor.getFlag(MODULE_NAME, CREATE_MODE) ?? CreateMode.Weapon;
+            return (this.actor.getFlag(MODULE_NAME, CREATE_MODE) as CreateMode) ?? CreateMode.Weapon;
         }
 
         get selIteKey(): string {
-            return this.actor.getFlag(MODULE_NAME, KEY_ITE) ?? CREATE_KEY_NONE;
+            return (this.actor.getFlag(MODULE_NAME, KEY_ITE) as string) ?? CREATE_KEY_NONE;
         }
         get selMatKey(): string {
-            return this.actor.getFlag(MODULE_NAME, KEY_MAT) ?? CREATE_KEY_NONE;
+            return (this.actor.getFlag(MODULE_NAME, KEY_MAT) as string) ?? CREATE_KEY_NONE;
         }
         get selGrdKey(): string {
-            return this.actor.getFlag(MODULE_NAME, KEY_GRD) ?? CREATE_KEY_NONE;
+            return (this.actor.getFlag(MODULE_NAME, KEY_GRD) as string) ?? CREATE_KEY_NONE;
         }
         get selPotKey(): string {
-            return this.actor.getFlag(MODULE_NAME, KEY_POT) ?? CREATE_KEY_NONE;
+            return (this.actor.getFlag(MODULE_NAME, KEY_POT) as string) ?? CREATE_KEY_NONE;
         }
         get selFunKey(): string {
-            return this.actor.getFlag(MODULE_NAME, KEY_FUN) ?? CREATE_KEY_NONE;
+            return (this.actor.getFlag(MODULE_NAME, KEY_FUN) as string) ?? CREATE_KEY_NONE;
         }
 
         async getSelectedItem(): Promise<Item | undefined> {
@@ -137,8 +137,8 @@ export default function extendLootSheet() {
                 return this.cacheContent;
             }
 
-            const equipment = game.packs.get('pf2e.equipment-srd') as Compendium;
-            this.cacheContent = (await equipment.getContent()) as Item[];
+            const equipment = game.packs.get('pf2e.equipment-srd') as unknown as Compendium;
+            this.cacheContent = (await equipment.getContent()) as unknown as Item[];
             return this.cacheContent;
         }
 
@@ -149,7 +149,7 @@ export default function extendLootSheet() {
                     if (i.data.type !== 'armor') return false;
                     // 3 exceptions to the 0 level rule
                     if (['Full Plate', 'Half Plate', 'Splint Mail'].includes(i.data.name)) return true;
-                    if (i.data.data.level.value > 0) return false;
+                    if (i.data.data['level'].value > 0) return false;
                     return true;
                 })
                 .map(itemToOption);
@@ -161,8 +161,8 @@ export default function extendLootSheet() {
                 .filter((i) => {
                     if (i.data.type !== 'weapon') return false;
                     if (i.data.name === 'Aldori Dueling Sword') return true;
-                    if (i.data.data.level.value > 0) return false;
-                    if (['bomb'].includes(i.data.data.group.value)) return false;
+                    if (i.data.data['level'].value > 0) return false;
+                    if (['bomb'].includes(i.data.data['value'])) return false;
                     return true;
                 })
                 .map(itemToOption);
@@ -237,8 +237,8 @@ export default function extendLootSheet() {
                 const baseItem = await this.getSelectedItem();
                 renderData['create']['baseItem'] = baseItem;
                 if (baseItem) {
-                    renderData['create']['baseItemLevel'] = parseInt(baseItem.data.data.level.value);
-                    renderData['create']['baseItemPrice'] = getItemPrice(baseItem.data.data.price.value);
+                    renderData['create']['baseItemLevel'] = parseInt(baseItem.data.data['level'].value);
+                    renderData['create']['baseItemPrice'] = getItemPrice(baseItem.data.data['price'].value);
                 }
 
                 let items: SelectOption[];
@@ -311,7 +311,7 @@ export default function extendLootSheet() {
                 renderData['create']['itemPrice'] = renderData['create']['baseItemPrice'];
                 renderData['create']['itemLevel'] = renderData['create']['baseItemLevel'];
 
-                renderData['create']['itemPrice'] += getMaterialPrice(baseItem?.data.data.weight.value, materialGradeStats.pricePerBulk);
+                renderData['create']['itemPrice'] += getMaterialPrice(baseItem?.data.data['weight'].value, materialGradeStats.pricePerBulk);
 
                 renderData['create']['itemPrice'] += renderData['create']['potencyPrice'];
                 renderData['create']['itemLevel'] = Math.max(renderData['create']['itemLevel'], renderData['create'][`potencyLevel`]);
@@ -331,7 +331,7 @@ export default function extendLootSheet() {
                     }
                 }
 
-                renderData['create']['itemRarity'] = baseItem?.data.data.traits.rarity.value.capitalize();
+                renderData['create']['itemRarity'] = baseItem?.data.data['traits'].rarity.value.capitalize();
                 if (renderData['create']['itemLevel'] === 25) {
                     renderData['create']['itemRarity'] = 'Unique';
                 }
@@ -349,10 +349,10 @@ export default function extendLootSheet() {
             };
 
             const baseItem = (await this.getSelectedItem()) as Item;
-            const newItemData = duplicate(baseItem?.data) as ItemData;
+            const newItemData = duplicate(baseItem?.data) as any;
 
-            let itemPrice = getItemPrice(baseItem.data.data.price.value);
-            let itemLevel = parseInt(baseItem.data.data.level.value);
+            let itemPrice = getItemPrice(baseItem.data.data['price'].value);
+            let itemLevel = parseInt(baseItem.data.data['level'].value);
 
             const material = ITEM_MATERIALS[this.selMatKey];
             const gradeStats = material[this.selGrdKey] as IGradeStats;
@@ -369,7 +369,7 @@ export default function extendLootSheet() {
             newItemData.data.preciousMaterial.value = material.id;
             newItemData.data.preciousMaterialGrade.value = this.selGrdKey;
 
-            itemPrice += getMaterialPrice(baseItem.data.data.weight.value, gradeStats.pricePerBulk);
+            itemPrice += getMaterialPrice(baseItem.data.data['weight'].value, gradeStats.pricePerBulk);
 
             let potencyRune = ITEM_RUNES[this.createMode].potency[this.selPotKey];
             newItemData.data.potencyRune.value = this.selPotKey;
@@ -408,7 +408,7 @@ export default function extendLootSheet() {
 
             for (let i = 3; i > 0; i--) {
                 const key = `create-property${i}`;
-                const keyRu = this.actor.getFlag(MODULE_NAME, key);
+                const keyRu = this.actor.getFlag(MODULE_NAME, key) as string;
                 if (potencyRune.nId >= i && keyRu !== CREATE_KEY_NONE) {
                     const rune = ITEM_RUNES[this.createMode].property[keyRu];
                     itemName = `${rune.label} ${itemName}`;
@@ -447,14 +447,14 @@ export default function extendLootSheet() {
                 newItemData.name = `Unidentified ${newName}`;
             }
 
-            await this.actor.createOwnedItem(newItemData);
+            await this.actor.createOwnedItem(newItemData, {});
         }
 
         activateListeners(html: JQuery) {
             super.activateListeners(html);
 
             html.find('select').on('input', (event) => {
-                this._onSubmit(event);
+                this._onSubmit(event as unknown as Event);
             });
 
             html.find('#create').on('click', (event) => {
@@ -471,6 +471,7 @@ export default function extendLootSheet() {
 
                 const table = (await GetItemFromCollection('pf2e.rollable-tables', tableId)) as RollTable;
 
+                // @ts-ignore
                 let rolls = await table.drawMany(drawCount);
 
                 const promises = rolls.results.map((r) => {
@@ -482,24 +483,27 @@ export default function extendLootSheet() {
                 let filtered = entities.filter((i) => i !== null && i !== undefined) as Entity[];
 
                 if (filtered.length !== drawCount) {
+                    // @ts-ignore
                     ui.notifications.warn('Found one or more items in the rollable table that do not exist in the compendium, skipping these.');
                 }
 
                 let results = filtered.map((i) => i.data);
 
                 results = results.map((i) => {
-                    if (!i.data.value?.value) {
+                    // @ts-ignore
+                    if (!i.data['value'].value) {
                         return i;
                     }
 
                     const roll = new Roll('1d4').roll();
-                    i.data.value.value = roll.total * i.data.value.value;
+                    // @ts-ignore
+                    i.data['value'].value = roll.total * i.data['value'].value;
                     return i;
                 });
 
                 if (ModuleSettings.instance.get(QUICK_MYSTIFY) && event.altKey) {
                     for (const item of results) {
-                        item.data.identification = {
+                        item['data']['identification'] = {
                             status: 'unidentified',
                             identified: {
                                 name: item.name,
@@ -522,6 +526,7 @@ export default function extendLootSheet() {
 
                 const table = (await GetItemFromCollection('pf2e.rollable-tables', tableId)) as RollTable;
 
+                // @ts-ignore
                 let rolls = await table.drawMany(drawCount);
                 const promises = rolls.results.map((r) => {
                     if (!r.data.hasOwnProperty('collection')) {
@@ -535,7 +540,7 @@ export default function extendLootSheet() {
                 let filtered = entities.filter((i) => i !== null && i !== undefined) as Entity[];
 
                 if (filtered.length !== drawCount) {
-                    ui.notifications.warn(
+                    ui?.notifications?.warn(
                         'PF2EToolbox drew a custom weapon, custom armor, or typed potion, but these are not supported. One or more rolls has been skipped.',
                     );
                 }
@@ -544,7 +549,7 @@ export default function extendLootSheet() {
 
                 if (ModuleSettings.instance.get(QUICK_MYSTIFY) && event.altKey) {
                     for (const item of results) {
-                        item.data.identification = {
+                        item['data']['identification'] = {
                             status: 'unidentified',
                             identified: {
                                 name: item.name,
@@ -563,10 +568,7 @@ export default function extendLootSheet() {
 
             html.find('button.clear-inventory').on('click', async (event) => {
                 // @ts-ignore
-                await actor.deleteEmbeddedDocuments(
-                    'Item',
-                    actor.items.map((i) => i.id),
-                );
+                await actor.deleteEmbeddedDocuments('Item', actor.items.map((i) => i.id) as string[]);
             });
         }
     };

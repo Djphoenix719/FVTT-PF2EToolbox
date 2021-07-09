@@ -15,13 +15,13 @@
  */
 
 export async function GetRollableTables() {
-    const pack = game.packs.get('pf2e.rollable-tables') as Compendium;
+    const pack = game.packs.get('pf2e.rollable-tables') as any;
     const tables = (await pack.getContent()) as RollTable[];
     return { pack, tables };
 }
 
 export async function GetItemFromCollection(collectionId: string, itemId: string) {
-    const pack = (await game.packs.get(collectionId)) as Compendium;
+    const pack = (await game.packs.get(collectionId)) as any;
     // @ts-ignore
     return await pack.get(itemId);
 }
@@ -83,7 +83,7 @@ export async function GetTreasureTables() {
 
 export async function GetMagicItemTables(searchName: string) {
     let { pack, tables } = await GetRollableTables();
-    tables = tables.filter((table) => table.name.includes(searchName));
+    tables = tables.filter((table) => table.name?.includes(searchName));
 
     const sortRegex = /[0-9]+/;
 
@@ -91,8 +91,8 @@ export async function GetMagicItemTables(searchName: string) {
         let an = 0;
         let bn = 0;
 
-        const ar = sortRegex.exec(a.name);
-        const br = sortRegex.exec(b.name);
+        const ar = sortRegex.exec(a.name as string);
+        const br = sortRegex.exec(b.name as string);
 
         if (ar !== null) {
             an = parseInt(ar[0]);

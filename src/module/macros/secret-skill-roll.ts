@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Andrew Cuccinello
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 const SKILL_DICTIONARY = Object.freeze({
     acr: 'acrobatics',
     arc: 'arcana',
@@ -18,20 +34,20 @@ const SKILL_DICTIONARY = Object.freeze({
 });
 
 export default async function secretSkillRoll(skillName?: string) {
-    let actor: Actor = canvas.tokens.controlled[0]?.actor ?? game.user.character;
+    let actor: Actor = canvas?.tokens.controlled[0]?.actor ?? (game?.user?.character as Actor);
 
     if (actor === null || actor === undefined) {
-        ui.notifications.error('You must set your active character in the player configuration or select a token.');
+        ui.notifications?.error('You must set your active character in the player configuration or select a token.');
         return;
     }
 
-    const skills = actor.data.data.skills;
-    const attributes = actor.data.data.attributes;
+    const skills = actor.data.data['skills'];
+    const attributes = actor.data.data['attributes'];
 
     const rollSkill = async (skillName: string) => {
         // @ts-ignore
         const opts = actor.getRollOptions(['all', 'skill-check', SKILL_DICTIONARY[skillName] ?? skillName]);
-        actor.data.data.skills[skillName].roll({ event: new Event('click'), options: [...opts, 'secret'] });
+        actor.data.data['skills'][skillName].roll({ event: new Event('click'), options: [...opts, 'secret'] });
     };
 
     const rollAttr = async (attrName: string) => {
@@ -89,9 +105,9 @@ export default async function secretSkillRoll(skillName?: string) {
         } else if (attributes.hasOwnProperty(skillName)) {
             await rollAttr(skillName);
         } else {
-            ui.notifications.error(
+            ui?.notifications?.error(
                 `Invalid roll: "${skillName}". Use one of the following: 
-            ${[...Object.keys(actor.data.data.skills), 'perception'].join(', ')}`,
+            ${[...Object.keys(actor.data.data['skills']), 'perception'].join(', ')}`,
                 { permanent: true },
             );
         }

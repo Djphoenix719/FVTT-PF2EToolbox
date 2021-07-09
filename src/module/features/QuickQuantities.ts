@@ -43,7 +43,7 @@ function onQuantitiesHook(app: ActorSheet, html: JQuery) {
         actor.updateEmbeddedDocuments('Item', [
             {
                 '_id': itemId,
-                'data.quantity.value': Number(item.data.data.quantity.value) + getAmount(event),
+                'data.quantity.value': Number(item.data.data['quantity'].value) + getAmount(event),
             },
         ]);
     });
@@ -52,12 +52,12 @@ function onQuantitiesHook(app: ActorSheet, html: JQuery) {
         const itemId = $(event.currentTarget).parents('.item').attr('data-item-id') ?? '';
         const item = actor.items.get(itemId);
 
-        if (Number(item.data.data.quantity.value) > 0) {
+        if (Number(item.data.data['quantity'].value) > 0) {
             // @ts-ignore
             actor.updateEmbeddedDocuments('Item', [
                 {
                     '_id': itemId,
-                    'data.quantity.value': Number(item.data.data.quantity.value) - getAmount(event),
+                    'data.quantity.value': Number(item.data.data['quantity'].value) - getAmount(event),
                 },
             ]);
         }

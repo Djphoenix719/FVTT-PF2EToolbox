@@ -34,14 +34,14 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
             parent: rootFolder ? rootFolder.id : '',
         }));
 
-    let oldLevel = parseInt(actor.data.data.details.level.value);
+    let oldLevel = parseInt(actor.data.data['details'].level.value);
     const data = {
         folder: folder.id,
         ['data.details.level.value']: newLevel,
     };
 
     // parse attribute modifiers
-    for (const [key, attr] of Object.entries(actor.data.data.abilities)) {
+    for (const [key, attr] of Object.entries(actor.data.data['abilities'])) {
         const mod = getLeveledData('abilityScore', parseInt((attr as any).mod), oldLevel, newLevel).total;
         const value = 10 + mod * 2;
         const min = 3;
@@ -51,8 +51,8 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
 
     // parse resistances
     const drData: any[] = [];
-    for (let i = 0; i < actor.data.data.traits.dr.length; i++) {
-        const dr = actor.data.data.traits.dr[i];
+    for (let i = 0; i < actor.data.data['traits'].dr.length; i++) {
+        const dr = actor.data.data['traits'].dr[i];
 
         drData.push({
             label: dr.label,
@@ -65,8 +65,8 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
 
     // parse vulnerabilities
     const dvData: any[] = [];
-    for (let i = 0; i < actor.data.data.traits.dv.length; i++) {
-        const dv = actor.data.data.traits.dv[i];
+    for (let i = 0; i < actor.data.data['traits'].dv.length; i++) {
+        const dv = actor.data.data['traits'].dv[i];
 
         dvData.push({
             label: dv.label,
@@ -78,13 +78,13 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
     data['data.traits.dv'] = dvData;
 
     // parse simple modifiers
-    data['data.attributes.ac.base'] = getLeveledData('armorClass', parseInt(actor.data.data.attributes.ac.base), oldLevel, newLevel).total;
-    data['data.attributes.perception.base'] = getLeveledData('perception', parseInt(actor.data.data.attributes.perception.base), oldLevel, newLevel).total;
-    data['data.saves.fortitude.base'] = getLeveledData('savingThrow', parseInt(actor.data.data.saves.fortitude.base), oldLevel, newLevel).total;
-    data['data.saves.reflex.base'] = getLeveledData('savingThrow', parseInt(actor.data.data.saves.reflex.base), oldLevel, newLevel).total;
-    data['data.saves.will.base'] = getLeveledData('savingThrow', parseInt(actor.data.data.saves.will.base), oldLevel, newLevel).total;
+    data['data.attributes.ac.base'] = getLeveledData('armorClass', parseInt(actor.data.data['attributes'].ac.base), oldLevel, newLevel).total;
+    data['data.attributes.perception.base'] = getLeveledData('perception', parseInt(actor.data.data['attributes'].perception.base), oldLevel, newLevel).total;
+    data['data.saves.fortitude.base'] = getLeveledData('savingThrow', parseInt(actor.data.data['saves'].fortitude.base), oldLevel, newLevel).total;
+    data['data.saves.reflex.base'] = getLeveledData('savingThrow', parseInt(actor.data.data['saves'].reflex.base), oldLevel, newLevel).total;
+    data['data.saves.will.base'] = getLeveledData('savingThrow', parseInt(actor.data.data['saves'].will.base), oldLevel, newLevel).total;
 
-    const hp = getHPData(parseInt(actor.data.data.attributes.hp.max), oldLevel, newLevel);
+    const hp = getHPData(parseInt(actor.data.data['attributes'].hp.max), oldLevel, newLevel);
     data['data.attributes.hp.max'] = hp;
     data['data.attributes.hp.value'] = hp;
 
@@ -157,9 +157,9 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
     await newActor.updateEmbeddedDocuments(EMBEDDED_ENTITY_TYPE, itemUpdates);
 
     itemUpdates = [];
-    for (const item of actor.items.filter((i) => i.data.data.description.value.includes('DC'))) {
+    for (const item of actor.items.filter((i) => i.data.data['description'].value.includes('DC'))) {
         const DC_REGEX = /(data-pf2-dc=")([0-9]+)(")/g;
-        const description = item.data.data.description.value as string;
+        const description = item.data.data['description'].value as string;
         let newDescription = description;
         let match: RegExpExecArray | null = DC_REGEX.exec(description);
 
@@ -189,7 +189,7 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
     itemUpdates = [];
     for (const item of newActor.items.values()) {
         const DMG_REGEX = /[0-9]+d[0-9]+(\+[0-9]*)?/g;
-        const description = item.data.data.description.value as string;
+        const description = item.data.data['description'].value as string;
         let newDescription = description;
         let match: RegExpExecArray | null = DMG_REGEX.exec(description);
         let indexOffset = 0;
