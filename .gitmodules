@@ -1,0 +1,3 @@
+[submodule "FVTT-Common"]
+	path = FVTT-Common
+	url = https://github.com/Djphoenix719/FVTT-Common.git
