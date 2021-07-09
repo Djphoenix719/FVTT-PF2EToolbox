@@ -1,7 +1,8 @@
-/* Copyright 2020 Andrew Cuccinello
- *
+/*
+ * Copyright 2021 Andrew Cuccinello
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ *
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
@@ -131,6 +132,7 @@ async function buildJS() {
 async function copyAssets() {
     gulp.src('module.json').pipe(gulp.dest(destFolder));
     gulp.src('src/templates/**/*').pipe(gulp.dest(path.resolve(destFolder, 'templates')));
+    gulp.src('FVTT-Common/src/templates/**/*').pipe(gulp.dest(path.resolve(destFolder, 'templates')));
     gulp.src('src/packs/**/*').pipe(gulp.dest(path.resolve(destFolder, 'packs')));
     gulp.src('LICENSE').pipe(gulp.dest(destFolder));
 }
@@ -146,10 +148,12 @@ async function watch() {
 
     watch('module.json', '');
     watch('src/templates/**/*', 'templates');
+    watch('FVTT-Common/src/templates/**/*', 'templates');
     watch('src/packs/**/*', 'packs');
     watch('LICENSE', '');
 
     gulp.watch('src/css/**/*.scss').on('change', async () => await buildSass());
+    gulp.watch('FVTT-Common/src/css/**/*.scss').on('change', async () => await buildSass());
 
     // Watchify setup
     const watchArgs = assign({}, watchify.args, baseArgs);
