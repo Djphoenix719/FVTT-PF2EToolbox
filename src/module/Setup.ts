@@ -27,6 +27,7 @@ import { setupTokens } from './features/Tokens';
 import ModuleSettings, { ATTR_RELOAD_REQUIRED, ATTR_REOPEN_SHEET_REQUIRED, IFeatureDefinition } from '../../FVTT-Common/src/module/settings-app/ModuleSettings';
 import { MODULE_NAME } from './Constants';
 import { registerHandlebarsHelpers, registerHandlebarsTemplates } from './Handlebars';
+import { fixMaterials, FixMaterials } from './commands/FixMaterials';
 
 export const CREATURE_BUILDER = 'CREATURE_BUILDER';
 export const FLATTEN_PROFICIENCY = 'FLATTEN_PROFICIENCY';
@@ -47,6 +48,8 @@ export const TOKEN_PATH = 'TOKEN_FOLDER_PATH';
 export const TOKEN_TARGET = 'TOKEN_FOLDER_TARGET';
 export const TOKEN_TARGET_BUCKET = 'TOKEN_FOLDER_TARGET_BUCKET';
 export const LAST_SEEN_SYSTEM = 'LAST_SEEN_VERSION';
+
+export const MATERIALS_FIXED = 'MATERIALS_FIXED';
 
 export const FEATURES: IFeatureDefinition[] = [
     {
@@ -277,4 +280,35 @@ export const setup = () => {
 
     Hooks.on('setup', registerHandlebarsTemplates);
     Hooks.on('setup', registerHandlebarsHelpers);
+
+    Hooks.on('ready', async () => {
+        ModuleSettings.instance.reg(MATERIALS_FIXED, {
+            name: 'Materials Fixed Ran?',
+            scope: 'world',
+            type: Boolean,
+            default: false,
+            config: false,
+            restricted: true,
+        });
+
+        if (!ModuleSettings.instance.get(MATERIALS_FIXED)) {
+            await fixMaterials();
+        }
+    });
+
+    const commands = [new FixMaterials()];
+    Hooks.on('chatMessage', (app, content) => {
+        content = content.toLocaleLowerCase();
+
+        for (let command of commands) {
+            if (!command.shouldRun(content)) {
+                continue;
+            }
+
+            command.execute(content);
+        }
+
+        return false;
+    });
 };
+//   /pf2e-toolbox fix-materials
