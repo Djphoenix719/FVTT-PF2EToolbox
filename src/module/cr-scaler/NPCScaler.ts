@@ -27,7 +27,7 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
 
     const folderName = `Level ${newLevel}`;
     const folder =
-        getFolderInFolder(folderName, rootFolder?.name) ??
+        getFolderInFolder(folderName, rootFolder?.name as string) ??
         (await Folder.create({
             name: folderName,
             type: 'Actor',
@@ -145,12 +145,12 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
     }
     console.warn(itemUpdates);
 
-    let newActor: Actor | undefined = getActor(actor.name, folder.name);
+    let newActor: Actor | undefined = getActor(actor.name as string, folder.name);
     if (newActor !== undefined) {
         await newActor.update(data);
     } else {
         newActor = await actor.clone(data);
-        newActor = (await Actor.create(newActor.data)) as Actor;
+        newActor = (await Actor.create(newActor?.data as any)) as Actor;
     }
 
     // @ts-ignore
@@ -178,7 +178,7 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
         }
 
         itemUpdates.push({
-            _id: item.id,
+            _id: item.id as string,
             ['data.description.value']: newDescription,
         });
     }
@@ -206,7 +206,7 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
         }
 
         itemUpdates.push({
-            _id: item.id,
+            _id: item.id as string,
             ['data.description.value']: newDescription,
         });
     }

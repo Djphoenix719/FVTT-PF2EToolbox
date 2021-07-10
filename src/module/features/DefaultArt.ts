@@ -22,7 +22,7 @@ export async function readyDefaultArt() {
         return;
     }
 
-    ui.notifications.info('PF2E Toolbox is removing default artwork... please wait.');
+    ui.notifications?.info('PF2E Toolbox is removing default artwork... please wait.');
 
     const pathMap = {
         npc: 'systems/pf2e/icons/default-icons/npc.svg',
@@ -39,7 +39,7 @@ export async function readyDefaultArt() {
 
             const documents = (await pack.getDocuments()) as Actor[];
             for (const actor of documents) {
-                let path: string = actor.data.img;
+                let path: string = actor.data.img as string;
                 if (!path.includes('default-icons')) {
                     await actor.update({
                         img: pathMap[actor.data['type']],
@@ -55,5 +55,5 @@ export async function readyDefaultArt() {
 
     await ModuleSettings.instance.set(LAST_SEEN_SYSTEM, game.system.data.version);
 
-    ui.notifications.info('All bestiary artwork has been updated!');
+    ui.notifications?.info('All bestiary artwork has been updated!');
 }

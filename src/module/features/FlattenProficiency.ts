@@ -36,15 +36,15 @@ function onFlattenProficiencyContextHook(html: JQuery, buttons: any[]) {
         icon: '<i class="fas fa-level-down-alt"></i>',
         condition: (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = game.actors.get(id);
+            const actor = game.actors?.get(id);
 
-            return actor.data.type === 'npc' && !hasModifier(actor);
+            return actor?.data.type === 'npc' && !hasModifier(actor);
         },
         callback: async (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = game.actors.get(id);
+            const actor = game.actors?.get(id);
 
-            const level = parseInt(actor.data.data['details'].level.value);
+            const level = parseInt(actor?.data.data['details'].level.value);
             await (actor as any).addCustomModifier('all', modifierName, -level, 'untyped');
         },
     });
@@ -54,13 +54,13 @@ function onFlattenProficiencyContextHook(html: JQuery, buttons: any[]) {
         icon: '<i class="fas fa-level-up-alt"></i>',
         condition: (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = game.actors.get(id);
+            const actor = game.actors?.get(id);
 
-            return actor.data.type === 'npc' && hasModifier(actor);
+            return actor?.data.type === 'npc' && hasModifier(actor);
         },
         callback: async (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = game.actors.get(id);
+            const actor = game.actors?.get(id);
 
             await (actor as any).removeCustomModifier('all', modifierName);
         },

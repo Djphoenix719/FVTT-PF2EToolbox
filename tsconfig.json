@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "target": "es2017",
+      "target": "es2020",
       "strictNullChecks": true,
       "alwaysStrict": true,
       "types": [
@@ -8,6 +8,7 @@
       ],
       "moduleResolution": "node",
       "baseUrl": "src/pdfoundry",
+      "esModuleInterop": true,
       "paths": { }
     }
   }

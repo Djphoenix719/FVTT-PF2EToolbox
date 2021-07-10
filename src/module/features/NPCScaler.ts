@@ -24,13 +24,13 @@ function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
         icon: '<i class="fas fa-level-up-alt"></i>',
         condition: (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = game.actors.get(id);
+            const actor = game.actors?.get(id) as Actor;
 
             return actor.data.type === 'npc';
         },
         callback: async (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = game.actors.get(id);
+            const actor = game.actors?.get(id) as Actor;
 
             // const oldLevel = actor.data.data.details.level.value;
             const oldLevel = 24;
@@ -47,14 +47,14 @@ function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
                         icon: '<i class="fas fa-level-up-alt"></i>',
                         label: 'Scale',
                         callback: async (html: JQuery) => {
-                            ui.notifications.info(`Scaling NPC... please wait.`);
+                            ui.notifications?.info(`Scaling NPC... please wait.`);
                             const startLevel = parseInt(<string>html.find('#startLevel').val());
                             const endLevel = parseInt(<string>html.find('#endLevel').val());
 
                             for (let i = startLevel; i <= endLevel; i++) {
                                 await scaleNPCToLevel(actor, i);
                             }
-                            ui.notifications.info(`Scaled ${actor.name} to levels ${startLevel} - ${endLevel}.`);
+                            ui.notifications?.info(`Scaled ${actor.name} to levels ${startLevel} - ${endLevel}.`);
                         },
                     },
                 },

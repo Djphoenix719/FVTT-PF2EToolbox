@@ -37,7 +37,7 @@ function onQuantitiesHook(app: ActorSheet, html: JQuery) {
 
     increaseQuantity.on('click', (event) => {
         const itemId = $(event.currentTarget).parents('.item').attr('data-item-id') ?? '';
-        const item = actor.items.get(itemId);
+        const item = actor.items.get(itemId) as Item;
 
         // @ts-ignore
         actor.updateEmbeddedDocuments('Item', [
@@ -50,7 +50,7 @@ function onQuantitiesHook(app: ActorSheet, html: JQuery) {
 
     decreaseQuantity.on('click', (event) => {
         const itemId = $(event.currentTarget).parents('.item').attr('data-item-id') ?? '';
-        const item = actor.items.get(itemId);
+        const item = actor.items.get(itemId) as Item;
 
         if (Number(item.data.data['quantity'].value) > 0) {
             // @ts-ignore
