@@ -28,6 +28,9 @@ import ModuleSettings, { ATTR_RELOAD_REQUIRED, ATTR_REOPEN_SHEET_REQUIRED, IFeat
 import { MODULE_NAME } from './Constants';
 import { registerHandlebarsHelpers, registerHandlebarsTemplates } from './Handlebars';
 import { fixMaterials, FixMaterials } from './commands/FixMaterials';
+import secretSkillRoll from './macros/secret-skill-roll';
+import { distributeHeroPoints } from './macros/distribute-hero-points';
+import { groupSave, registerGroupSaveHooks } from './macros/group-saves';
 
 export const CREATURE_BUILDER = 'CREATURE_BUILDER';
 export const FLATTEN_PROFICIENCY = 'FLATTEN_PROFICIENCY';
@@ -309,6 +312,15 @@ export const setup = () => {
         }
 
         return false;
+    });
+
+    Hooks.on('ready', () => {
+        game['PF2EToolbox'] = {
+            secretSkillRoll: secretSkillRoll,
+            distributeHeroPoints: distributeHeroPoints,
+            groupSave: groupSave,
+        };
+        registerGroupSaveHooks();
     });
 };
 //   /pf2e-toolbox fix-materials

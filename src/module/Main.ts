@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-import secretSkillRoll from './macros/secret-skill-roll';
-import { distributeHeroPoints } from './macros/distribute-hero-points';
-import { groupSave, registerGroupSaveHooks } from './macros/group-saves';
 import { setup } from './Setup';
 
 setup();
-
-Hooks.on('ready', () => {
-    game['PF2EToolbox'] = {
-        secretSkillRoll: secretSkillRoll,
-        distributeHeroPoints: distributeHeroPoints,
-        groupSave: groupSave,
-    };
-    registerGroupSaveHooks();
-});
