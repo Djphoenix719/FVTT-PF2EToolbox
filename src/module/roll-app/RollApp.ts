@@ -75,7 +75,7 @@ export default class RollApp extends Application {
         const handler = (event) => {
             const target = $(event.target);
             const rollName = target.data('rollname') as string;
-            const token = canvas?.tokens.controlled[0];
+            const token = (canvas as Canvas).tokens?.controlled[0];
             let formula = target.data('formula') as string | number | undefined;
 
             if (formula) {

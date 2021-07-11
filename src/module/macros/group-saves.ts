@@ -26,7 +26,7 @@ enum SuccessLevel {
 }
 
 export async function groupSave(saveType?: SaveType) {
-    const selected = canvas?.tokens.controlled as Token[];
+    const selected = (canvas as Canvas).tokens?.controlled as Token[];
 
     const roll = async (saveType: SaveType, dc?: number, damage?: number) => {
         let message = '<div class="pf2e-toolbox.group-roll">';
@@ -45,9 +45,9 @@ export async function groupSave(saveType?: SaveType) {
         message += '</div>';
 
         await ChatMessage.create({
-            user: game.user?.id,
+            user: (game as Game).user?.id,
             content: message,
-            whisper: [game.user?.id as string],
+            whisper: [(game as Game).user?.id as string],
         });
     };
 
@@ -131,7 +131,7 @@ function formatRowOutput(token: Token, mod: number, breakdown: string, dc?: numb
     const successLevel = getSuccessLevel(totalValue, dc);
 
     // @ts-ignore
-    const sceneId: number = game.scenes.viewed.id;
+    const sceneId: number = (game as Game).scenes.viewed.id;
 
     const flexStyle = `
         display: flex;
@@ -171,7 +171,7 @@ export function registerGroupSaveHooks() {
         const content = html.children('div.message-content').children('div');
 
         const apply = async (tokenId: string, sceneId: string, amount: number, shieldBlock: boolean) => {
-            const scene = game?.scenes?.get(sceneId);
+            const scene = (game as Game).scenes?.get(sceneId);
             // @ts-ignore
             const token = scene.getEmbeddedDocument('Token', tokenId) as Token;
 
@@ -181,7 +181,7 @@ export function registerGroupSaveHooks() {
 
             let actorData = token.actor?.data as ActorData;
 
-            let actor = game.actors?.get(token['actorId']) as Actor;
+            let actor = (game as Game).actors?.get(token['actorId']) as Actor;
             if (isObjectEmpty(actorData) || token['actorLink'] || actorData?.data['attributes']['hp'].value === undefined) {
                 actorData = actor.data;
             }
@@ -234,7 +234,7 @@ export function registerGroupSaveHooks() {
                 const damage = jElement.data('damage');
 
                 // @ts-ignore
-                const token = game.scenes.get(sceneId).getEmbeddedDocument('Token', tokenId) as Token;
+                const token = (game as Game).scenes.get(sceneId).getEmbeddedDocument('Token', tokenId) as Token;
 
                 if (damage !== 'undefined') {
                     const container = jElement.children('span.dmgBtn-container');

@@ -25,9 +25,6 @@ function onSheetRender(app: Application, html: JQuery, renderData: any) {
 
     const { rank, max }: { rank: number; max: number } = renderData.data.attributes.heroPoints;
 
-    console.warn(rank);
-    console.warn(max);
-
     const iconFilled = '<i class="fas fa-hospital-symbol"></i>';
     const iconEmpty = '<i class="far fa-circle"></i>';
 

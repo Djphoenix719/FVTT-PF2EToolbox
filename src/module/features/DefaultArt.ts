@@ -18,7 +18,7 @@ import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleS
 import { LAST_SEEN_SYSTEM } from '../Setup';
 
 export async function readyDefaultArt() {
-    if (game.system.data.version === ModuleSettings.instance.get(LAST_SEEN_SYSTEM)) {
+    if ((game as Game).system.data.version === ModuleSettings.instance.get(LAST_SEEN_SYSTEM)) {
         return;
     }
 
@@ -29,7 +29,7 @@ export async function readyDefaultArt() {
         hazard: 'systems/pf2e/icons/default-icons/hazard.svg',
     };
 
-    for (const entry of game.packs.values()) {
+    for (const entry of (game as Game).packs.values()) {
         const pack = entry as any;
 
         if (pack.metadata.system === 'pf2e' && pack.metadata.package === 'pf2e' && pack.metadata.entity === 'Actor') {
@@ -53,7 +53,7 @@ export async function readyDefaultArt() {
         }
     }
 
-    await ModuleSettings.instance.set(LAST_SEEN_SYSTEM, game.system.data.version);
+    await ModuleSettings.instance.set(LAST_SEEN_SYSTEM, (game as Game).system.data.version);
 
     ui.notifications?.info('All bestiary artwork has been updated!');
 }

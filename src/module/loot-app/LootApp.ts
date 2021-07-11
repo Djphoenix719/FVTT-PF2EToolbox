@@ -97,7 +97,7 @@ export default function extendLootSheet() {
 
             const isEditable = this.actor.getFlag('pf2e', 'editLoot.value');
 
-            if (isEditable || game?.user?.isGM) {
+            if (isEditable || (game as Game).user?.isGM) {
                 return editableSheetPath;
             }
 
@@ -137,7 +137,7 @@ export default function extendLootSheet() {
                 return this.cacheContent;
             }
 
-            const equipment = game.packs.get('pf2e.equipment-srd') as unknown as Compendium;
+            const equipment = (game as Game).packs.get('pf2e.equipment-srd') as unknown as Compendium;
             this.cacheContent = (await equipment.getContent()) as unknown as Item[];
             return this.cacheContent;
         }

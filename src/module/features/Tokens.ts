@@ -25,13 +25,13 @@ function onSetupTokensContextHook(html: JQuery, buttons: any[]) {
         icon: '<i class="fas fa-wrench"></i>',
         condition: (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = game?.actors?.get(id);
+            const actor = (game as Game).actors?.get(id);
 
             return actor?.data.type === 'npc';
         },
         callback: async (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = game?.actors?.get(id);
+            const actor = (game as Game).actors?.get(id);
 
             await setupActorToken(actor as Actor);
         },

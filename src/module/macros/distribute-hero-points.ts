@@ -18,7 +18,7 @@ import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleS
 import { MAX_HERO_POINTS } from '../Setup';
 
 export async function distributeHeroPoints(amount: number) {
-    const selected = canvas?.tokens.controlled as Token[];
+    const selected = (canvas as Canvas).tokens?.controlled as Token[];
     const max: number = ModuleSettings.instance.get(MAX_HERO_POINTS);
 
     const distribute = async (amount: number) => {

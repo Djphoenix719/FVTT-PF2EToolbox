@@ -25,7 +25,7 @@ export function readyQuickUnidentify() {
                 const existing = actor.items.map((i: Item) => i.id) as string[];
                 await super._onDrop(event);
 
-                if (event.altKey && game.user?.isGM) {
+                if (event.altKey && (game as Game).user?.isGM) {
                     const newItems = actor.items.filter((i: Item) => !existing.includes(i.id as string)) as Item[];
                     const updates: any[] = [];
                     for (const item of newItems) {

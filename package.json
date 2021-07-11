@@ -5,7 +5,7 @@
         "@babel/plugin-transform-runtime": "^7.12.1",
         "@babel/preset-env": "^7.12.1",
         "@babel/preset-typescript": "^7.12.1",
-        "@league-of-foundry-developers/foundry-vtt-types": "^0.8.8-4",
+        "@league-of-foundry-developers/foundry-vtt-types": "^0.8.8-5",
         "@types/jquery": "^3.5.6",
         "@types/node": "^14.14.0",
         "babel-core": "7.0.0-bridge.0",
