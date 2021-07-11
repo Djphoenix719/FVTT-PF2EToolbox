@@ -308,10 +308,10 @@ export const setup = () => {
                 continue;
             }
 
-            command.execute(content);
+            if (command.execute(content)) {
+                return false;
+            }
         }
-
-        return false;
     });
 
     Hooks.on('ready', () => {
