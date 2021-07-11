@@ -34,7 +34,7 @@ const SKILL_DICTIONARY = Object.freeze({
 });
 
 export default async function secretSkillRoll(skillName?: string) {
-    let actor: Actor = (canvas as Canvas).tokens?.controlled[0]?.actor ?? ((game as Game).user?.character as Actor);
+    let actor: Actor = (canvas as Canvas).tokens?.controlled[0]?.actor ?? (game.user?.character as Actor);
 
     if (actor === null || actor === undefined) {
         ui.notifications?.error('You must set your active character in the player configuration or select a token.');

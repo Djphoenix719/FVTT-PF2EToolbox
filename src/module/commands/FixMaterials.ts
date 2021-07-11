@@ -42,7 +42,7 @@ export async function fixMaterials() {
     };
 
     let count = 0;
-    for (const scene of ((game as Game).scenes as Scenes).values()) {
+    for (const scene of (game.scenes as Scenes).values()) {
         for (const token of scene.data.tokens.values()) {
             if (token.data.actorLink) {
                 continue;
@@ -59,7 +59,7 @@ export async function fixMaterials() {
         }
     }
 
-    for (const actor of (game as Game).actors as Actors) {
+    for (const actor of game.actors as Actors) {
         for (const item of actor.items) {
             if (isBad(item)) {
                 await fixItem(item);
@@ -68,7 +68,7 @@ export async function fixMaterials() {
         }
     }
 
-    for (const item of (game as Game).items as Items) {
+    for (const item of game.items as Items) {
         if (isBad(item)) {
             await fixItem(item);
             count += 1;

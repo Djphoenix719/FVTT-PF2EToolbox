@@ -4,10 +4,11 @@
       "strictNullChecks": true,
       "alwaysStrict": true,
       "types": [
-        "@league-of-foundry-developers/foundry-vtt-types"
+        "@league-of-foundry-developers/foundry-vtt-types",
+        "./FVTT-Common/src/types"
       ],
       "moduleResolution": "node",
-      "baseUrl": "src/pdfoundry",
+      "baseUrl": "",
       "esModuleInterop": true,
       "paths": { }
     }

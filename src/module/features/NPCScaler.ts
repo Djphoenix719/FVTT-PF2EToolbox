@@ -24,13 +24,13 @@ function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
         icon: '<i class="fas fa-level-up-alt"></i>',
         condition: (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = (game as Game).actors?.get(id) as Actor;
+            const actor = game.actors?.get(id) as Actor;
 
             return actor.data.type === 'npc';
         },
         callback: async (li: JQuery<HTMLLIElement>) => {
             const id = li.data('entity-id') as string;
-            const actor = (game as Game).actors?.get(id) as Actor;
+            const actor = game.actors?.get(id) as Actor;
 
             // const oldLevel = actor.data.data.details.level.value;
             const oldLevel = 24;

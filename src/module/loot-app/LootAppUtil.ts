@@ -15,13 +15,13 @@
  */
 
 export async function GetRollableTables() {
-    const pack = (game as Game).packs.get('pf2e.rollable-tables') as any;
+    const pack = game.packs.get('pf2e.rollable-tables') as any;
     const tables = (await pack.getContent()) as RollTable[];
     return { pack, tables };
 }
 
 export async function GetItemFromCollection(collectionId: string, itemId: string) {
-    const pack = (await (game as Game).packs.get(collectionId)) as any;
+    const pack = (await game.packs.get(collectionId)) as any;
     // @ts-ignore
     return await pack.get(itemId);
 }

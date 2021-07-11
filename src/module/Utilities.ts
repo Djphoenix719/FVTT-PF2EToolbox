@@ -17,23 +17,23 @@
 import { DiceRollMode } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/constants.mjs';
 
 export function GetRollMode(): DiceRollMode {
-    return (game as Game).settings.get('core', 'rollMode');
+    return game.settings.get('core', 'rollMode');
 }
 
 export function getFolder(name: string): Folder | null {
-    return (game as Game).folders?.getName(name) as Folder;
+    return game.folders?.getName(name) as Folder;
 }
 export function getFolderInFolder(name: string, parentName?: string) {
     let parent: any;
     if (parentName) {
-        parent = (game as Game).folders?.getName(parentName);
+        parent = game.folders?.getName(parentName);
         return parent.getSubfolders().find((f) => f.name === name);
     } else {
         return getFolder(name);
     }
 }
 export function getActor(name: string, folder: string): Actor | undefined {
-    return (game as Game).actors?.find((a) => a.name === name && a.folder?.name === folder) as any;
+    return game.actors?.find((a) => a.name === name && a.folder?.name === folder) as any;
 }
 
 export function GetFolderPath(name: string) {
