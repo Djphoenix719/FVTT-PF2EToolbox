@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
 import { MAX_HERO_POINTS } from '../Setup';
+import ModuleSettings from '../../../FVTT-Common/src/module/ModuleSettings';
 
 export async function distributeHeroPoints(amount: number) {
     const selected = (canvas as Canvas).tokens?.controlled as Token[];

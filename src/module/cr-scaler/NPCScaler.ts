@@ -17,7 +17,7 @@
 import { IDataUpdates, IHandledItemType } from './NPCScalerTypes';
 import { getActor, getFolder, getFolderInFolder } from '../Utilities';
 import { getAreaDamageData, getDamageData, getHPData, getLeveledData, getMinMaxData } from './NPCScalerUtil';
-import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
+import ModuleSettings from '../../../FVTT-Common/src/module/ModuleSettings';
 import { SCALED_FOLDER } from '../Setup';
 
 const EMBEDDED_ENTITY_TYPE = 'Item';

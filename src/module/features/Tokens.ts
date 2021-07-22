@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
+import ModuleSettings from '../../../FVTT-Common/src/module/ModuleSettings';
 import { TOKEN_PATH, TOKEN_TARGET, TOKEN_TARGET_BUCKET } from '../Setup';
 
 export const setupTokens = () => Hooks.on('getActorDirectoryEntryContext', onSetupTokensContextHook);

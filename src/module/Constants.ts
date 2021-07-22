@@ -15,6 +15,7 @@
  */
 
 export const MODULE_NAME = `pf2e-toolbox`;
+export const MODULE_TITLE = `PF2E Toolbox`;
 export const PF2E_PC_SHEET_NAME = `CharacterSheetPF2e`;
 export const PF2E_LOOT_SHEET_NAME = `LootSheetPF2e`;
 export const PF2E_NPC_SHEET_NAME = `NPCSheetPF2e`;

@@ -21,16 +21,15 @@ import { readyDefaultArt } from './features/DefaultArt';
 import { setupQuantities } from './features/QuickQuantities';
 import { setupFlattenProficiency } from './features/FlattenProficiency';
 import { setupNPCScaler } from './features/NPCScaler';
-import { readyLootApp } from './features/LootApp';
 import { setupHeroPoints } from './features/HeroPoints';
 import { setupTokens } from './features/Tokens';
-import ModuleSettings, { ATTR_RELOAD_REQUIRED, ATTR_REOPEN_SHEET_REQUIRED, IFeatureDefinition } from '../../FVTT-Common/src/module/settings-app/ModuleSettings';
-import { MODULE_NAME } from './Constants';
+import { MODULE_NAME, MODULE_TITLE } from './Constants';
 import { registerHandlebarsHelpers, registerHandlebarsTemplates } from './Handlebars';
 import { fixMaterials, FixMaterials } from './commands/FixMaterials';
 import secretSkillRoll from './macros/secret-skill-roll';
 import { distributeHeroPoints } from './macros/distribute-hero-points';
 import { groupSave, registerGroupSaveHooks } from './macros/group-saves';
+import ModuleSettings, { ATTR_RELOAD_REQUIRED, ATTR_REOPEN_SHEET_REQUIRED, IFeatureDefinition } from '../../FVTT-Common/src/module/ModuleSettings';
 
 export const CREATURE_BUILDER = 'CREATURE_BUILDER';
 export const FLATTEN_PROFICIENCY = 'FLATTEN_PROFICIENCY';
@@ -160,17 +159,6 @@ export const FEATURES: IFeatureDefinition[] = [
         onSetup: setupNPCScaler,
     },
     {
-        id: LOOT_APP,
-        title: 'Loot Enhancements',
-        attributes: [ATTR_RELOAD_REQUIRED],
-        description: `Adds a new loot actor sheet with many enhancements such as a treasure roller, magic item creator, and more.`,
-        help: `You must set all loot actors back to the default sheet before disabling this option or the actor will not function after
-        it is disabled.`,
-        inputs: [],
-        register: [],
-        onReady: readyLootApp,
-    },
-    {
         id: HERO_POINTS,
         title: 'Maximum Hero Points',
         attributes: [ATTR_REOPEN_SHEET_REQUIRED],
@@ -267,7 +255,12 @@ export const FEATURES: IFeatureDefinition[] = [
 
 export const setup = () => {
     Hooks.on('init', () => {
-        ModuleSettings.instance.registerAllSettings(MODULE_NAME, FEATURES);
+        ModuleSettings.initialize({
+            moduleName: MODULE_NAME,
+            moduleTitle: MODULE_TITLE,
+            features: FEATURES,
+        });
+
         ModuleSettings.instance.reg(LAST_SEEN_SYSTEM, {
             name: 'Last Seen System Version',
             scope: 'world',
@@ -276,8 +269,8 @@ export const setup = () => {
             config: false,
             restricted: true,
         });
-        ModuleSettings.instance.onInit();
     });
+
     Hooks.on('setup', () => ModuleSettings.instance.onSetup());
     Hooks.on('ready', () => ModuleSettings.instance.onReady());
 
@@ -323,4 +316,3 @@ export const setup = () => {
         registerGroupSaveHooks();
     });
 };
-//   /pf2e-toolbox fix-materials

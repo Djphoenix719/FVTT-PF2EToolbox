@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
+import ModuleSettings from '../../../FVTT-Common/src/module/ModuleSettings';
 import { CONTROL_QUANTITY, SHIFT_QUANTITY } from '../Setup';
 
 export const setupQuantities = () => Hooks.on('renderActorSheet', onQuantitiesHook);

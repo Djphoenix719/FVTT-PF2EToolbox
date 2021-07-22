@@ -15,7 +15,7 @@
  */
 
 import { PF2E_PC_SHEET_NAME } from '../Constants';
-import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
+import ModuleSettings from '../../../FVTT-Common/src/module/ModuleSettings';
 import { MAX_HERO_POINTS } from '../Setup';
 
 export const setupHeroPoints = () => Hooks.on(`render${PF2E_PC_SHEET_NAME}`, onSheetRender);

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
 import { LAST_SEEN_SYSTEM } from '../Setup';
+import ModuleSettings from '../../../FVTT-Common/src/module/ModuleSettings';
 
 export async function readyDefaultArt() {
     if (game.system.data.version === ModuleSettings.instance.get(LAST_SEEN_SYSTEM)) {

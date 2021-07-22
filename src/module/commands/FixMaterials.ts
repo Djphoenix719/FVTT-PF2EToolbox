@@ -15,7 +15,7 @@
  */
 
 import { ChatCommand } from '../../../FVTT-Common/src/module/chat-command/ChatCommand';
-import ModuleSettings from '../../../FVTT-Common/src/module/settings-app/ModuleSettings';
+import ModuleSettings from '../../../FVTT-Common/src/module/ModuleSettings';
 import { MATERIALS_FIXED } from '../Setup';
 
 export class FixMaterials extends ChatCommand {

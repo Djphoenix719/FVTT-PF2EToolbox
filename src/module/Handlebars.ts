@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Andrew Cuccinello
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { MODULE_NAME } from './Constants';
 
 export async function registerHandlebarsTemplates() {
@@ -6,24 +22,6 @@ export async function registerHandlebarsTemplates() {
         `modules/${MODULE_NAME}/templates/roll-app/index.html`,
         `modules/${MODULE_NAME}/templates/roll-app/cell.html`,
         `modules/${MODULE_NAME}/templates/roll-app/table.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/LootApp.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/LootAppSidebar.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/LootAppTreasure.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/LootAppConsumables.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/LootAppMagicItems.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/LootAppScrolls.html`,
-
-        `modules/${MODULE_NAME}/templates/settings-app/SettingsApp.html`,
-        `modules/${MODULE_NAME}/templates/settings-app/tabs/About.html`,
-        `modules/${MODULE_NAME}/templates/settings-app/tabs/Features.html`,
-        `modules/${MODULE_NAME}/templates/settings-app/tabs/License.html`,
-
-        `modules/${MODULE_NAME}/templates/loot-app/create/CreateTab.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/create/CreateShared.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/create/CreateArmor.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/create/CreateWeapon.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/create/SelectRow.html`,
-        `modules/${MODULE_NAME}/templates/loot-app/create/RuneStats.html`,
     ];
     await loadTemplates(templatePaths);
 
