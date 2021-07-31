@@ -271,9 +271,6 @@ export const setup = () => {
         });
     });
 
-    Hooks.on('setup', () => ModuleSettings.instance.onSetup());
-    Hooks.on('ready', () => ModuleSettings.instance.onReady());
-
     Hooks.on('setup', registerHandlebarsTemplates);
     Hooks.on('setup', registerHandlebarsHelpers);
 
