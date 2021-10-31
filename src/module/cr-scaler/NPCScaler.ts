@@ -78,11 +78,11 @@ export async function scaleNPCToLevel(actor: Actor, newLevel: number) {
     data['data.traits.dv'] = dvData;
 
     // parse simple modifiers
-    data['data.attributes.ac.base'] = getLeveledData('armorClass', parseInt(actor.data.data['attributes'].ac.base), oldLevel, newLevel).total;
-    data['data.attributes.perception.base'] = getLeveledData('perception', parseInt(actor.data.data['attributes'].perception.base), oldLevel, newLevel).total;
-    data['data.saves.fortitude.base'] = getLeveledData('savingThrow', parseInt(actor.data.data['saves'].fortitude.base), oldLevel, newLevel).total;
-    data['data.saves.reflex.base'] = getLeveledData('savingThrow', parseInt(actor.data.data['saves'].reflex.base), oldLevel, newLevel).total;
-    data['data.saves.will.base'] = getLeveledData('savingThrow', parseInt(actor.data.data['saves'].will.base), oldLevel, newLevel).total;
+    data['data.attributes.ac.value'] = getLeveledData('armorClass', parseInt(actor.data.data['attributes'].ac.value), oldLevel, newLevel).total;
+    data['data.attributes.perception.value'] = getLeveledData('perception', parseInt(actor.data.data['attributes'].perception.value), oldLevel, newLevel).total;
+    data['data.saves.fortitude.value'] = getLeveledData('savingThrow', parseInt(actor.data.data['saves'].fortitude.value), oldLevel, newLevel).total;
+    data['data.saves.reflex.value'] = getLeveledData('savingThrow', parseInt(actor.data.data['saves'].reflex.value), oldLevel, newLevel).total;
+    data['data.saves.will.value'] = getLeveledData('savingThrow', parseInt(actor.data.data['saves'].will.value), oldLevel, newLevel).total;
 
     const hp = getHPData(parseInt(actor.data.data['attributes'].hp.max), oldLevel, newLevel);
     data['data.attributes.hp.max'] = hp;
