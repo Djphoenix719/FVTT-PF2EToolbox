@@ -144,6 +144,16 @@ function formatRowOutput(token: Token, mod: number, breakdown: string, dc?: numb
         background-color: ${backgroundColors[successLevel]};
         ${flexStyle}
     `;
+    const buttonStyle = `
+        font-size: 10px;
+        height: 22px;
+        width: 22px;
+        margin-right: 0;
+    `;
+    const iconStyle = `
+        top: 0;
+        left: -1px;
+    `;
 
     let output = `<span style="font-weight: bold; ${flexStyle}">${token.actor?.name}<span>${successDescription[successLevel]}</span></span>`;
     output += `
@@ -151,16 +161,35 @@ function formatRowOutput(token: Token, mod: number, breakdown: string, dc?: numb
             <span>
                 <span title="${d20Value}">1d20</span> + <span title="${breakdown}">${mod}</span> = <strong>${totalValue}</strong>
             </span>
-            <span class="dmgBtn-container"></span>
+            <div class="chat-damage-buttons">
+                <button style="${buttonStyle}" type="button" class="full-damage" title="Apply full damage to selected tokens.">
+                    <i style="${iconStyle}" class="fas fa-heart-broken"></i>
+                </button>
+                <button style="${buttonStyle}" type="button" class="half-damage" title="Apply half damage to selected tokens.">
+                    <i style="${iconStyle}" class="fas fa-heart-broken"></i>
+                    <span style="width: 8px;height: 12px;top: 4px;left: 50%;" class="transparent-half"></span>
+                </button>
+                <button style="${buttonStyle}" type="button" class="double-damage" title="Apply double damage to selected tokens.">
+                    <img style="${iconStyle}" src="systems/pf2e/icons/damage/double.svg">
+                </button>
+                <button style="${buttonStyle}" type="button" class="heal-damage" title="Apply full healing to selected tokens.">
+                    <i style="${iconStyle}" class="fas fa-heart"></i>
+                    <span style="font-size: 7px;top: 7px;" class="plus">+</span>
+                </button>
+            </div>
         </div>
     `;
+
+    // <button style="${buttonStyle}" type="button" class="shield-block dice-total-shield-btn tooltipstered" data-tooltip-content="li.chat-message[data-message-id=&quot;fF1jMrqtGxT6irh4&quot;] div.hover-content" title="Toggle the shield block status of the selected tokens.">
+    //     <i style="${iconStyle}" class="fas fa-shield-alt"></i>
+    // </button>
 
     return output;
 }
 
 const damageButtonStyle = `
     width: 22px;
-    height:22px;
+    height: 22px;
     font-size: 10px;
     line-height: 1px;
     margin: 0;
@@ -174,54 +203,55 @@ export function registerGroupSaveHooks() {
             const scene = game.scenes?.get(sceneId);
             // @ts-ignore
             const token = scene.getEmbeddedDocument('Token', tokenId) as Token;
-
             if (token === undefined || token === null) {
                 return;
             }
 
             let actorData = token.actor?.data as ActorData;
 
-            let actor = game.actors?.get(token['actorId']) as Actor;
+            let actor = game.actors?.get(token.data.actorId!) as Actor;
             if (isObjectEmpty(actorData) || token['actorLink'] || actorData?.data['attributes']['hp'].value === undefined) {
                 actorData = actor.data;
             }
 
-            function getFirstEquippedShield() {
-                return (actor as any).data.items
-                    .filter((item: Item) => item.type === 'armor')
-                    .filter((armor) => armor.data.armorType.value === 'shield')
-                    .find((shield) => shield.data.equipped.value);
-            }
-
-            // Calculate shield reduction if it is active and not a heal
-            if (shieldBlock && amount > 0) {
-                const shield = getFirstEquippedShield();
-                const hardness = parseInt(shield.data.hardness.value);
-                amount = Math.max(amount - hardness, 0);
-
-                if (token['actorLink']) {
-                    let shieldHp = Math.max(parseInt(actor.data.data['attributes'].shield.value) - amount, 0);
-                    await actor.update({
-                        'data.attributes.shield.value': shieldHp,
-                    });
-                } else {
-                    // Pass, not dealing with this. Only support it for linked tokens.
-                }
-            }
+            // function getFirstEquippedShield() {
+            //     return (actor as any).data.items
+            //         .filter((item: Item) => item.type === 'armor')
+            //         .filter((armor) => armor.data.armorType.value === 'shield')
+            //         .find((shield) => shield.data.equipped.value);
+            // }
+            //
+            // // Calculate shield reduction if it is active and not a heal
+            // if (shieldBlock && amount > 0) {
+            //     const shield = getFirstEquippedShield();
+            //     const hardness = parseInt(shield.data.hardness.value);
+            //     amount = Math.max(amount - hardness, 0);
+            //
+            //     if (token['actorLink']) {
+            //         let shieldHp = Math.max(parseInt(actor.data.data['attributes'].shield.value) - amount, 0);
+            //         await actor.update({
+            //             'data.attributes.shield.value': shieldHp,
+            //         });
+            //     } else {
+            //         // Pass, not dealing with this. Only support it for linked tokens.
+            //     }
+            // }
 
             const minHp = 0;
             const maxHp = parseInt(actorData.data['attributes'].hp.max);
             let newHp = Math.clamped(actorData.data['attributes'].hp.value - amount, minHp, maxHp);
 
-            if (token['actorLink']) {
+            if (token.data.actorLink) {
                 await actor.update({
                     'data.attributes.hp.value': newHp,
                 });
             } else {
-                await scene?.updateEmbeddedEntity('Token', {
-                    '_id': token.id,
-                    'actorData.data.attributes.hp.value': newHp,
-                });
+                await scene?.updateEmbeddedDocuments('Token', [
+                    {
+                        '_id': token.id,
+                        'actorData.data.attributes.hp.value': newHp,
+                    },
+                ]);
             }
         };
 
@@ -233,50 +263,14 @@ export function registerGroupSaveHooks() {
                 const sceneId = jElement.data('scene-id') as string;
                 const damage = jElement.data('damage');
 
-                // @ts-ignore
-                const token = game.scenes.get(sceneId).getEmbeddedDocument('Token', tokenId) as Token;
-
                 if (damage !== 'undefined') {
-                    const container = jElement.children('span.dmgBtn-container');
-
-                    const heal = $(`<button style="${damageButtonStyle}">
-                        <i class="fas fa-heart" title="Click to apply full healing to selected token(s)."></i>
-                    </button>`);
-
-                    const full = $(`<button style="${damageButtonStyle}">
-                        <i class="fas fa-bahai" title="Click to apply full damage to selected token(s)."></i>
-                    </button>`);
-
-                    const half = $(`<button style="${damageButtonStyle}">
-                        <i class="fas fa-chevron-down" title="Click to apply half damage to selected token(s)."></i>
-                    </button>`);
-
-                    const double = $(`<button style="${damageButtonStyle}">
-                        <i class="fas fa-angle-double-up" title="Click to apply double damage to selected token(s)."></i>
-                    </button>`);
+                    const full = jElement.find('button.full-damage');
+                    const half = jElement.find('button.half-damage');
+                    const double = jElement.find('button.double-damage');
+                    const heal = jElement.find('button.heal-damage');
+                    // const shield = jElement.find('button.shield-block');
 
                     let shieldBlock = false;
-                    if (token['actorLink']) {
-                        const shield = $(`<button class="dice-total-shield-btn" style="${damageButtonStyle} opacity: 0.5;">
-                            <i class="fas fa-shield-alt" title="Click to toggle the shield block status of the selected token(s)."></i>
-                        </button>`);
-                        shield.on('click', (event) => {
-                            shieldBlock = !shieldBlock;
-
-                            shield.css('opacity', shieldBlock ? 1.0 : 0.5);
-                        });
-
-                        container.append(shield);
-                    }
-
-                    heal.on('click', (event) => {
-                        apply(tokenId, sceneId, -damage, shieldBlock);
-
-                        heal.css('opacity', 1);
-                        full.css('opacity', 0.5);
-                        half.css('opacity', 0.5);
-                        double.css('opacity', 0.5);
-                    });
                     full.on('click', (event) => {
                         apply(tokenId, sceneId, damage, shieldBlock);
 
@@ -301,10 +295,18 @@ export function registerGroupSaveHooks() {
                         half.css('opacity', 0.5);
                         double.css('opacity', 1);
                     });
-                    container.append(heal);
-                    container.append(full);
-                    container.append(half);
-                    container.append(double);
+                    // shield.on('click', (event) => {
+                    //     shieldBlock = !shieldBlock;
+                    //     shield.css('opacity', shieldBlock ? 1.0 : 0.5);
+                    // });
+                    heal.on('click', (event) => {
+                        apply(tokenId, sceneId, -damage, shieldBlock);
+
+                        heal.css('opacity', 1);
+                        full.css('opacity', 0.5);
+                        half.css('opacity', 0.5);
+                        double.css('opacity', 0.5);
+                    });
                 }
             });
         }
