@@ -21,40 +21,41 @@ import { MAX_HERO_POINTS } from '../Setup';
 export const setupHeroPoints = () => Hooks.on(`render${PF2E_PC_SHEET_NAME}`, onSheetRender);
 
 function onSheetRender(app: Application, html: JQuery, renderData: any) {
-    renderData.data.attributes.heroPoints.max = ModuleSettings.instance.get<number>(MAX_HERO_POINTS);
+    console.warn(renderData);
+    renderData.data.resources.heroPoints.max = ModuleSettings.instance.get<number>(MAX_HERO_POINTS);
 
-    const { rank, max }: { rank: number; max: number } = renderData.data.attributes.heroPoints;
+    const { value, max }: { value: number; max: number } = renderData.data.resources.heroPoints;
 
     const iconFilled = '<i class="fas fa-hospital-symbol"></i>';
     const iconEmpty = '<i class="far fa-circle"></i>';
 
     let icon = '';
-    for (let i = 0; i < rank; i++) {
+    for (let i = 0; i < value; i++) {
         icon += iconFilled;
     }
-    for (let i = rank; i < max; i++) {
+    for (let i = value; i < max; i++) {
         icon += iconEmpty;
     }
 
-    renderData.data.attributes.heroPoints.icon = icon;
+    renderData.data.resources.heroPoints.icon = icon;
 
     const actor: Actor = app['document'] as Actor;
-    const span = html.find('span[data-property="data.attributes.heroPoints.rank"]');
+    const span = html.find('span[data-property="data.resources.heroPoints.value"]');
     span.html(icon);
 
     span.off('click');
     span.off('contextmenu');
 
     span.on('click', async (e) => {
-        if (rank === max) return;
+        if (value === max) return;
         await actor.update({
-            ['data.attributes.heroPoints.rank']: rank + 1,
+            ['data.resources.heroPoints.value']: value + 1,
         });
     });
     span.on('contextmenu', async (e) => {
-        if (rank === 0) return;
+        if (value === 0) return;
         await actor.update({
-            ['data.attributes.heroPoints.rank']: rank - 1,
+            ['data.resources.heroPoints.value']: value - 1,
         });
     });
 }
