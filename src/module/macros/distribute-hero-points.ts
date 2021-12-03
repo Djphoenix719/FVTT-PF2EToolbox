@@ -19,36 +19,36 @@ import ModuleSettings from '../../../FVTT-Common/src/module/ModuleSettings';
 
 export async function distributeHeroPoints(amount: number) {
     const selected = (canvas as Canvas).tokens?.controlled as Token[];
-    const max: number = ModuleSettings.instance.get(MAX_HERO_POINTS);
+    const max: number = ModuleSettings.instance.get(MAX_HERO_POINTS) ?? 3;
 
     const distribute = async (amount: number) => {
         for (const token of selected) {
             const actor = token.actor;
 
-            const heroPoints = actor?.data.data['attributes'].heroPoints;
+            const heroPoints = actor?.data.data['resources'].heroPoints;
             if (heroPoints === undefined) {
                 continue;
             }
 
-            const { rank } = heroPoints;
-            if (rank === undefined) {
+            const { value } = heroPoints;
+            if (value === undefined) {
                 continue;
             }
 
-            if (rank === max) {
+            if (value === max) {
                 continue;
             }
 
             await actor?.update({
-                ['data.attributes.heroPoints.rank']: Math.min(rank + amount, max),
+                ['data.resources.heroPoints.value']: Math.clamped(value + amount, 0, max),
             });
         }
     };
 
     if (amount === undefined) {
         let content = `<div style="display: flex; line-height: 2rem;">
-        <label style="flex-grow: 1; padding-right: 8px;" for="dialogAmount">Amount</label>
-        <input type="number" style="height: 2rem;" id="dialogAmount">
+            <label style="flex-grow: 1; padding-right: 8px;" for="dialogAmount">Amount</label>
+            <input type="number" style="height: 2rem;" id="dialogAmount">
         </div>`;
 
         let d = new Dialog({
