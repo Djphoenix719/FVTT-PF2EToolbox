@@ -1,3 +1,9 @@
 {
-  "dataPath": "FULL_PATH_TO_YOUR_MODULES_FOLDER_HERE"
+    "path": {
+        "data": "FULL_PATH_TO_YOUR_MODULES_FOLDER_HERE"
+    },
+    "dist": {
+        "name": "pf2e-toolbox",
+        "bundle": "bundle.js"
+    }
 }
