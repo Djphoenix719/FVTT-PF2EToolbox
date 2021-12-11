@@ -1,6 +1,17 @@
 {
     "path": {
-        "data": "FULL_PATH_TO_YOUR_MODULES_FOLDER_HERE"
+        "modules": "FULL_PATH_TO_YOUR_MODULES_FOLDER_HERE",
+        "entry": {
+            "script": "FULL_PATH_TO_SCRIPT_ENTRY_POINT",
+            "sass": "FULL_PATH_TO_SASS_ENTRY_POINT"
+        },
+        "assets": [
+            ["module.json", "./"],
+            ["LICENSE", "./"],
+            ["src/templates/**/*", "./templates"],
+            ["FVTT-Common/src/templates/**/*", "./templates"],
+            ["src/packs/**/*", "./packs"]
+        ]
     },
     "dist": {
         "name": "pf2e-toolbox",

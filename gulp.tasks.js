@@ -19,7 +19,6 @@
 import { rejects } from 'assert';
 
 const BASE_BUILD_ARGUMENTS = {
-    entries: ['./src/module/Main.ts'],
     sourceType: 'module',
     debug: true,
 };
@@ -28,11 +27,11 @@ const resolveRequires = () => {};
 
 const loadFoundryConfig = async (fs) => {
     const config = JSON.parse(fs.readFileSync('./foundryconfig.json'));
-    if (!fs.existsSync(config.path.data)) {
-        throw new Error(`Path ${config.path.data} does not exist. Did you set your config?`);
+    if (!fs.existsSync(config.path.modules)) {
+        throw new Error(`Path ${config.path.modules} does not exist. Did you set your config?`);
     }
 
-    config.path.output = `${config.path.data}/${config.dist.name}`;
+    config.path.output = `${config.path.modules}/${config.dist.name}`;
 
     return config;
 };
@@ -41,20 +40,17 @@ const loadBabelConfig = async (fs) => {
     return JSON.parse(fs.readFileSync('./.babelrc'));
 };
 
-const loadTSConfig = async (fs) => {
-    return JSON.parse(fs.readFileSync('tsconfig.json'));
-};
-
 const clean = () => {
     return new Promise(async (resolve, reject) => {
         const fs = await import('fs');
         const path = await import('path');
         const del = await import('del');
         const foundryConfig = await loadFoundryConfig(fs);
+        const outputPath = foundryConfig['path']['output'];
 
-        const files = fs.readdirSync(foundryConfig['path']['output']);
+        const files = fs.readdirSync(outputPath);
         for (const file of files) {
-            del.sync(path.resolve(foundryConfig['path']['output'], file), { force: true });
+            del.sync(path.resolve(outputPath, file), { force: true });
         }
         resolve();
     });
@@ -67,6 +63,7 @@ const clean = () => {
 const executeBuild = (watch) => {
     return new Promise(async (resolve, reject) => {
         const fs = await import('fs');
+        const path = await import('path');
         const foundryConfig = await loadFoundryConfig(fs);
         const babelConfig = await loadBabelConfig(fs);
 
@@ -74,15 +71,19 @@ const executeBuild = (watch) => {
         const babelify = await import('babelify');
         const tsify = (await import('tsify')).default;
         const logger = await import('gulplog');
+        const sass = require('gulp-sass')(require('sass'));
 
         const gulp = await import('gulp');
         const buffer = (await import('vinyl-buffer')).default;
         const source = (await import('vinyl-source-stream')).default;
         const sourcemaps = await import('gulp-sourcemaps');
 
+        const entry = foundryConfig.path.entry;
+
         const babel = babelify.configure(babelConfig);
         const buildArguments = {
             ...BASE_BUILD_ARGUMENTS,
+            entries: [entry.script],
             transform: babel,
             plugin: [tsify],
         };
@@ -101,19 +102,35 @@ const executeBuild = (watch) => {
             reject(message);
         });
 
+        const outputPath = foundryConfig['path']['output'];
+
         const bundle = () => {
+            for (let [src, dst] of foundryConfig.path.assets) {
+                dst = path.resolve(outputPath, dst);
+                gulp.src(src).pipe(gulp.dest(dst));
+            }
+
+            gulp.src('src/css/bundle.scss')
+                .pipe(sass.sync().on('error', sass.logError))
+                .pipe(sourcemaps.init({ loadMaps: true }))
+                .pipe(sourcemaps.write('./', {}))
+                .pipe(gulp.dest(outputPath));
+
             compiler
                 .bundle()
                 .pipe(source(foundryConfig['dist']['bundle']))
                 .pipe(buffer())
                 .pipe(sourcemaps.init({ loadMaps: true }))
                 .pipe(sourcemaps.write('./', {}))
-                .pipe(gulp.dest(foundryConfig['path']['output']));
+                .pipe(gulp.dest(outputPath));
         };
 
-        // Watch if asked, otherwise emit complete on build done.
         if (watch) {
             compiler.on('update', bundle);
+            for (let [src, dst] of foundryConfig.path.assets) {
+                dst = path.resolve(outputPath, dst);
+                gulp.watch(src).on('change', bundle);
+            }
         } else {
             compiler.on('bundle', resolve);
         }
