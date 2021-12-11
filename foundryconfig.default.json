@@ -1,0 +1,20 @@
+{
+    "path": {
+        "modules": "./",
+        "entry": {
+            "script": "./src/module/Main.ts",
+            "sass": "./src/css/bundle.scss"
+        },
+        "assets": [
+            ["module.json", "./"],
+            ["LICENSE", "./"],
+            ["src/templates/**/*", "./templates"],
+            ["FVTT-Common/src/templates/**/*", "./templates"],
+            ["src/packs/**/*", "./packs"]
+        ]
+    },
+    "dist": {
+        "name": "pf2e-toolbox",
+        "bundle": "bundle.js"
+    }
+}

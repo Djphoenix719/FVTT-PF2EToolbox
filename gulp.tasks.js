@@ -16,17 +16,18 @@
 
 'use strict';
 
-import { rejects } from 'assert';
-
 const BASE_BUILD_ARGUMENTS = {
     sourceType: 'module',
     debug: true,
 };
 
-const resolveRequires = () => {};
-
 const loadFoundryConfig = async (fs) => {
-    const config = JSON.parse(fs.readFileSync('./foundryconfig.json'));
+    let configPath = './foundryconfig.json';
+    if (!fs.existsSync(configPath)) {
+        configPath = './foundryconfig.default.json';
+    }
+
+    const config = JSON.parse(fs.readFileSync(configPath));
     if (!fs.existsSync(config.path.modules)) {
         throw new Error(`Path ${config.path.modules} does not exist. Did you set your config?`);
     }
