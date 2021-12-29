@@ -23,17 +23,16 @@ function onScaleNPCContextHook(html: JQuery, buttons: any[]) {
         name: 'Scale to Level',
         icon: '<i class="fas fa-level-up-alt"></i>',
         condition: (li: JQuery<HTMLLIElement>) => {
-            const id = li.data('entity-id') as string;
+            const id = li.data('document-id') as string;
             const actor = game.actors?.get(id) as Actor;
 
             return actor.data.type === 'npc';
         },
         callback: async (li: JQuery<HTMLLIElement>) => {
-            const id = li.data('entity-id') as string;
+            const id = li.data('document-id') as string;
             const actor = game.actors?.get(id) as Actor;
 
-            // const oldLevel = actor.data.data.details.level.value;
-            const oldLevel = 24;
+            const oldLevel = actor.data.data['details'].level.value;
 
             let d = new Dialog({
                 title: 'Scale NPC',
