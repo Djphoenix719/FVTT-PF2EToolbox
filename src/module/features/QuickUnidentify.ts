@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Andrew Cuccinello
+ * Copyright 2022 Andrew Cuccinello
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  *
@@ -30,7 +30,7 @@ export function readyQuickUnidentify() {
                     const updates: any[] = [];
                     for (const item of newItems) {
                         updates.push({
-                            _id: item._id,
+                            _id: item.id,
                             data: {
                                 ['identification']: {
                                     status: 'unidentified',
@@ -54,6 +54,7 @@ export function readyQuickUnidentify() {
 
     // @ts-ignore
     CONFIG.Actor.sheetClasses['character'][`pf2e.${PF2E_PC_SHEET_NAME}`].cls = decorate(
+        // @ts-ignore
         CONFIG.Actor.sheetClasses['character'][`pf2e.${PF2E_PC_SHEET_NAME}`].cls,
     );
 }

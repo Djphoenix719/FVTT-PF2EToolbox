@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Andrew Cuccinello
+ * Copyright 2022 Andrew Cuccinello
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  *
@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { DiceRollMode } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/constants.mjs';
+import { DICE_ROLL_MODES } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/constants.mjs';
 
-export function GetRollMode(): DiceRollMode {
+export function GetRollMode(): ValueOf<typeof DICE_ROLL_MODES> {
     return game.settings.get('core', 'rollMode');
 }
 

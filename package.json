@@ -6,7 +6,7 @@
         "@babel/preset-env": "^7.16.4",
         "@babel/preset-typescript": "^7.16.0",
         "@babel/register": "^7.16.0",
-        "@league-of-foundry-developers/foundry-vtt-types": "^0.8.9-9",
+        "@league-of-foundry-developers/foundry-vtt-types": "^9.238.0",
         "@types/jquery": "^3.5.9",
         "@types/node": "^16.11.11",
         "babel-core": "^7.0.0-beta.3",

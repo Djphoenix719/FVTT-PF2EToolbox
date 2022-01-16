@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Andrew Cuccinello
+ * Copyright 2022 Andrew Cuccinello
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  *
@@ -40,7 +40,7 @@ export async function groupSave(saveType?: SaveType) {
 
             const { totalModifier, breakdown } = save;
 
-            message += formatRowOutput(token, totalModifier, breakdown, dc, damage);
+            message += await formatRowOutput(token, totalModifier, breakdown, dc, damage);
         }
         message += '</div>';
 
@@ -125,8 +125,8 @@ const successDescription = {
     [SuccessLevel.CriticalSuccess]: 'Critical success',
 };
 
-function formatRowOutput(token: Token, mod: number, breakdown: string, dc?: number, damage?: number) {
-    const d20Value: number = new Roll('1d20').roll().total as number;
+async function formatRowOutput(token: Token, mod: number, breakdown: string, dc?: number, damage?: number) {
+    const d20Value: number = (await new Roll('1d20', { async: true }).roll()).total as number;
     const totalValue: number = d20Value + mod;
     const successLevel = getSuccessLevel(totalValue, dc);
 
@@ -200,9 +200,8 @@ export function registerGroupSaveHooks() {
         const content = html.children('div.message-content').children('div');
 
         const apply = async (tokenId: string, sceneId: string, amount: number, shieldBlock: boolean) => {
-            const scene = game.scenes?.get(sceneId);
-            // @ts-ignore
-            const token = scene.getEmbeddedDocument('Token', tokenId) as Token;
+            const scene = game.scenes?.get(sceneId)!;
+            const token = scene.getEmbeddedDocument('Token', tokenId) as TokenDocument;
             if (token === undefined || token === null) {
                 return;
             }
