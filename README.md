@@ -28,8 +28,6 @@ A growing collection of macro helpers. Examples of their use are included in a c
 
 `game.PF2EToolbox.rollSecretSkill(skill_id)` can roll an always-secret skill check for the selected token, or if none is selected for the user's configured character. If no skill id is passed in it will show a prompt to determine the skill. You can use `game.PF2EToolbox.rollSecretSkill('give me the ids!')` to get a list of skill ids for the selected token.
 
-`game.PF2EToolbox.distributeXp(amount)` can distribute an amount of XP to selected tokens. If no amount is provided, shows a prompt for the amount.
-
 `game.PF2EToolbox.distributeHeroPoints(amount)` can distribute 1+ hero points to selected tokens. If no amount is provided, shows a prompt for the amount.
 
 `game.PF2EToolbox.groupSave()` will roll a saving throw for all selected tokens and optionally display the success level and if you entered the damage, display buttons next to each result for full/half/double damage.
