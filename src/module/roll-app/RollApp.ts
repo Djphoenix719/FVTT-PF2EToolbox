@@ -84,7 +84,7 @@ export default class RollApp extends Application {
                     formula = `{${formula}}*2`;
                 }
 
-                new Roll(formula).roll().toMessage(
+                new Roll(formula).toMessage(
                     {
                         speaker: ChatMessage.getSpeaker({ token: token?.document }),
                         flavor: rollName,
